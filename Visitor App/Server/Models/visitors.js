@@ -6,16 +6,13 @@ const visitorSchema=new mongoose.Schema({
         required:true
     },
     aadhaar:{
-        type:Number,
-        required:true
+        type:String
     },
     phone:{
-        type:Number,
-        required:true
+        type:Number
     },
     othernumber:{
-        type:Number,
-        required:true
+        type:Number
     },
     gender:{
         type:String,
@@ -25,50 +22,39 @@ const visitorSchema=new mongoose.Schema({
         type:String,
         required:true
     },
-    
     age:{
         type:Number,
         required:true
     },
-    
     purposeVisit:{
         type:String,
         required:true
     },
-    
     address:{
         type:String,
         required:true
-    },
-    
+    }, 
     arrivedtime:{
         type:String,
         required:true
     },
-    
     despachtime:{
-        type:String,
-        required:true
+        type:String
     },
-    
     currentdate:{
         type:String,
         required:true
     },
-    
     support:{
         type:String,
         required:true
     },
-    
     image:{
-        type:String,
-        required:true
+        type:String
     },
     
     numberofstay:{
-        type:String,
-        required:true
+        type:String
     },
     
     attender:{
@@ -80,6 +66,10 @@ const visitorSchema=new mongoose.Schema({
         required:true
     },
     remarks:{
+        type:String,
+        required:true
+    },
+    userId:{
         type:String,
         required:true
     }

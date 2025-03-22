@@ -10,8 +10,8 @@ export const commonApi = async (method, url, body, headers) => {
 
     try {
         const response = await axios(config);
-        return response; // Return the actual response
+        return response;
     } catch (error) {
-        return error.response ? error.response : error; // Return error response if available
+        return error.response ? error.response : error; 
     }
 };

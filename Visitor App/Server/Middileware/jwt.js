@@ -5,7 +5,7 @@ const jwtMiddileware=(req,res,next)=>{
         const token=req.headers['authorization'].split(" ")[1]
     if(token){
         const jwtResponse=jwt.verify(token,process.env.JWT_SEACRETKEY)
-        req.payload=jwtResponse.userId
+        req.payload=jwtResponse.userId        
         next()
     }
     else{

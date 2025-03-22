@@ -10,14 +10,11 @@ exports.register = async (req, res) => {
         
         const { username, email, password } = req.body;
         const image = req.file.filename;
-
-        // Check if the email is already in use
         const emailExists = await users.findOne({ email });
         if (emailExists) {
             return res.status(406).json("Email already in use!");
         }
 
-        // Check if the password is already in use
         const passwordExists = await users.findOne({ password });
         if (passwordExists) {
             return res.status(406).json("Please try different password!");
@@ -61,4 +58,14 @@ exports.Login=async(req,res)=>{
         res.status(401).json("SOMTHING WANT WRONG" + err);
     }
 
+}
+
+exports.allUsersforCategory=async(req,res)=>{
+    try{
+        const result=await users.find()
+        res.status(200).json(result)
+        console.log(result);
+    }catch(err){
+        res.status(401).json(err)
+    }
 }
