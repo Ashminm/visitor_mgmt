@@ -34,3 +34,24 @@ exports.addVisitor=async(req,res)=>{
         return res.status(500).json("New visitor adding faild");
     }
 }
+
+
+exports.allVisitors=async(req,res)=>{
+    const searchKey=req.query.search
+    // console.log(req.query);
+    const query = {
+        $or: [
+          { aadhaar: { $regex: searchKey, $options: "i" } },
+          { phone: { $regex: searchKey, $options: "i" } },
+          { name: { $regex: searchKey, $options: "i" } },
+          { $expr: { $regexMatch: { input: { $toString: "$phone" }, regex: searchKey, options: "i" } } }, 
+          { $expr: { $regexMatch: { input: { $toString: "$aadhaar" }, regex: searchKey, options: "i" } } }
+        ]
+      };
+    try{
+        const result= await visitors.find(query)
+        res.status(200).json(result)
+    }catch(err){
+        res.status(401).json(err)
+    }
+}

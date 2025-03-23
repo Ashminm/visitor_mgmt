@@ -9,7 +9,7 @@ const visitorSchema=new mongoose.Schema({
         type:String
     },
     phone:{
-        type:Number
+        type:String
     },
     othernumber:{
         type:Number

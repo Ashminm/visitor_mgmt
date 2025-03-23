@@ -19,7 +19,16 @@ const userSchema=new mongoose.Schema({
     image:{
         type:String,
         required:true
-    }
+    },
+    addedBy:{
+        type:String,
+        required:true
+    },
+    date:{
+        type: Date,
+         default: Date.now,
+         required:true
+    },
 })
 
 const users=mongoose.model('users',userSchema)

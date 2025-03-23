@@ -1,10 +1,11 @@
 import React,{useState,useEffect} from 'react'
-import { AddVisitorApi,allUsersApi } from '../services/AllApis';
+import { AddVisitorApi,allCategoryApi } from '../services/AllApis';
 
 
 function AddVisitors() {
   const [token, setToken] = useState("");
   // const [allUsers,setAllUsers]=useState([])
+  const [allcategory,setAllCategory]=useState([])
   const [attender,setAttender]=useState(null)
   const [visitorData,setVisitorData]=useState({
     name: "",
@@ -28,29 +29,36 @@ function AddVisitors() {
 })
 // console.log(visitorData);
 
-
-useEffect(() => {
-  const existingUser = JSON.parse(sessionStorage.getItem("currentUser"));
-  if (existingUser) {
-    setAttender(existingUser.username);
-  }
-}, []);
-
-
-
-
 useEffect(()=>{
+  const username=sessionStorage.getItem("name")
+  if(username){
+    setAttender(username)
+  }
   if(sessionStorage.getItem("token")){
     setToken(sessionStorage.getItem("token"))
   }
-})
+},[])
 
-// console.log(allUsers);
-// useEffect(() => {
-//   if (token) {
-//     getAllUsers();
-//   }
-// }, [token]);
+useEffect(() => {
+  if (token) {
+    getAllcategory();
+  }
+}, [token]);
+
+
+
+
+const getAllcategory = async () => {
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+    const res = await allCategoryApi(headers); 
+    if (res.status === 200) {
+      setAllCategory(res.data);
+    }
+};
+
 
 
 // const getAllUsers = async () => {
@@ -112,6 +120,24 @@ const handleAddVisitor = async (e) => {
           const res = await AddVisitorApi(formData,reqHeader);
           if (res.status === 200) {
             alert("Added successfully");
+            setVisitorData({ name: "",
+              aadhaar: "",
+              phone: "",
+              othernumber:"",
+              gender: "",
+              category: "",
+              age: "",
+              purposeVisit: "",
+              address: "",
+              arrivedtime: "",
+              despachtime: "",
+              currentdate: "",
+              support: "",
+              image: "",
+              numberofstay: "",
+              attender: "",
+              status: "",
+              remarks: "",})
           } else {
             alert("Addition failed: "+res.data);
           }
@@ -138,20 +164,25 @@ const handleAddVisitor = async (e) => {
             value={visitorData.phone} />
       <input type="tel" placeholder="Other Contact" pattern='\d{10}' title='Phone number must 10 digit and not include Alphabets'  className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,othernumber:e.target.value})}}
             value={visitorData.othernumber}/>
-      <select className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,gender:e.target.value})}} defaultValue=""
+      <select className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" value={visitorData.gender} onChange={(e)=>{setVisitorData({...visitorData,gender:e.target.value})}} defaultValue=""
       >
         <option value="">Select Gender*</option>
         <option value="Male">Male</option>
         <option value="Female">Female</option>
         <option value="Other">Other</option>
       </select>
-      <select className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,category:e.target.value})}} defaultValue="">
+      <select
+        className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none"
+        onChange={(e) => setVisitorData({ ...visitorData, category: e.target.value })} value={visitorData.category}
+        defaultValue=""
+    >
         <option value="">Select Category*</option>
-        <option value="Sanyasi">Sanyasi</option>
-        <option value="Sadhu">Sadhu</option>
-        <option value="gust">gust</option>
-        <option value="Other">Other</option>
-      </select>
+        {allcategory.map((category, index) => (
+            <option key={index} value={category.categoryName}>
+                {category.categoryName}
+            </option>
+        ))}
+    </select>
       <input type="number" placeholder="Age*" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,age:e.target.value})}}
             value={visitorData.age} />
       <input type="text" placeholder="Purpose of Visit*" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,purposeVisit:e.target.value})}}
@@ -159,12 +190,12 @@ const handleAddVisitor = async (e) => {
       <textarea placeholder="Address*" className="p-2 border rounded col-span-2 focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,address:e.target.value})}}
             value={visitorData.address}></textarea>
       <label htmlFor="">Arrived Time*</label>
-      <input type="time" placeholder="Arrived Time" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,arrivedtime:e.target.value})}}/>
+      <input type="time" placeholder="Arrived Time" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" value={visitorData.arrivedtime} onChange={(e)=>{setVisitorData({...visitorData,arrivedtime:e.target.value})}}/>
       <label htmlFor="">Despatch Time</label>
-      <input type="time" placeholder="Departed Time" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,despachtime:e.target.value})}}/>
+      <input type="time" placeholder="Departed Time" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" value={visitorData.despachtime} onChange={(e)=>{setVisitorData({...visitorData,despachtime:e.target.value})}}/>
       <input type="date" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,currentdate:e.target.value})}}
             value={visitorData.currentdate} />
-      <input type="text" placeholder="Support Given*" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,support:e.target.value})}}/>
+      <input type="text" placeholder="Support Given*" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,support:e.target.value})}} value={visitorData.support}/>
       <label className="block text-gray-400 w-full px-3 py-2 border rounded-md cursor-pointer focus:ring-2 focus:ring-amber-500">Upload your Photo<input
                 type="file"
                 accept="image/*"
@@ -175,14 +206,14 @@ const handleAddVisitor = async (e) => {
             value={visitorData.numberofstay}/>
             <select 
           className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" 
-          onChange={(e) => setVisitorData({ ...visitorData, attender: e.target.value })} 
+          onChange={(e) => setVisitorData({ ...visitorData, attender: e.target.value })} value={visitorData.attender}
           defaultValue=""
         >
           <option value="">Select Attender*</option>
           {attender && <option value={attender}>{attender}</option>}
         </select>
 
-      <select className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,status:e.target.value})}} defaultValue="">
+      <select className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,status:e.target.value})}} value={visitorData.status} defaultValue="">
         <option value="">Status*</option>
         <option value="Guest">Pending</option>
         <option value="Staff">Checkout</option> 

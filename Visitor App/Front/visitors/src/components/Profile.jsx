@@ -1,105 +1,200 @@
-import React,{useState} from 'react'
+import React, { useState,useEffect } from 'react';
+import { getUserSpecificApi,updateProfileApi } from '../services/AllApis';
 
 function Profile() { 
-    const [isEditing, setIsEditing] = useState(false);
-    const [userData, setUserData] = useState({
-      name: 'John Doe',
-      email: 'johndoe@example.com',
-      phone: '123-456-7890',
-      password: '********'
-    });
+  const [token, setToken] = useState("");
+  const [userProfile,setUserProfile]=useState({})
+  const [profile,setProfile]=useState({
+      username: "",
+      email: "",
+      password:"",
+      image:"",
+      addedBy:""
+  })
+// console.log(profile);
+
+
+
+useEffect(()=>{
+  if(sessionStorage.getItem("token")){
+    setToken(sessionStorage.getItem("token"))
+  }
+},[])
+
+useEffect(() => {
+  if (token) {
+    getUserSpecific()
+  }
+}, [token]);
+
+
+const updateProfile=async(e)=>{
+  e.preventDefault();
+  if(!profile.username || !profile.email || !profile.password){
+      alert("Please fill")
+  }else{
+    const formData= new FormData()
+    formData.append("username",profile.username);
+    // formData.append("image",profile.image);
+    formData.append("email",profile.email);
+    formData.append("password",profile.password);
+    const HeaderReq = {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`,
+  };
+  const res=await updateProfileApi(formData,HeaderReq)
+  if(res.status===200){
+    alert('profile update success!!')
+  }else{
+    alert("Updation faild!")
+    console.log(res);
+  }
+  }
+}
+
+
+const getUserSpecific = async()=>{
+  const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+  };
+  console.log(token);
   
+  const res=await getUserSpecificApi(headers)
+  console.log(res);
+  
+  if(res.status===200){
+    setUserProfile(res.data)
+  }
+}
+
+console.log("feching userProfile",userProfile);
+
+
+
+const handilelogOut=async()=>{
+  alert('Wait for the log out.......!!')
+}
+
+    const [isEditing, setIsEditing] = useState(false);
+
     const handleEdit = () => setIsEditing(true);
     const handleCancel = () => setIsEditing(false);
-    const handleChange = (e) => {
-      setUserData({ ...userData, [e.target.name]: e.target.value });
-    };
-    
-  return (
-    <section>
+
+    return (
+      <section>
       <div className="p-7 text-center">
-        <h1 className='text-2xl'>Account Settings</h1>
+        <h1 className="text-2xl">Account Settings</h1>
         <h1>Manage your profile</h1>
       </div>
-      <div className='gap-3 flex flex-col items-center md:flex-row justify-center'>
-        <div className="p-4 w-[40rem] shadow-lg rounded-lg border border-gray-200 h-auto">
-          <div className="flex justify-center mb-4 p-7">
-            <img 
-              src="https://via.placeholder.com/100" 
-              alt="Profile" 
-              className="w-40 h-40 object-cover rounded-full border border-gray-300" 
-            />
-          </div>
-          <div className="p-6">
-            {!isEditing ? (
+      <div className="gap-3 flex flex-col items-center md:flex-row justify-center">
+        <div className="p-4 w-[40rem] shadow-lg bg-slate-100 rounded-lg border h-auto">
+          {!isEditing ? (
+            <div className="p-6">
+              <div className="flex justify-center mb-4 p-7">
+                <img
+                  src="https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D"
+                  alt="Profile"
+                  className="w-40 h-40 object-cover rounded-full border-2 border-gray-300"
+                />
+              </div>
               <div>
-                <p><strong>Name:</strong> {userData.name}</p>
-                <p><strong>Email:</strong> {userData.email}</p>
-                <p><strong>Phone:</strong> {userData.phone}</p>
-                <p><strong>Password:</strong> {userData.password}</p>
-                <button 
-                  onClick={handleEdit} 
+                <p>
+                  <strong>Name:</strong> {profile.username}
+                </p>
+                <p>
+                  <strong>Email:</strong> {profile.email}
+                </p>
+                <p>
+                  <strong>Password:</strong> ********
+                </p>
+                <div className="flex justify-between">
+                <button
+                  onClick={handleEdit}
                   className="mt-4 bg-amber-600 text-black px-4 py-2 rounded-md hover:bg-amber-700"
-                >Edit Profile</button>
-              </div>
-            ) : (
-              <div>
-                <div className="mb-4">
-                  <label className="block text-gray-600">Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={userData.name}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none focus:ring-2 focus:ring-amber-500"
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-600">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={userData.email}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none focus:ring-2 focus:ring-amber-500"
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-600">Phone</label>
-                  <input
-                    type="text"
-                    name="phone"
-                    value={userData.phone}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none focus:ring-2 focus:ring-amber-500"
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-600">Password</label>
-                  <input
-                    type="password"
-                    name="password"
-                    value={userData.password}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none focus:ring-2 focus:ring-amber-500"
-                  />
-                </div>
-                <div className="flex gap-3">
-                  <button 
-                    className="w-24 bg-amber-600 text-black py-2 rounded-md hover:bg-amber-700"
-                  >Save</button>
-                  <button 
-                    onClick={handleCancel} 
-                    className="w-24 bg-gray-400 text-black py-2 rounded-md hover:bg-gray-500"
-                  >Cancel</button>
+                >
+                  Edit Profile
+                </button>
+                <button
+                onClick={handilelogOut}
+                  className="mt-4 bg-red-600 text-black px-4 py-2 rounded-md hover:bg-red-700"
+                >
+                  Log out
+                </button>
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          ) : (
+            <form onSubmit={updateProfile}>
+              <div className="flex justify-center mb-4 p-7">
+                <img
+                  src={profile.image}
+                  alt="Profile"
+                  className="w-40 h-40 object-cover rounded-full border-2 border-gray-300"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-600">Name</label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none focus:ring-2 focus:ring-amber-500"
+                  value={profile.username}
+                  onChange={(e) =>
+                    setProfile({ ...profile, username: e.target.value })
+                  }
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-600">Email</label>
+                <input
+                  type="email"
+                  className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none focus:ring-2 focus:ring-amber-500"
+                  value={profile.email}
+                  onChange={(e) =>
+                    setProfile({ ...profile, email: e.target.value })
+                  }
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-600">Password</label>
+                <input
+                  type="password"
+                  className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none focus:ring-2 focus:ring-amber-500"
+                  value={profile.password}
+                  onChange={(e) =>
+                    setProfile({ ...profile, password: e.target.value })
+                  }
+                />
+              </div>
+              <div className="mb-9">
+                <label className="block text-gray-600">Added by (Not editable)</label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none read-only cursor-not-allowed"
+                  value={profile.addedBy}
+                />
+              </div>
+              <div className="flex gap-3">
+                <button
+                  type="submit"
+                  className="w-24 bg-amber-600 text-black py-2 rounded-md hover:bg-amber-700"
+                >
+                  Update
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className="w-24 bg-gray-400 text-black py-2 rounded-md hover:bg-gray-500"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          )}
         </div>
       </div>
     </section>
-  )
+    );
 }
 
-export default Profile
+export default Profile;

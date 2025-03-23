@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import logo from '../assets/file.png'
 import Profile from "./Profile";
 import AddVisitors from "./AddVisitors";
@@ -6,6 +6,18 @@ import AllVisitors from "./AllVisitors";
 import OtherSettings from "./OtherSettings";
 
 function Home() {
+const [username,setUsername]=useState("")
+
+
+
+useEffect(()=>{
+  const name=sessionStorage.getItem("name")
+  if(name){
+    setUsername(name)
+  }
+})
+
+
   const [activeTab, setActiveTab] = useState("home");
 
 
@@ -42,7 +54,7 @@ function Home() {
             <div>
             <div className="w-screen max-w-3xl bg-white h-auto flex flex-col">
         {/* Tab Navigation */}
-        <div className="flex h-16 items-center">
+        <div className="flex h-16 items-center cursor-pointer">
           {["home", "add-visitor", "all-visitors","other-settings","profile-settings"].map((tab) => (
             <button
               key={tab}
@@ -65,11 +77,12 @@ function Home() {
           {activeTab === "home" && (
              <div className="gap-3 flex flex-col items-center md:flex-row justify-start">
              
-             <div className="p-8 pt-5 max-w-8xl mx-auto">
-      <h2 className="text-2xl font-bold text-strat text-gray-900 mb-2">
+             <div className="p-8 pt-1 max-w-8xl mx-auto">
+              <h1 className="text-2xl font-bold">Welcome <span className="text-amber-600">{username}</span></h1>
+      <h2 className="text-2xl  text-strat text-gray-900 mt-3 mb-2">
       Visitors
       </h2>
-      <h2 className="text-md text-start text-gray-400 mb-8">
+      <h2 className="text-md text-start text-gray-400 mb-6">
       All the visitors that are currently on the premises
       </h2>
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
