@@ -1,5 +1,6 @@
 import React,{useState,useEffect} from 'react'
 import { getAllvisitorApi } from '../services/AllApis'; 
+import Edit from './Edit';
 
 function AllVisitors() {
   const [search,setSearch]=useState('')
@@ -123,7 +124,7 @@ function AllVisitors() {
                 <td className="border p-2">{visitor.arrivedtime}</td>
                 <td className="border p-2">{visitor.remarks}</td>
                 <td className="border p-2 flex gap-2 justify-center">
-                  <button className="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">Edit</button>
+                <Edit/>
                   <button className="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700">Delete</button>
                   <button className="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-700">View More</button>
                   <button className="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-700">Print</button>

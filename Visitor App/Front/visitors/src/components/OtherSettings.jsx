@@ -1,5 +1,5 @@
 import React,{useEffect,useState} from 'react'
-import { categoryAddApi,AddAttenderApi } from '../services/AllApis';
+import { categoryAddApi,AddAttenderApi,getUserSpecificApi } from '../services/AllApis';
 
 function OtherSettings() {
   const [attender,setAttender]=useState(null)
@@ -18,19 +18,25 @@ function OtherSettings() {
   // console.log(addAttender);
 
 // console.log(addCategory);
-
-  useEffect(() => {
-    const name = sessionStorage.getItem("name");
-    if (name) {
-      setAttender(name);
-    }
-  }, []);
-
   useEffect(()=>{
     if(sessionStorage.getItem("token")){
       setToken(sessionStorage.getItem("token"))
     }
+    if(token){
+      getUserSpecific()
+    }
   },[token])
+
+  const getUserSpecific = async()=>{
+    const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+    }; 
+    const res=await getUserSpecificApi(headers)
+    if(res.status===200){
+      setAttender(res.data.username)
+    }
+  } 
 
   const handleCategoryAdd = async (e) => {
     e.preventDefault();
@@ -110,8 +116,8 @@ function OtherSettings() {
           <input type="file" className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none " accept="image/*" onChange={(e)=>setAddAttender({...addAttender,image:e.target.files[0]})} />
           </label>
           <input type="email" placeholder="Email*" className="w-full p-2 border rounded"onChange={(e)=>setAddAttender({...addAttender,email:e.target.value})} value={addAttender.email}  />
-          <input type="password" placeholder="Password*" className="w-full p-2 border rounded" onChange={(e)=>setAddAttender({...addAttender,password:e.target.value})} value={addAttender.password}  />
-          <select className="w-full p-2 border rounded" defaultValue="" onChange={(e)=>setAddAttender({...addAttender,addedBy:e.target.value})} value={addAttender.addedBy} >
+          <input type="password" placeholder="Password*" className="w-full p-2 border rounded" autoComplete="current-password"  onChange={(e)=>setAddAttender({...addAttender,password:e.target.value})} value={addAttender.password}  />
+          <select className="w-full p-2 border rounded" onChange={(e)=>setAddAttender({...addAttender,addedBy:e.target.value})} value={addAttender.addedBy} >
             <option value="">Added by*</option>
             {attender && <option value={attender}>{attender}</option>}
           </select>
@@ -125,7 +131,7 @@ function OtherSettings() {
         <form className="space-y-4" onSubmit={handleCategoryAdd}>
         <input type="text" placeholder='Category Name*'  className="w-full p-2 border rounded" onChange={(e)=>{setAddCategory({...addCategory,categoryName:e.target.value})}}
                 value={addCategory.categoryName}  />
-          <select className="w-full p-2 border rounded" defaultValue="" value={addCategory.addedBy} onChange={(e)=>{setAddCategory({...addCategory,addedBy:e.target.value})}} >
+          <select className="w-full p-2 border rounded" value={addCategory.addedBy} onChange={(e)=>{setAddCategory({...addCategory,addedBy:e.target.value})}} >
             <option value="">Added by*</option>
             {attender && <option value={attender}>{attender}</option>}
           </select>

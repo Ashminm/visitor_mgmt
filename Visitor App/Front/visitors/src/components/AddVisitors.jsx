@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react'
-import { AddVisitorApi,allCategoryApi } from '../services/AllApis';
+import { AddVisitorApi,allCategoryApi,getUserSpecificApi } from '../services/AllApis';
 
 
 function AddVisitors() {
@@ -30,10 +30,6 @@ function AddVisitors() {
 // console.log(visitorData);
 
 useEffect(()=>{
-  const username=sessionStorage.getItem("name")
-  if(username){
-    setAttender(username)
-  }
   if(sessionStorage.getItem("token")){
     setToken(sessionStorage.getItem("token"))
   }
@@ -42,6 +38,7 @@ useEffect(()=>{
 useEffect(() => {
   if (token) {
     getAllcategory();
+    getUserSpecific()
   }
 }, [token]);
 
@@ -147,7 +144,17 @@ const handleAddVisitor = async (e) => {
         }
       }
     };
-    
+
+    const getUserSpecific = async()=>{
+      const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+      }; 
+      const res=await getUserSpecificApi(headers)
+      if(res.status===200){
+        setAttender(res.data.username)
+      }
+    }  
 
 
 
@@ -164,7 +171,7 @@ const handleAddVisitor = async (e) => {
             value={visitorData.phone} />
       <input type="tel" placeholder="Other Contact" pattern='\d{10}' title='Phone number must 10 digit and not include Alphabets'  className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,othernumber:e.target.value})}}
             value={visitorData.othernumber}/>
-      <select className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" value={visitorData.gender} onChange={(e)=>{setVisitorData({...visitorData,gender:e.target.value})}} defaultValue=""
+      <select className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" value={visitorData.gender} onChange={(e)=>{setVisitorData({...visitorData,gender:e.target.value})}}
       >
         <option value="">Select Gender*</option>
         <option value="Male">Male</option>
@@ -174,7 +181,6 @@ const handleAddVisitor = async (e) => {
       <select
         className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none"
         onChange={(e) => setVisitorData({ ...visitorData, category: e.target.value })} value={visitorData.category}
-        defaultValue=""
     >
         <option value="">Select Category*</option>
         {allcategory.map((category, index) => (
@@ -207,13 +213,12 @@ const handleAddVisitor = async (e) => {
             <select 
           className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" 
           onChange={(e) => setVisitorData({ ...visitorData, attender: e.target.value })} value={visitorData.attender}
-          defaultValue=""
         >
           <option value="">Select Attender*</option>
           {attender && <option value={attender}>{attender}</option>}
         </select>
 
-      <select className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,status:e.target.value})}} value={visitorData.status} defaultValue="">
+      <select className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,status:e.target.value})}} value={visitorData.status}>
         <option value="">Status*</option>
         <option value="Guest">Pending</option>
         <option value="Staff">Checkout</option> 

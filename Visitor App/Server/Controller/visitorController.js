@@ -4,7 +4,7 @@ exports.addVisitor=async(req,res)=>{
     const {name,aadhaar,phone,othernumber,gender,category,age,purposeVisit,address,arrivedtime,despachtime,currentdate,support,numberofstay,attender,status,remarks}=req.body;
     const image = req.file ? req.file.filename : null; 
     const userId = req.payload;
-    console.log("userId is: ",userId);
+    // console.log("userId is: ",userId);
     
     try{
         if(aadhaar){

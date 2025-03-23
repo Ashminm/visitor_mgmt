@@ -1,19 +1,19 @@
 import React, { useState,useEffect } from 'react';
 import { getUserSpecificApi,updateProfileApi } from '../services/AllApis';
+import { BASE_URL } from '../services/BaseURL';
 
 function Profile() { 
   const [token, setToken] = useState("");
   const [userProfile,setUserProfile]=useState({})
   const [profile,setProfile]=useState({
-      username: "",
-      email: "",
-      password:"",
-      image:"",
-      addedBy:""
+      username:  "",
+      email:  "",
+      password: "",
+      image: "",
+      addedBy: "",
+      date: ""
   })
 // console.log(profile);
-
-
 
 useEffect(()=>{
   if(sessionStorage.getItem("token")){
@@ -26,6 +26,19 @@ useEffect(() => {
     getUserSpecific()
   }
 }, [token]);
+
+useEffect(() => {
+  if (Object.keys(userProfile).length > 0) {
+    setProfile({
+      username: userProfile.username || "",
+      email: userProfile.email || "",
+      password: userProfile.password || "",
+      image: userProfile.image || "",
+      addedBy: userProfile.addedBy || "",
+      date: userProfile.date || "",
+    });
+  }
+}, [userProfile]);
 
 
 const updateProfile=async(e)=>{
@@ -57,23 +70,22 @@ const getUserSpecific = async()=>{
   const headers = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
-  };
-  console.log(token);
-  
+  }; 
   const res=await getUserSpecificApi(headers)
-  console.log(res);
-  
   if(res.status===200){
     setUserProfile(res.data)
   }
 }
 
-console.log("feching userProfile",userProfile);
+// console.log("feching userProfile",userProfile);
 
 
 
 const handilelogOut=async()=>{
-  alert('Wait for the log out.......!!')
+  sessionStorage.removeItem("token");
+  sessionStorage.removeItem("role");
+  setToken("");
+  setUserProfile({});
 }
 
     const [isEditing, setIsEditing] = useState(false);
@@ -93,7 +105,7 @@ const handilelogOut=async()=>{
             <div className="p-6">
               <div className="flex justify-center mb-4 p-7">
                 <img
-                  src="https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D"
+                  src={`${BASE_URL}/uploads/${profile.image}`}
                   alt="Profile"
                   className="w-40 h-40 object-cover rounded-full border-2 border-gray-300"
                 />
@@ -106,8 +118,12 @@ const handilelogOut=async()=>{
                   <strong>Email:</strong> {profile.email}
                 </p>
                 <p>
-                  <strong>Password:</strong> ********
+                  <strong>Password:</strong>{profile.password}
                 </p>
+                <p>
+                <strong>Registration date:</strong> {profile.date ? new Date(profile.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).replace(',', '-') : ""}
+                </p>
+
                 <div className="flex justify-between">
                 <button
                   onClick={handleEdit}

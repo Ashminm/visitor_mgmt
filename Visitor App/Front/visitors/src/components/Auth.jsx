@@ -57,7 +57,6 @@ const handleLogin=async(e)=>{
   }else{
     const res =await loginApi(userData)
     if(res.status===200){
-      sessionStorage.setItem("name",res.data.existingUser.username)
       sessionStorage.setItem("role", res.data.role);
       sessionStorage.setItem("token", res.data.token);
       alert("Your successfully login!!")
