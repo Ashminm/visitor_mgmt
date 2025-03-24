@@ -118,7 +118,7 @@ const handilelogOut=async()=>{
                   <strong>Email:</strong> {profile.email}
                 </p>
                 <p>
-                  <strong>Password:</strong>{profile.password}
+                  <strong>Password:</strong>*******
                 </p>
                 <p>
                 <strong>Registration date:</strong> {profile.date ? new Date(profile.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).replace(',', '-') : ""}

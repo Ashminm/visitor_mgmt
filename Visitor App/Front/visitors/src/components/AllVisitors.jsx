@@ -1,6 +1,9 @@
 import React,{useState,useEffect} from 'react'
 import { getAllvisitorApi } from '../services/AllApis'; 
 import Edit from './Edit';
+import Delete from './Delete';
+import ViewMore from './ViewMore';
+import PdfConvert from './PdfConvert';
 
 function AllVisitors() {
   const [search,setSearch]=useState('')
@@ -122,12 +125,11 @@ function AllVisitors() {
                 <td className="border p-2">{visitor.purposeVisit.slice(0,20)}</td>
                 <td className="border p-2">{visitor.currentdate}</td>
                 <td className="border p-2">{visitor.arrivedtime}</td>
-                <td className="border p-2">{visitor.remarks}</td>
+                <td className="border p-2">{visitor.remarks.slice(0,15)}</td>
                 <td className="border p-2 flex gap-2 justify-center">
-                <Edit/>
-                  <button className="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700">Delete</button>
-                  <button className="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-700">View More</button>
-                  <button className="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-700">Print</button>
+                  <Edit visitorsProp={visitor}/>
+                  <Delete visitorsProp={visitor._id}/>
+                  <PdfConvert visitorsProp={visitor}/>
                 </td>
               </tr>
             ))
