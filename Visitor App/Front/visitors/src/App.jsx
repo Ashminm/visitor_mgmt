@@ -3,7 +3,6 @@ import { Routes, Route } from 'react-router-dom';
 import './App.css';
 import Landing from './pages/Landing';
 import Home from './components/Home';
-import PdfConvert from './components/PdfConvert';
 
 function App() {
   return (

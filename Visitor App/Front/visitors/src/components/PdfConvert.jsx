@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
 
-const generatePDF = (visitor) => {
+const generatePDF = (visitor,setIsOpen) => {
     if (!visitor) {
         console.error("Visitor data is missing!");
         return;
     }
 
     const doc = new jsPDF();
+    const today = new Date().toLocaleDateString();
 
     doc.setFontSize(11);
     doc.text(`Advaithashramam`, 160, 25);
@@ -19,7 +20,7 @@ const generatePDF = (visitor) => {
 
     // Date, Address, and ID
     doc.setFontSize(11);
-    doc.text(`Date: ${visitor.currentdate || "____/____/____"}`, 160, 15);
+    doc.text(`Date: ${today || "____/____/____"}`, 160, 15);
 
     // Photo Section
     doc.rect(10, 40, 40, 40);
@@ -27,7 +28,7 @@ const generatePDF = (visitor) => {
     // Name and UserId
     doc.setFontSize(13);
     doc.text(`Name: ${visitor.name || "____________________"}`, 60, 45)
-    doc.setFontSize(8);
+    doc.setFontSize(7);
     doc.text(`Date of visit: ${visitor.currentdate || "____/____/____"}`, 60, 53);
     doc.text(`ID: ${visitor.userId || "ID is missing"}`, 60, 60);
    
@@ -38,9 +39,9 @@ const generatePDF = (visitor) => {
     doc.setFontSize(14); // Set title font size
     doc.text("Contact Details", 15, 92);
     doc.setFontSize(13);
-    doc.text(`Aadhaar: ${visitor.aadhaar || "____________________"}`, 10, 105);
-    doc.text(`Phone: ${visitor.phone || "____________________"}`, 10, 115);
-    doc.text(`Other: ${visitor.othernumber || "____________________"}`, 10, 125);
+    doc.text(`Aadhaar number: ${visitor.aadhaar || "____________________"}`, 10, 105);
+    doc.text(`Phone number: ${visitor.phone || "____________________"}`, 10, 115);
+    doc.text(`Other number: ${visitor.othernumber || "____________________"}`, 10, 125);
     doc.text(`Address: ${visitor.address || "____________________"}`, 10, 135);
 
     // Visit Details
@@ -53,9 +54,9 @@ const generatePDF = (visitor) => {
     doc.text(`Age: ${visitor.age || "____________________"}`, 10, 175);
     doc.text(`Category: ${visitor.category || "____________________"}`, 10, 185);
     doc.text(`Number of Stay: ${visitor.numberofstay || "____________________"}`, 10, 195);
-    doc.text(`Purpose: ${visitor.purposeVisit || "____________________"}`, 10, 205);
-    doc.text(`Arrived: ${visitor.arrivedtime || "____________________"}`, 10, 215);
-    doc.text(`Dispatch: ${visitor.dispatchtime || "____________________"}`, 10, 225);
+    doc.text(`Purpose of visit: ${visitor.purposeVisit || "____________________"}`, 10, 205);
+    doc.text(`Arrived time: ${visitor.arrivedtime || "____________________"}`, 10, 215);
+    doc.text(`Dispatch time: ${visitor.dispatchtime || "____________________"}`, 10, 225);
 
     // Other Details
     doc.setFillColor(240, 240, 240);
@@ -63,8 +64,8 @@ const generatePDF = (visitor) => {
     doc.setFontSize(14);
     doc.text("Other Details", 15, 242);
     doc.setFontSize(13);
-    doc.text(`Attender: ${visitor.attender || "____________________"}`, 10, 255);
-    doc.text(`Support: ${visitor.support || "____________________"}`, 10, 265);
+    doc.text(`Attended by: ${visitor.attender || "____________________"}`, 10, 255);
+    doc.text(`Support given: ${visitor.support || "____________________"}`, 10, 265);
     doc.text(`Remarks: ${visitor.remarks || "____________________"}`, 10, 275);
 
     // Signature
@@ -72,12 +73,15 @@ const generatePDF = (visitor) => {
 
     // Save PDF
     doc.save(`${visitor.name}_details.pdf`);
+    setTimeout(() => {
+        setIsOpen(false);
+      }, 500);
 };
 
 function PdfConvert({ visitorsProp }) {
     const [isOpen, setIsOpen] = useState(false);
     const [visitorPdf, setVisitorPdf] = useState(null);
-
+    
     useEffect(() => {
         if (visitorsProp) {
             setVisitorPdf(visitorsProp);
@@ -89,8 +93,7 @@ function PdfConvert({ visitorsProp }) {
             <div>
                 <button
                     className="bg-gray-900 text-white px-4 py-2 rounded"
-                    onClick={() => setIsOpen(true)}
-                >
+                    onClick={() => setIsOpen(true)}>
                     Print
                 </button>
                 {isOpen && (
@@ -108,11 +111,11 @@ function PdfConvert({ visitorsProp }) {
                             />
                             </div>
                                 <p className='text-xl'><strong>Name: </strong>{visitorPdf.name}</p>
-                                <p className='text-xl'><strong>aadhaar: </strong>{visitorPdf.aadhaar || "aadhaar not provided"}</p>
-                                <p className='text-xl mb-6'><strong>Number: </strong>{visitorPdf.phone || "phone not provided"}</p>
+                                <p className='text-xl'><strong>aadhaar: </strong>{visitorPdf.aadhaar || " aadhaar not provided"}</p>
+                                <p className='text-xl mb-6'><strong>Number: </strong>{visitorPdf.phone || " phone not provided"}</p>
                                 <button
                                     className="py-2 font-bold tex-black px-4 bg-green-400 hover:bg-green-500 rounded"
-                                    onClick={() => generatePDF(visitorPdf)}
+                                    onClick={() => generatePDF(visitorPdf,setIsOpen)}
                                     disabled={!visitorPdf}
                                 >
                                     Download PDF

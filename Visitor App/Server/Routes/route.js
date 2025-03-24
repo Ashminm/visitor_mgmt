@@ -23,4 +23,8 @@ router.post('/add-attender',jwtMiddileware,multerConfig.single('image'), userCon
 
 router.put('/update-profile',jwtMiddileware,multerConfig.single('image'),userController.profileUpdate)
 
+router.delete('/delete-visitor/:id',jwtMiddileware,visitorController.deleteVisitor)
+router.get('/get-all-visitor',visitorController.visitorList)
+
+
 module.exports=router

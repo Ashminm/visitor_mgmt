@@ -14,6 +14,8 @@ function Profile() {
       date: ""
   })
 // console.log(profile);
+console.log("Image URL:", `${BASE_URL}/uploads/${profile.image}`);
+
 
 useEffect(()=>{
   if(sessionStorage.getItem("token")){
@@ -105,7 +107,7 @@ const handilelogOut=async()=>{
             <div className="p-6">
               <div className="flex justify-center mb-4 p-7">
                 <img
-                  src={`${BASE_URL}/uploads/${profile.image}`}
+                  src={`${BASE_URL}/uploads/${encodeURIComponent(profile.image)}`}
                   alt="Profile"
                   className="w-40 h-40 object-cover rounded-full border-2 border-gray-300"
                 />

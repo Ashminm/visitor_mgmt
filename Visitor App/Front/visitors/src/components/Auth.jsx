@@ -26,9 +26,12 @@ function Auth() {
       formData.append("email", userData.email);
       formData.append("password", userData.password);
       formData.append("image", userData.image);
+      const reqHeader = {
+        "Content-Type": "multipart/form-data"
+    };
   
       try {
-        const res = await registerApi(formData);
+        const res = await registerApi(formData,reqHeader);
         if (res.status === 200) {
           alert(`Registration success ${res.data.username}!!`);
           // setUserData({

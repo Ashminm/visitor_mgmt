@@ -35,6 +35,17 @@ exports.addVisitor=async(req,res)=>{
     }
 }
 
+exports.visitorList=async(req,res)=>{
+    try{
+        const res=await visitors.find();
+        res.status(200).json(res)
+        console.log(res);   
+    }catch(err){
+        res.status(401).json(err);
+        console.log("Visitors is: "+err);  
+    }
+}
+
 
 exports.allVisitors=async(req,res)=>{
     const searchKey=req.query.search
@@ -55,3 +66,23 @@ exports.allVisitors=async(req,res)=>{
         res.status(401).json(err)
     }
 }
+
+
+exports.deleteVisitor = async (req, res) => {
+    const { id } = req.params;
+    console.log("params Id:", id);
+
+    try {
+        const deletedVisitor = await visitors.findByIdAndDelete(id);
+        if (!deletedVisitor) {
+            return res.status(404).json("Visitor not found");
+        }
+
+        res.status(200).json(deletedVisitor);
+        console.log(deletedVisitor);
+        
+    } catch (err) {
+        console.error("Error deleting visitor:", err);
+        res.status(500).json("Internal Server Error");
+    }
+};

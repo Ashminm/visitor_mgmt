@@ -111,12 +111,12 @@ function OtherSettings() {
       <div className="w-full md:w-1/2 bg-slate-100 rounded-lg p-6">
         <h2 className="text-xl font-semibold mb-6">Add New Attender</h2>
         <form className="space-y-4" onSubmit={handleAddAttender}>
-          <input type="text" placeholder="Name*" className="w-full p-2 border rounded" onChange={(e)=>setAddAttender({...addAttender,username:e.target.value})} value={addAttender.username} />
+          <input type="text" placeholder="Name*" className="w-full p-2 border rounded" autoComplete="username" onChange={(e)=>setAddAttender({...addAttender,username:e.target.value})} value={addAttender.username} />
           <label htmlFor="" className='block text-gray-400 w-full px-3 py-2 bg-white border outline-none rounded-md cursor-pointer focus:ring-2 focus:ring-amber-500'>Attender photo*
           <input type="file" className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none " accept="image/*" onChange={(e)=>setAddAttender({...addAttender,image:e.target.files[0]})} />
           </label>
-          <input type="email" placeholder="Email*" className="w-full p-2 border rounded"onChange={(e)=>setAddAttender({...addAttender,email:e.target.value})} value={addAttender.email}  />
-          <input type="password" placeholder="Password*" className="w-full p-2 border rounded" autoComplete="current-password"  onChange={(e)=>setAddAttender({...addAttender,password:e.target.value})} value={addAttender.password}  />
+          <input type="email" placeholder="Email*" className="w-full p-2 border rounded" autoComplete="email" onChange={(e)=>setAddAttender({...addAttender,email:e.target.value})} value={addAttender.email}  />
+          <input type="password" placeholder="Password*" className="w-full p-2 border rounded" autoComplete="current-password" onChange={(e)=>setAddAttender({...addAttender,password:e.target.value})} value={addAttender.password}  />
           <select className="w-full p-2 border rounded" onChange={(e)=>setAddAttender({...addAttender,addedBy:e.target.value})} value={addAttender.addedBy} >
             <option value="">Added by*</option>
             {attender && <option value={attender}>{attender}</option>}

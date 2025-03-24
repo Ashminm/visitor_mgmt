@@ -22,7 +22,7 @@ const fileFilter = (req, file, callback) => {
 
 const multerConfig = multer({
     storage,
-    fileFilter,  // Corrected key name from "filefilter" to "fileFilter"
+    fileFilter, 
 });
 
 module.exports = multerConfig;

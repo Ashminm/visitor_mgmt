@@ -2,7 +2,6 @@ import React,{useState,useEffect} from 'react'
 import { getAllvisitorApi } from '../services/AllApis'; 
 import Edit from './Edit';
 import Delete from './Delete';
-import ViewMore from './ViewMore';
 import PdfConvert from './PdfConvert';
 
 function AllVisitors() {
@@ -21,7 +20,9 @@ function AllVisitors() {
     if (token) {
       getAllVisitor()
     }
-  }, [token,search]);
+  }, [token,search,AllVisitorsList]);
+  
+// console.log(AllVisitorsList);
 
   const getAllVisitor=async()=>{
     const headers = {
@@ -109,6 +110,7 @@ function AllVisitors() {
             <th className="border p-2">Purpose of visit</th>
             <th className="border p-2">Last visit</th>
             <th className="border p-2">L' visit time</th>
+            <th className="border p-2">Added by</th>
             <th className="border p-2">Remarks</th>
             <th className="border p-2">Actions</th>
           </tr>
@@ -125,6 +127,7 @@ function AllVisitors() {
                 <td className="border p-2">{visitor.purposeVisit.slice(0,20)}</td>
                 <td className="border p-2">{visitor.currentdate}</td>
                 <td className="border p-2">{visitor.arrivedtime}</td>
+                <td className="border p-2">{visitor.attender}</td>
                 <td className="border p-2">{visitor.remarks.slice(0,15)}</td>
                 <td className="border p-2 flex gap-2 justify-center">
                   <Edit visitorsProp={visitor}/>
