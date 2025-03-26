@@ -16,7 +16,6 @@ function Profile() {
 // console.log(profile);
 console.log("Image URL:", `${BASE_URL}/uploads/${profile.image}`);
 
-
 useEffect(()=>{
   if(sessionStorage.getItem("token")){
     setToken(sessionStorage.getItem("token"))
@@ -42,7 +41,6 @@ useEffect(() => {
   }
 }, [userProfile]);
 
-
 const updateProfile=async(e)=>{
   e.preventDefault();
   if(!profile.username || !profile.email || !profile.password){
@@ -67,7 +65,6 @@ const updateProfile=async(e)=>{
   }
 }
 
-
 const getUserSpecific = async()=>{
   const headers = {
       "Content-Type": "application/json",
@@ -81,15 +78,13 @@ const getUserSpecific = async()=>{
 
 // console.log("feching userProfile",userProfile);
 
-
-
 const handilelogOut=async()=>{
   sessionStorage.removeItem("token");
   sessionStorage.removeItem("role");
   setToken("");
   setUserProfile({});
+  alert('Logout successfull!')
 }
-
     const [isEditing, setIsEditing] = useState(false);
 
     const handleEdit = () => setIsEditing(true);
@@ -107,7 +102,7 @@ const handilelogOut=async()=>{
             <div className="p-6">
               <div className="flex justify-center mb-4 p-7">
                 <img
-                  src={`${BASE_URL}/uploads/${encodeURIComponent(profile.image)}`}
+                  src="https://huggingface.co/datasets/huggingfacejs/tasks/resolve/main/zero-shot-image-classification/image-classification-input.jpeg"
                   alt="Profile"
                   className="w-40 h-40 object-cover rounded-full border-2 border-gray-300"
                 />
@@ -126,7 +121,7 @@ const handilelogOut=async()=>{
                 <strong>Registration date:</strong> {profile.date ? new Date(profile.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).replace(',', '-') : ""}
                 </p>
 
-                <div className="flex justify-between">
+                <div className="flex gap-6">
                 <button
                   onClick={handleEdit}
                   className="mt-4 bg-amber-600 text-black px-4 py-2 rounded-md hover:bg-amber-700"
@@ -146,7 +141,7 @@ const handilelogOut=async()=>{
             <form onSubmit={updateProfile}>
               <div className="flex justify-center mb-4 p-7">
                 <img
-                  src={profile.image}
+                  src="https://huggingface.co/datasets/huggingfacejs/tasks/resolve/main/zero-shot-image-classification/image-classification-input.jpeg"
                   alt="Profile"
                   className="w-40 h-40 object-cover rounded-full border-2 border-gray-300"
                 />

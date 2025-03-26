@@ -20,9 +20,9 @@ function AllVisitors() {
     if (token) {
       getAllVisitor()
     }
-  }, [token,search,AllVisitorsList]);
+  }, [token,search]);
   
-// console.log(AllVisitorsList);
+// console.log(AllVisitorsList[0]?.purposeVisit[0]?.purpose);
 
   const getAllVisitor=async()=>{
     const headers = {
@@ -61,14 +61,8 @@ function AllVisitors() {
         sortedList.sort((a, b) => b.age - a.age);
         break;
     }
-  
     setAllVisitorsList(sortedList);
   };
-  
-  
-
-
-
     
   return (
     <>
@@ -78,12 +72,12 @@ function AllVisitors() {
          <div className="flex justify-between ">
          <input
             type="text"
-            className="w-5/6 px-3 py-2 bg-gray-200 rounded-md outline-none border-amber-600 border-2 focus:ring-2 focus:ring-amber-500"
+            className="w-5/6 px-3 py-2 bg-gray-100 rounded-md outline-none focus:ring-1 focus:ring-amber-500"
             placeholder="Search by aadhaar, phone number or name"
             onChange={(e)=>setSearch(e.target.value)}
           />
           <select
-            className="rounded-md border-amber-600 border-2 outline-none focus:ring-2 focus:ring-amber-500"
+            className="rounded-md outline-none bg-gray-100 focus:ring-1 focus:ring-amber-500 ps-2"
             onChange={(e) => handleSort(e.target.value)}
           >
             <option value="">Sort by</option>
@@ -94,14 +88,13 @@ function AllVisitors() {
             <option value="age-asc">Age (Low to High)</option>
             <option value="age-desc">Age (High to Low)</option>
           </select>
-
         </div>
          </div>
-    <div className="p-4 max-w-8xl mx-auto bg-white shadow-lg rounded-lg border border-gray-200">
+    <div className="p-4 max-w-8xl mx-auto bg-white shadow-lg rounded-md border border-gray-300">
    
-      <table className="w-full border-collapse border border-gray-300 text-sm">
+      <table className="w-full border-collapse border border-amber-300 text-sm">
         <thead>
-          <tr className="bg-amber-600">
+          <tr className="bg-amber-500">
             <th className="border p-2">Name</th>
             <th className="border p-2">Gender</th>
             <th className="border p-2">Age</th>
@@ -116,31 +109,44 @@ function AllVisitors() {
           </tr>
         </thead>
         <tbody>
-          {AllVisitorsList.length > 0 ? (
-            AllVisitorsList.map((visitor, index) => (
-              <tr key={index} className="border hover:bg-gray-100 dark:hover:bg-gray-300">
-                <td className="border p-2">{visitor.name.slice(0,10)}</td>
-                <td className="border p-2">{visitor.gender}</td>
-                <td className="border p-2">{visitor.age}</td>
-                <td className="border p-2">{visitor.aadhaar?(visitor.aadhaar):(<span className="text-red-500 font-semibold">Not provided</span>)}</td>
-                <td className="border p-2">{visitor.phone?(visitor.phone):(<span className="text-red-500 font-semibold">Not provided</span>)}</td>
-                <td className="border p-2">{visitor.purposeVisit.slice(0,20)}</td>
-                <td className="border p-2">{visitor.currentdate}</td>
-                <td className="border p-2">{visitor.arrivedtime}</td>
-                <td className="border p-2">{visitor.attender}</td>
-                <td className="border p-2">{visitor.remarks.slice(0,15)}</td>
-                <td className="border p-2 flex gap-2 justify-center">
-                  <Edit visitorsProp={visitor}/>
-                  <Delete visitorsProp={visitor._id}/>
-                  <PdfConvert visitorsProp={visitor}/>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="8" className="text-center p-4 text-gray-500">No visitors found.</td>
-            </tr>
-          )}
+        {AllVisitorsList.length > 0 ? (
+  AllVisitorsList.map((visitor, index) => (
+    <tr key={visitor._id || index} className="border hover:bg-gray-100 dark:hover:bg-gray-300">
+      <td className="border p-2">{visitor.name?.slice(0, 10) || "N/A"}</td>
+      <td className="border p-2">{visitor.gender || "N/A"}</td>
+      <td className="border p-2">{visitor.age || "N/A"}</td>
+      <td className="border p-2">
+        {visitor.aadhaar ? visitor.aadhaar : <span className="text-red-500 font-semibold">Not provided</span>}
+      </td>
+      <td className="border p-2">{visitor.phone || "N/A"}</td>
+      <td className="border p-2">
+        {visitor.purposeVisit?.at(-1)?.purpose?.slice(0, 20) || "N/A"}
+      </td>
+      <td className="border p-2">
+        {visitor.currentdate?.at(-1)?.date || "N/A"}
+      </td>
+      <td className="border p-2">
+        {visitor.arrivedtime?.at(-1)?.time || "N/A"}
+      </td>
+      <td className="border p-2">
+        {visitor.attender?.at(-1)?.attender || "N/A"}
+      </td>
+      <td className="border p-2">
+        {visitor.remarks?.at(-1)?.remark?.slice(0, 15) || "N/A"}
+      </td>
+      <td className="border p-2 flex gap-2 justify-center">
+        <Edit visitorsProp={visitor}/>
+        <Delete visitorsProp={visitor._id} onDeleteSuccess={getAllVisitor}/>
+        <PdfConvert visitorsProp={visitor}/>
+      </td>
+    </tr>
+  ))
+) : (
+  <tr>
+    <td colSpan="11" className="text-center p-4 text-gray-500">No visitors found.</td>
+  </tr>
+)}
+
         </tbody>
 
       </table>

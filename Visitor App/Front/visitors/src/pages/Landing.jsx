@@ -3,7 +3,7 @@ import Auth from '../components/Auth';
 import logo from '../assets/file.png'
 
 function Landing() {
-    
+   
   return (
     <div className="flex justify-center items-center h-screen">
   <div className="w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] h-auto p-8 bg-white ">

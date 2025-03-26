@@ -16,8 +16,6 @@ export const getAllvisitorApi = async (headers,search) => {
     return await commonApi("GET", `${BASE_URL}/all-visitor?search=${search}`, null, headers);
 };
 
-
-
 // export const allUsersApi = async (headers) => {
 //     return await commonApi("GET", `${BASE_URL}/all-users`, null, headers);
 // };
@@ -46,6 +44,6 @@ export const DeleteVistorApi = async (headers,id) => {
     return await commonApi("DELETE", `${BASE_URL}/delete-visitor/${id}`,{}, headers);
 };
 
-export const VisitorAllApi = async (headers) => {
-    return await commonApi("GET", `${BASE_URL}/get-all-visitor`, null, headers);
-};
+// export const VisitorAllApi = async (headers) => {
+//     return await commonApi("GET", `${BASE_URL}/get-all-visitor`, null, headers);
+// };

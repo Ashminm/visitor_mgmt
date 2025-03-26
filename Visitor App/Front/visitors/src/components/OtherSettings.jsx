@@ -93,11 +93,7 @@ function OtherSettings() {
       alert("Attenter added faild: ",res.data)
     }
     }
-  }
-
-
-
-  
+  } 
 
   return (
     <div>

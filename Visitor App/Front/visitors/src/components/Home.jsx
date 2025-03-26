@@ -4,12 +4,15 @@ import Profile from "./Profile";
 import AddVisitors from "./AddVisitors";
 import AllVisitors from "./AllVisitors";
 import OtherSettings from "./OtherSettings";
-import { VisitorAllApi } from "../services/AllApis";
+import { getUserSpecificApi,getAllvisitorApi } from "../services/AllApis";
+import Delete from "./Delete";
 
 function Home() {
   const [token, setToken] = useState("");
   const [activeTab, setActiveTab] = useState("home");
   const [allVisitors,setAllVisitors]=useState([])
+  const [search,setSearch]=useState('')
+  const [nameUser,setNameUser]=useState([])
 
   useEffect(()=>{
     if(sessionStorage.getItem("token")){
@@ -20,48 +23,37 @@ function Home() {
   useEffect(() => {
     if (token) {
       getVisitors()
+      getUserName()
     }
-  }, [token]);
+  }, [token,search]);
 
   const getVisitors=async()=>{
     const headers = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     };
-    const res=await VisitorAllApi(headers)
+    const res=await getAllvisitorApi(headers,search)
+    // console.log(res.data[0].age);
+    
     if(res.status===200){
       setAllVisitors(res.data)
     }
   }
+  const getUserName=async()=>{
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
+    const res=await getUserSpecificApi(headers)
+    if(res.status===200){
+      setNameUser(res.data)
+    }
+  }
+// console.log(nameUser.username);
+// console.log(allVisitors[1]);
 
-  console.log(allVisitors);
-  
 
 
-  const visitors = [
-    {
-      id: 1,
-      name: "John Doe",
-      gender: "Male",
-      age: 35,
-      aadhar: "1234-5678-9012",
-      phone: "9876543210",
-      purpose: "Business Meeting",
-      remarks: "Returning in 2 hours",
-      status: "Not Checked Out",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      gender: "Female",
-      age: 28,
-      aadhar: "2345-6789-0123",
-      phone: "8765432109",
-      purpose: "Guest Visit",
-      remarks: "Staying overnight",
-      status: "Not Checked Out",
-    },
-  ];
   return (
     <div className="max-w-7xl mx-auto px-4"> {/* Added container with spacing */}
         <nav className="flex justify-between items-center py-4 border-b sticky top-0 z-2 bg-white"> {/* Adjusted spacing */}
@@ -84,9 +76,7 @@ function Home() {
             </button>
           ))}
         </div>
-
         {/* Tab Content */}
-        
       </div>
     </div>
     </nav>
@@ -95,44 +85,60 @@ function Home() {
              <div className="gap-3 flex flex-col items-center md:flex-row justify-start">
              
              <div className="p-8 pt-1 max-w-8xl mx-auto">
-              <h1 className="text-2xl font-bold">Welcome <span className="text-amber-600">name</span></h1>
+              <h1 className="text-2xl font-bold">Welcome <span className="text-amber-600">{nameUser.username ||"Name"}</span></h1>
       <h2 className="text-2xl  text-strat text-gray-900 mt-3 mb-2">
       Visitors
       </h2>
       <h2 className="text-md text-start text-gray-400 mb-6">
       All the visitors that are currently on the premises
       </h2>
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {visitors.map((visitor) => (
-          <div
-            key={visitor.id}
-            className="p-6 bg-amber-100 shadow-xl rounded-2xl border border-gray-200 dark:border-gray-700 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-          >
-            <h3 className="text-2xl font-bold mb-3 text-blue-700 dark:text-blue-400">
-              {visitor.name}
-            </h3>
-            <div className="text-lg space-y-2">
-              <p><strong>Gender:</strong> {visitor.gender}</p>
-              <p><strong>Age:</strong> {visitor.age}</p>
-              <p><strong>Aadhar:</strong> {visitor.aadhar}</p>
-              <p><strong>Phone:</strong> {visitor.phone}</p>
-              <p><strong>Purpose:</strong> {visitor.purpose}</p>
-              <p><strong>Remarks:</strong> {visitor.remarks}</p>
-              <p><strong>Status:</strong> <span className="font-semibold text-green-600 dark:text-green-400">{visitor.status}</span></p>
-            </div>
-            <div className="flex justify-between mt-6 gap-4">
-              <button className="px-5 py-2 bg-amber-500 text-white font-semibold rounded-lg shadow-md hover:bg-amber-700 transition-all duration-300">
-                View More
-              </button>
-              <button className="px-5 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition-all duration-300">
-                Checked Out
-              </button>
-            </div>
+      <input
+            type="text"
+            className="w-full px-3 py-2 text-sm bg-gray-100 rounded-md outline-none focus:ring-1 focus:ring-amber-500"
+            placeholder="Search by name, number and aadhaar"
+            onChange={(e)=>setSearch(e.target.value)}
+          />
+      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mt-6">
+      {allVisitors.filter(visitor => visitor.status === "Pending").length > 0 ? (
+  allVisitors
+    .filter(visitor => visitor.status === "Pending")
+    .map((item, index) => (
+      <div
+        key={item.id || index}
+        className="p-6 w-80 rounded-2xl border border-gray-300 transform transition-all duration-300 hover:scale-102 hover:shadow-xl"
+      >
+        <h3 className="text-2xl font-bold mb-3 text-black">
+          {item.name}
+        </h3>
+        <hr />
+        <div className="text-lg space-y-2 my-3">
+          <div className="mb-4">
+            <p className="text-sm text-gray-400">Phone</p>
+            <span className="text-gray-600">{item?.phone || "-"}</span>
           </div>
-        ))}
+          <div className="mb-4">
+            <p className="text-sm text-gray-400">Purpose of visit</p>
+            <span className="text-gray-600">{item.purposeVisit?.at(-1)?.purpose || "-"}</span>
+          </div>
+          <div className="mb-4">
+            <p className="text-sm text-gray-400">Arrived</p>
+            <span className="text-gray-600">{item.arrivedtime?.at(-1)?.time || "-"}</span>
+          </div>
+        </div>
+        <div className="flex mt-6 gap-3">
+          <button className="px-5 py-2 bg-green-300 text-black rounded-lg hover:bg-green-400 transition-all duration-300">
+            Check out
+          </button>
+         <Delete visitorsProp={item._id} onDeleteSuccess={getVisitors}/>
+        </div>
       </div>
-    </div>
-             
+    ))
+) : (
+  <p className="w-80">No pending visitors</p>
+)}
+
+      </div>
+    </div>       
            </div>
           )}
           {activeTab === "add-visitor" && <AddVisitors />}

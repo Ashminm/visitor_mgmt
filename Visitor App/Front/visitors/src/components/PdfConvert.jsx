@@ -29,7 +29,7 @@ const generatePDF = (visitor,setIsOpen) => {
     doc.setFontSize(13);
     doc.text(`Name: ${visitor.name || "____________________"}`, 60, 45)
     doc.setFontSize(7);
-    doc.text(`Date of visit: ${visitor.currentdate || "____/____/____"}`, 60, 53);
+    doc.text(`Date of visit: ${visitor.currentdate?.at(-1)?.date || "____/____/____"}`, 60, 53);
     doc.text(`ID: ${visitor.userId || "ID is missing"}`, 60, 60);
    
 
@@ -53,10 +53,10 @@ const generatePDF = (visitor,setIsOpen) => {
     doc.text(`Gender: ${visitor.gender || "____________________"}`, 10, 165);
     doc.text(`Age: ${visitor.age || "____________________"}`, 10, 175);
     doc.text(`Category: ${visitor.category || "____________________"}`, 10, 185);
-    doc.text(`Number of Stay: ${visitor.numberofstay || "____________________"}`, 10, 195);
-    doc.text(`Purpose of visit: ${visitor.purposeVisit || "____________________"}`, 10, 205);
-    doc.text(`Arrived time: ${visitor.arrivedtime || "____________________"}`, 10, 215);
-    doc.text(`Dispatch time: ${visitor.dispatchtime || "____________________"}`, 10, 225);
+    doc.text(`Number of Stay: ${visitor.numberofstay?.at(-1)?.number || "____________________"}`, 10, 195);
+    doc.text(`Purpose of visit: ${visitor.purposeVisit?.at(-1)?.purpose || "____________________"}`, 10, 205);
+    doc.text(`Arrived time: ${visitor.arrivedtime?.at(-1)?.time || "____________________"}`, 10, 215);
+    doc.text(`Dispatch time: ${visitor.dispatchtime?.at(-1)?.time || "____________________"}`, 10, 225);
 
     // Other Details
     doc.setFillColor(240, 240, 240);
@@ -64,9 +64,9 @@ const generatePDF = (visitor,setIsOpen) => {
     doc.setFontSize(14);
     doc.text("Other Details", 15, 242);
     doc.setFontSize(13);
-    doc.text(`Attended by: ${visitor.attender || "____________________"}`, 10, 255);
-    doc.text(`Support given: ${visitor.support || "____________________"}`, 10, 265);
-    doc.text(`Remarks: ${visitor.remarks || "____________________"}`, 10, 275);
+    doc.text(`Attended by: ${visitor.attender?.at(-1)?.attender || "____________________"}`, 10, 255);
+    doc.text(`Support given: ${visitor.support?.at(-1)?.support || "____________________"}`, 10, 265);
+    doc.text(`Remarks: ${visitor.remarks?.at(-1)?.remark || "____________________"}`, 10, 275);
 
     // Signature
     doc.text("Signature of attender ", 120, 285);
@@ -92,7 +92,7 @@ function PdfConvert({ visitorsProp }) {
         <>
             <div>
                 <button
-                    className="bg-gray-900 text-white px-4 py-2 rounded"
+                    className="bg-gray-800 text-white px-4 py-2 rounded-lg"
                     onClick={() => setIsOpen(true)}>
                     Print
                 </button>
@@ -105,7 +105,7 @@ function PdfConvert({ visitorsProp }) {
                             <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 my-8">
                             <div className="flex justify-center">
                             <img
-                            src=""
+                            src="https://huggingface.co/datasets/huggingfacejs/tasks/resolve/main/zero-shot-image-classification/image-classification-input.jpeg"
                             alt="Profile"
                             className="w-40 h-40 object-cover rounded-full border-2 border-gray-300"
                             />

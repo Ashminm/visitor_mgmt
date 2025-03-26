@@ -42,9 +42,6 @@ useEffect(() => {
   }
 }, [token]);
 
-
-
-
 const getAllcategory = async () => {
   const headers = {
     "Content-Type": "application/json",
@@ -55,8 +52,6 @@ const getAllcategory = async () => {
       setAllCategory(res.data);
     }
 };
-
-
 
 // const getAllUsers = async () => {
 //     const headers = {
@@ -70,13 +65,13 @@ const getAllcategory = async () => {
 //     }
 // };
 
-
 const handleAddVisitor = async (e) => {
       e.preventDefault();
     
       if (
         !visitorData.name ||
         !visitorData.gender ||
+        !visitorData.phone ||
         !visitorData.category ||
         !visitorData.age ||
         !visitorData.purposeVisit ||
@@ -156,8 +151,6 @@ const handleAddVisitor = async (e) => {
       }
     }  
 
-
-
   return (
     <div className="p-4 max-w-3xl mx-auto bg-white shadow-lg rounded-lg border">
     <h2 className="text-xl font-semibold mb-1 mt-3 text-center">Add a New Visitor</h2>
@@ -167,7 +160,7 @@ const handleAddVisitor = async (e) => {
             value={visitorData.name}  />
       <input type="text" placeholder="aadhaar Number" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" pattern="\d{4}-\d{4}-\d{4}" title="Aadhar number must be in the format XXXX-XXXX-XXXX" onChange={(e)=>{setVisitorData({...visitorData,aadhaar:e.target.value})}}
             value={visitorData.aadhaar} />
-      <input type="tel" placeholder="Phone Number" pattern='\d{10}' title='Phone number must 10 digit and not include Alphabets' className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,phone:e.target.value})}}
+      <input type="tel" placeholder="Phone Number*" pattern='\d{10}' title='Phone number must 10 digit and not include Alphabets' className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,phone:e.target.value})}}
             value={visitorData.phone} />
       <input type="tel" placeholder="Other Contact" pattern='\d{10}' title='Phone number must 10 digit and not include Alphabets'  className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,othernumber:e.target.value})}}
             value={visitorData.othernumber}/>
@@ -220,8 +213,8 @@ const handleAddVisitor = async (e) => {
 
       <select className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,status:e.target.value})}} value={visitorData.status}>
         <option value="">Status*</option>
-        <option value="Guest">Pending</option>
-        <option value="Staff">Checkout</option> 
+        <option value="Pending">Check in</option>
+        <option value="Check out">Check out</option> 
       </select>
       <textarea placeholder="Remarks*" rows={1} className="p-2 border rounded col-span-2 focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,remarks:e.target.value})}}
             value={visitorData.remarks}></textarea>

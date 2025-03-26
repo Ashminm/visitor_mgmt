@@ -1,79 +1,88 @@
-const mongoose=require('mongoose')
+const mongoose = require('mongoose');
 
-const visitorSchema=new mongoose.Schema({
-    name:{
-        type:String,
-        required:true
+const visitorSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
     },
-    aadhaar:{
-        type:String
+    aadhaar: {
+        type: String
     },
-    phone:{
-        type:String
+    phone: {
+        type: String,
+        required: true
     },
-    othernumber:{
-        type:Number
+    othernumber: {
+        type: Number
     },
-    gender:{
-        type:String,
-        required:true
+    gender: {
+        type: String,
+        required: true
     },
-    category:{
-        type:String,
-        required:true
+    category: {
+        type: String,
+        required: true
     },
-    age:{
-        type:Number,
-        required:true
+    age: {
+        type: Number,
+        required: true
     },
-    purposeVisit:{
-        type:String,
-        required:true
+    purposeVisit: [
+        {
+            purpose: { type: String, required: true }
+        }
+    ],
+    address: {
+        type: String,
+        required: true
     },
-    address:{
-        type:String,
-        required:true
-    }, 
-    arrivedtime:{
-        type:String,
-        required:true
+    arrivedtime: [
+        {
+            time: { type: String, required: true }
+        }
+    ],
+    despachtime: [
+        {
+            time: { type: String }
+        }
+    ],
+    currentdate: [
+        {
+            date: { type: String, required: true }
+        }
+    ],
+    support: [
+        {
+            support: { type: String, required: true }
+        }
+    ],
+    image: {
+        type: String
     },
-    despachtime:{
-        type:String
+    numberofstay: [
+        {
+            number: { type: String }
+        }
+    ],
+    attender: [
+        {
+            attender: { type: String, required: true }
+        }
+    ],
+    status: {
+        type: String,
+        required: true
     },
-    currentdate:{
-        type:String,
-        required:true
-    },
-    support:{
-        type:String,
-        required:true
-    },
-    image:{
-        type:String
-    },
-    
-    numberofstay:{
-        type:String
-    },
-    
-    attender:{
-        type:String,
-        required:true
-    },
-    status:{
-        type:String,
-        required:true
-    },
-    remarks:{
-        type:String,
-        required:true
-    },
-    userId:{
-        type:String,
-        required:true
+    remarks: [
+        {
+            remark: { type: String, required: true }
+        }
+    ],
+    userId: {
+        type: String,
+        required: true
     }
-})
+});
 
-const visitors=mongoose.model('visitors',visitorSchema)
-module.exports=visitors
+const visitors = mongoose.model('visitors', visitorSchema);
+module.exports = visitors;

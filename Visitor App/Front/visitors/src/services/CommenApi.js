@@ -11,7 +11,6 @@ export const commonApi = async (method, url, body, headers) => {
                 "Content-Type": body instanceof FormData ? headers["Content-Type"] : "application/json",
             },
         };
-
         const response = await axios(config);
         return response;
     } catch (error) {

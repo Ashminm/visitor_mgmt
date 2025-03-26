@@ -14,7 +14,6 @@ function Auth() {
   })
   // console.log(userData);
   
-
   const handleReg = async (e) => {
     e.preventDefault();
     if (!userData.username || !userData.email|| !userData.password || !userData.image) {
@@ -29,7 +28,6 @@ function Auth() {
       const reqHeader = {
         "Content-Type": "multipart/form-data"
     };
-  
       try {
         const res = await registerApi(formData,reqHeader);
         if (res.status === 200) {
@@ -50,8 +48,7 @@ function Auth() {
         alert("Something went wrong!");
       }
     }
-  };
-  
+  }; 
 
 const handleLogin=async(e)=>{
   e.preventDefault();
@@ -74,7 +71,6 @@ const handleLogin=async(e)=>{
     else {
       alert(`Login failed: ${res.data}`);
       console.log(res);
-      
     }
   }
 }
@@ -85,20 +81,13 @@ useEffect(()=>{
   }
 },[userData.image])
 
-
-
   const navigate = useNavigate();
   const [photoPreview, setPhotoPreview] = useState("");
 
-
-
   const toggleRegister = () => {
     setRegister(!register);
-
     setPhotoPreview(null);
   };
-
- 
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-transparent px-4">
@@ -107,12 +96,9 @@ useEffect(()=>{
         onSubmit={register ? handleReg : handleLogin}
         className="bg-white px-6 py-8 rounded-lg shadow-lg w-full max-w-lg sm:max-w-md"
       >
-
         <div className="text-start mb-6">
-          <h2 className="text-4xl font-bold">{register ? "Register" : "Login"}</h2>
-          
+          <h2 className="text-4xl font-bold">{register ? "Register" : "Login"}</h2>   
         </div>
-
         {register && (
           <>
             <div className="mb-4">
@@ -125,7 +111,6 @@ useEffect(()=>{
                 value={userData.username} 
               />
             </div>
-
             <div className="mb-4 flex items-center gap-4">
             <div className="flex-1">
               <label className="block text-gray-600">Upload Photo*</label>
@@ -134,8 +119,7 @@ useEffect(()=>{
                 accept="image/*"
                 className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none hidden"
                 onChange={(e)=>{setUserData({...userData, image:e.target.files[0]})}}
-              /></label>
-              
+              /></label>  
             </div>
             {photoPreview && (
               <img
@@ -145,7 +129,6 @@ useEffect(()=>{
               />
             )}
           </div>
-
           </>
         )}
 
