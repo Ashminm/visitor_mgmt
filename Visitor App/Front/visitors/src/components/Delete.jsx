@@ -44,11 +44,11 @@ function Delete({visitorsProp,onDeleteSuccess}) {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded shadow-lg max-w-3xs">
             <div className="flex justify-center items-center">
-            <span className="material-symbols-outlined text-5xl rounded-full bg-gray-200 hover:bg-gray-300 cursor-pointer p-3">
+            <span className="material-symbols-outlined text-5xl rounded-full bg-gray-200 hover:bg-gray-300 cursor-pointer p-3 text-gray-600">
               delete
               </span>
             </div>
-            <h2 className="text-lg font-bold p-2 rounded">Are you sure want to Delete?</h2>
+            <h2 className="text-lg font-bold p-2 rounded text-gray-600">Are you sure want to Delete?</h2>
             <div className="flex justify-between gap-4">
               <button
                 className="mt-4 bg-green-400 hover:bg-green-500 text-black px-4 py-2 w-full rounded-lg"

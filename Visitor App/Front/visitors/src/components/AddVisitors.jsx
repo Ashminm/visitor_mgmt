@@ -109,9 +109,11 @@ const handleAddVisitor = async (e) => {
           Authorization: `Bearer ${token}`,
       };
         try {
-          const res = await AddVisitorApi(formData,reqHeader);
-          if (res.status === 200) {
-            alert("Added successfully");
+          const res = await AddVisitorApi(formData,reqHeader);          
+          if (res.status === 200 || res.status === 201) {
+            alert(res.data.messege);
+            console.log(res.data.messege);
+            
             setVisitorData({ name: "",
               aadhaar: "",
               phone: "",
@@ -153,7 +155,7 @@ const handleAddVisitor = async (e) => {
 
   return (
     <div className="p-4 max-w-3xl mx-auto bg-white shadow-lg rounded-lg border">
-    <h2 className="text-xl font-semibold mb-1 mt-3 text-center">Add a New Visitor</h2>
+    <h2 className="text-xl font-semibold mb-1 mt-3 text-center">Fill the visiter information</h2>
     <h2 className="text-sm mb-9 text-slate-400 text-center">We're delighted to have you with us. Kindly fill in the following information.</h2>
     <form className="grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={handleAddVisitor}>
       <input type="text" placeholder="Name*" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,name:e.target.value})}}
@@ -213,7 +215,7 @@ const handleAddVisitor = async (e) => {
 
       <select className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,status:e.target.value})}} value={visitorData.status}>
         <option value="">Status*</option>
-        <option value="Pending">Check in</option>
+        <option value="Check in">Check in</option>
         <option value="Check out">Check out</option> 
       </select>
       <textarea placeholder="Remarks*" rows={1} className="p-2 border rounded col-span-2 focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,remarks:e.target.value})}}

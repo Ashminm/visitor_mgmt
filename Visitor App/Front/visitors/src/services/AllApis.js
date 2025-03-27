@@ -9,7 +9,7 @@ export const loginApi = async (data) => {
 };
 
 export const AddVisitorApi = async (data, headers) => {
-    return await commonApi("POST", `${BASE_URL}/add-visitor`, data, headers);
+    return await commonApi("POST", `${BASE_URL}/new-update-visitor`, data, headers);
 };
 
 export const getAllvisitorApi = async (headers,search) => {

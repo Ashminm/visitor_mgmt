@@ -97,7 +97,7 @@ const handilelogOut=async()=>{
         <h1>Manage your profile</h1>
       </div>
       <div className="gap-3 flex flex-col items-center md:flex-row justify-center">
-        <div className="p-4 w-[40rem] shadow-lg bg-slate-100 rounded-lg border h-auto">
+        <div className="p-4 w-[40rem] shadow-lg bg-white rounded-lg border h-auto">
           {!isEditing ? (
             <div className="p-6">
               <div className="flex justify-center mb-4 p-7">
@@ -108,29 +108,29 @@ const handilelogOut=async()=>{
                 />
               </div>
               <div>
-                <p>
-                  <strong>Name:</strong> {profile.username}
-                </p>
-                <p>
-                  <strong>Email:</strong> {profile.email}
-                </p>
-                <p>
-                  <strong>Password:</strong>*******
-                </p>
-                <p>
-                <strong>Registration date:</strong> {profile.date ? new Date(profile.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).replace(',', '-') : ""}
-                </p>
+                <div className='mb-3'>
+                  <p className='text-lg text-gray-400'> Your Name </p>
+                  <p className='text-md text-gray-600'>{profile.username}</p>
+                </div>
+                <div className='mb-3'>
+                  <p className='text-lg text-gray-400'>Your Email</p>
+                  <p className='text-md text-gray-600'>{profile.email}</p>
+                </div>
+                <div className='mb-3'>
+                  <p className='text-lg text-gray-400'>Your registration date</p>
+                  <p className='text-md text-gray-600'>{profile.date ? new Date(profile.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).replace(',', '-') : ""}</p>
+                </div>
 
                 <div className="flex gap-6">
                 <button
                   onClick={handleEdit}
-                  className="mt-4 bg-amber-600 text-black px-4 py-2 rounded-md hover:bg-amber-700"
+                  className="mt-4 bg-green-300 text-black px-4 py-2 rounded-md hover:bg-green-400"
                 >
                   Edit Profile
                 </button>
                 <button
                 onClick={handilelogOut}
-                  className="mt-4 bg-red-600 text-black px-4 py-2 rounded-md hover:bg-red-700"
+                  className="mt-4 bg-red-300 text-black px-4 py-2 rounded-md hover:bg-red-400"
                 >
                   Log out
                 </button>
@@ -139,6 +139,8 @@ const handilelogOut=async()=>{
             </div>
           ) : (
             <form onSubmit={updateProfile}>
+              <h1 className='text-lg px-3 py-2 rounded text-center'>Edit your profile</h1>
+              <hr />
               <div className="flex justify-center mb-4 p-7">
                 <img
                   src="https://huggingface.co/datasets/huggingfacejs/tasks/resolve/main/zero-shot-image-classification/image-classification-input.jpeg"
@@ -162,6 +164,7 @@ const handilelogOut=async()=>{
                 <input
                   type="email"
                   className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none focus:ring-2 focus:ring-amber-500"
+                  title="Enter a valid email address like example@example.com"
                   value={profile.email}
                   onChange={(e) =>
                     setProfile({ ...profile, email: e.target.value })

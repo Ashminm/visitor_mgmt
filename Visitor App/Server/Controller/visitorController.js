@@ -7,24 +7,24 @@ exports.addVisitor=async(req,res)=>{
     // console.log("userId is: ",userId);
     
     try{
-        // if(aadhaar){
-        //     const existingVisitor =await visitors.findOne({aadhaar})
-        //     if(existingVisitor){
-        //         return res.status(406).json("Visitor already exist in your list based on aadaar number");
-        //     }
-        // }
-        // if(phone){
-        //     const existingVisitorNum =await visitors.findOne({phone})
-        //     if(existingVisitorNum){
-        //         return res.status(406).json("Visitor already exist in your list based on phone number");
-        //     }
-        // }
-        // if (!aadhaar && !phone) {
-        //     const existingVisitorName = await visitors.findOne({name });
-        //     if (existingVisitorName) {
-        //         return res.status(406).json("Visitor already exists based on Visitor Name");
-        //     }
-        // }
+        if(aadhaar){
+            const existingVisitor =await visitors.findOne({aadhaar})
+            if(existingVisitor){
+                return res.status(406).json("Visitor already exist in your list based on aadaar number");
+            }
+        }
+        if(phone){
+            const existingVisitorNum =await visitors.findOne({phone})
+            if(existingVisitorNum){
+                return res.status(406).json("Visitor already exist in your list based on phone number");
+            }
+        }
+        if (!aadhaar && !phone) {
+            const existingVisitorName = await visitors.findOne({name });
+            if (existingVisitorName) {
+                return res.status(406).json("Visitor already exists based on Visitor Name");
+            }
+        }
 
         const formattedPurposeVisit = Array.isArray(purposeVisit)
         ? purposeVisit.map(purpose => ({ purpose }))
@@ -54,9 +54,12 @@ exports.addUpdateVisitor = async (req, res) => {
             return res.status(400).json({ message: "Phone number is required" });
         }
 
-        let existingVisitor = await visitors.findOne({
-            $or: [{ phone: phone }, { aadhaar: aadhaar }]
-        });
+        let query = aadhaar 
+        ? { $or: [{ phone: phone }, { aadhaar: aadhaar }] } 
+        : { phone: phone };
+      
+      let existingVisitor = await visitors.findOne(query);
+      
         
 
         if (existingVisitor) {
@@ -87,7 +90,7 @@ exports.addUpdateVisitor = async (req, res) => {
                 { new: true }
             );
 
-            return res.status(200).json(updatedVisitor);
+            return res.status(200).json({message:"Existing visitor new detailse add successfully",updatedVisitor});
         } else {
             // Format input data for a new visitor
             const formattedPurposeVisit = Array.isArray(purposeVisit) ? purposeVisit.map(purpose => ({ purpose })) : [{ purpose: purposeVisit }];
@@ -114,7 +117,7 @@ exports.addUpdateVisitor = async (req, res) => {
             });
 
             await newVisitor.save();
-            return res.status(201).json(newVisitor); 
+            return res.status(201).json({messege:"New visitor add sucessfully",newVisitor}); 
         }
     } catch (err) {
         console.error(err);

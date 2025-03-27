@@ -99,9 +99,9 @@ function Home() {
             onChange={(e)=>setSearch(e.target.value)}
           />
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mt-6">
-      {allVisitors.filter(visitor => visitor.status === "Pending").length > 0 ? (
+      {allVisitors.filter(visitor => visitor.status === "Check in").length > 0 ? (
   allVisitors
-    .filter(visitor => visitor.status === "Pending")
+    .filter(visitor => visitor.status === "Check in")
     .map((item, index) => (
       <div
         key={item.id || index}

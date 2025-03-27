@@ -61,22 +61,44 @@ function Edit({ visitorsProp }) {
               </div>
             ) : (
               <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" name="name" value={visitor.name} onChange={handleChange} className="p-2 border rounded" />
-                <input type="text" name="aadhaar" value={visitor.aadhaar} onChange={handleChange} className="p-2 border rounded" />
-                <input type="number" name="age" value={visitor.age} onChange={handleChange} className="p-2 border rounded" />
-                <select name="gender" value={visitor.gender} onChange={handleChange} className="p-2 border rounded">
-                  <option>Male</option>
-                  <option>Female</option>
-                  <option>Other</option>
-                </select>
-                <input type="file" onChange={handleImageChange} className="p-2 border rounded" />
-                <button onClick={() => setIsEditing(false)} className="bg-blue-400 text-black p-2 rounded-lg hover:bg-blue-500">
-                  Back to View
-                </button>
-                <button type="submit" className="bg-green-400 text-black p-2 rounded-lg hover:bg-green-500">
-                  Save
-                </button>
-              </form>
+      <input type="text" placeholder="Name*" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" />
+      <input type="text" placeholder="aadhaar Number" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" pattern="\d{4}-\d{4}-\d{4}" title="Aadhar number must be in the format XXXX-XXXX-XXXX" />
+      <input type="tel" placeholder="Phone Number*" pattern="\d{10}" title="Phone number must 10 digit and not include Alphabets" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" />
+      <input type="tel" placeholder="Other Contact" pattern="\d{10}" title="Phone number must 10 digit and not include Alphabets" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" />
+      <select className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none">
+        <option value="">Select Gender*</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+      </select>
+      <select className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none">
+        <option value="">Select Category*</option>
+      </select>
+      <input type="number" placeholder="Age*" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" />
+      <input type="text" placeholder="Purpose of Visit*" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" />
+      <textarea placeholder="Address*" className="p-2 border rounded col-span-2 focus:ring-amber-500 focus:ring-2 outline-none"></textarea>
+      <label>Arrived Time*</label>
+      <input type="time" placeholder="Arrived Time" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" />
+      <label>Despatch Time</label>
+      <input type="time" placeholder="Departed Time" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" />
+      <input type="date" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" />
+      <input type="text" placeholder="Support Given*" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" />
+      <label className="block text-gray-400 w-full px-3 py-2 border rounded-md cursor-pointer focus:ring-2 focus:ring-amber-500">Upload your Photo
+        <input type="file" accept="image/*" className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none hidden" />
+      </label> 
+      <input type="text" placeholder="Number of days stay" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" />
+      <select className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none">
+        <option value="">Select Attender*</option>
+      </select>
+      <select className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none">
+        <option value="">Status*</option>
+        <option value="Pending">Check in</option>
+        <option value="Check out">Check out</option> 
+      </select>
+      <textarea placeholder="Remarks*" rows={1} className="p-2 border rounded col-span-2 focus:ring-amber-500 focus:ring-2 outline-none"></textarea>
+
+      <button className="col-span-2 bg-amber-600 text-white p-2 rounded-lg hover:bg-amber-700">Submit</button>
+    </form>
             )}
             <button onClick={() => setIsOpen(false)} className="bg-red-400 w-full text-black p-2 rounded-lg hover:bg-red-500 mt-4">
               Close
