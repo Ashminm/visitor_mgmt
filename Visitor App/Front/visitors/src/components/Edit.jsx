@@ -23,9 +23,9 @@ function Edit({ visitorsProp }) {
 
   return (
     <div>
-      <button className="bg-blue-300 text-black px-4 py-2 rounded-lg" onClick={() => setIsOpen(true)}>
-        View
-      </button>
+      <span class="material-symbols-outlined cursor-pointer text-3xl text-blue-500 hover:text-blue-700" onClick={() => setIsOpen(true)}>
+        visibility
+        </span>
 
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">

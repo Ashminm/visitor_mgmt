@@ -1,10 +1,13 @@
 import React, { useState,useEffect } from 'react';
 import { getUserSpecificApi,updateProfileApi } from '../services/AllApis';
 import { BASE_URL } from '../services/BaseURL';
+import { Navigate,useNavigate } from 'react-router-dom';
+
 
 function Profile() { 
   const [token, setToken] = useState("");
   const [userProfile,setUserProfile]=useState({})
+  const [isOpen, setIsOpen] = useState(false);
   const [profile,setProfile]=useState({
       username:  "",
       email:  "",
@@ -84,7 +87,11 @@ const handilelogOut=async()=>{
   setToken("");
   setUserProfile({});
   alert('Logout successfull!')
+  navigate('/')
 }
+
+    const navigate=useNavigate()
+
     const [isEditing, setIsEditing] = useState(false);
 
     const handleEdit = () => setIsEditing(true);
@@ -129,11 +136,37 @@ const handilelogOut=async()=>{
                   Edit Profile
                 </button>
                 <button
-                onClick={handilelogOut}
+                 onClick={() => setIsOpen(true)}
                   className="mt-4 bg-red-300 text-black px-4 py-2 rounded-md hover:bg-red-400"
                 >
                   Log out
                 </button>
+                {isOpen && (
+                  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-6 rounded shadow-lg max-w-3xs">
+                      <div className="flex justify-center items-center">
+                      <span className="material-symbols-outlined text-3xl rounded-full bg-gray-200 hover:bg-gray-300 cursor-pointer p-3 px-4 text-gray-600">
+                      logout
+                        </span>
+                      </div>
+                      <h2 className="text-lg font-bold p-2 rounded text-gray-600">Are you sure want to Log out?</h2>
+                      <div className="flex justify-between gap-4">
+                        <button
+                          className="mt-4 bg-green-300 hover:bg-green-400 text-black px-4 py-2 w-full rounded-lg"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          No
+                        </button>
+                        <button
+                          className="mt-4 bg-red-300 text-black hover:bg-red-400 px-4 w-full py-2 rounded-lg"
+                          onClick={handilelogOut}
+                        >
+                          Logout
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 </div>
               </div>
             </div>

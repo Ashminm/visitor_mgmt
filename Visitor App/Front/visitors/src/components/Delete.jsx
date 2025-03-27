@@ -33,12 +33,15 @@ function Delete({visitorsProp,onDeleteSuccess}) {
 
   return (
     <div className="">
-      <button
+      {/* <button
         className="bg-red-400 text-black px-4 py-2 rounded-lg"
-        onClick={() => setIsOpen(true)}
+       
       >
         Delete
-      </button>
+      </button> */}
+      <span class="material-symbols-outlined cursor-pointer text-3xl text-red-500 hover:text-red-700"  onClick={() => setIsOpen(true)}>
+        delete
+        </span>
 
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -51,13 +54,13 @@ function Delete({visitorsProp,onDeleteSuccess}) {
             <h2 className="text-lg font-bold p-2 rounded text-gray-600">Are you sure want to Delete?</h2>
             <div className="flex justify-between gap-4">
               <button
-                className="mt-4 bg-green-400 hover:bg-green-500 text-black px-4 py-2 w-full rounded-lg"
+                className="mt-4 bg-green-300 hover:bg-green-400 text-black px-4 py-2 w-full rounded-lg"
                 onClick={() => setIsOpen(false)}
               >
                 No
               </button>
               <button
-                className="mt-4 bg-red-400 text-black hover:bg-red-500 px-4 w-full py-2 rounded-lg"
+                className="mt-4 bg-red-300 text-black hover:bg-red-400 px-4 w-full py-2 rounded-lg"
                 onClick={()=>handleDelete(visitorsProp)}
               >
                 Delete

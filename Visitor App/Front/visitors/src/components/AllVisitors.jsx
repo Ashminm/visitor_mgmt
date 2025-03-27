@@ -77,7 +77,7 @@ function AllVisitors() {
             onChange={(e)=>setSearch(e.target.value)}
           />
           <select
-            className="rounded-md outline-none bg-gray-100 focus:ring-1 focus:ring-amber-500 ps-2"
+            className="rounded-md outline-none bg-gray-100 focus:ring-1 text-gray-500 focus:ring-amber-500 ps-2"
             onChange={(e) => handleSort(e.target.value)}
           >
             <option value="">Sort by</option>
@@ -90,51 +90,47 @@ function AllVisitors() {
           </select>
         </div>
          </div>
-    <div className="p-4 max-w-8xl mx-auto bg-white shadow-lg rounded-md border border-gray-300">
+    <div className="max-w-9xl mx-auto bg-white shadow-lg rounded-lg px-3">
    
-      <table className="w-full border-collapse border border-amber-300 text-sm">
+      <table className="w-full border-collapse text-start text-sm rounded-lg">
         <thead>
-          <tr className="bg-amber-500">
-            <th className="border p-2">Name</th>
-            <th className="border p-2">Gender</th>
-            <th className="border p-2">Age</th>
-            <th className="border p-2">Aadhar Number</th>
-            <th className="border p-2">Phone Number</th>
-            <th className="border p-2">Purpose of visit</th>
-            <th className="border p-2">Last visit</th>
-            <th className="border p-2">L' visit time</th>
-            <th className="border p-2">Added by</th>
-            <th className="border p-2">Remarks</th>
-            <th className="border p-2">Actions</th>
+          <tr className="bg-gray-300 text-gray-800">
+            <th className="font-normal text-start text-md p-2 py-4">Name</th>
+            <th className="font-normal text-start text-md p-2 py-4">Gender</th>
+            <th className="font-normal text-start text-md p-2 py-4">Age</th>
+            <th className="font-normal text-start text-md p-2 py-4">Aadhar</th>
+            <th className="font-normal text-start text-md p-2 py-4">Phone</th>
+            <th className="font-normal text-start text-md p-2 py-4">Purpose</th>
+            <th className="font-normal text-start text-md p-2 py-4">Last visit</th>
+            <th className="font-normal text-start text-md p-2 py-4">Added</th>
+            <th className="font-normal text-start text-md p-2 py-4">Remarks</th>
+            <th className="font-normal text-start text-md p-2 py-4">Actions</th>
           </tr>
         </thead>
         <tbody>
         {AllVisitorsList.length > 0 ? (
   AllVisitorsList.map((visitor, index) => (
-    <tr key={visitor._id || index} className="border hover:bg-gray-100 dark:hover:bg-gray-300">
-      <td className="border p-2">{visitor.name?.slice(0, 10) || "N/A"}</td>
-      <td className="border p-2">{visitor.gender || "N/A"}</td>
-      <td className="border p-2">{visitor.age || "N/A"}</td>
-      <td className="border p-2">
+    <tr key={visitor._id || index} className="hover:bg-gray-100 border-b text-gray-700 rounded-md">
+      <td className=" p-2">{visitor.name?.slice(0, 10) || "N/A"}</td>
+      <td className=" p-2">{visitor.gender || "N/A"}</td>
+      <td className=" p-2">{visitor.age || "N/A"}</td>
+      <td className=" p-2">
         {visitor.aadhaar ? visitor.aadhaar : <span className="text-red-500 font-semibold">Not provided</span>}
       </td>
-      <td className="border p-2">{visitor.phone || "N/A"}</td>
-      <td className="border p-2">
+      <td className=" p-2">{visitor.phone || "N/A"}</td>
+      <td className=" p-2">
         {visitor.purposeVisit?.at(-1)?.purpose?.slice(0, 20) || "N/A"}
       </td>
-      <td className="border p-2">
-        {visitor.currentdate?.at(-1)?.date || "N/A"}
+      <td className=" p-2">
+        {visitor.currentdate?.at(-1)?.date || "N/A"} -- {visitor.arrivedtime?.at(-1)?.time || "N/A"}
       </td>
-      <td className="border p-2">
-        {visitor.arrivedtime?.at(-1)?.time || "N/A"}
-      </td>
-      <td className="border p-2">
+      <td className=" p-2">
         {visitor.attender?.at(-1)?.attender || "N/A"}
       </td>
-      <td className="border p-2">
+      <td className=" p-2">
         {visitor.remarks?.at(-1)?.remark?.slice(0, 15) || "N/A"}
       </td>
-      <td className="border p-2 flex gap-2 justify-center">
+      <td className="p-2 ps-0 flex gap-3 justify-center">
         <Edit visitorsProp={visitor}/>
         <Delete visitorsProp={visitor._id} onDeleteSuccess={getAllVisitor}/>
         <PdfConvert visitorsProp={visitor}/>
@@ -146,6 +142,7 @@ function AllVisitors() {
     <td colSpan="11" className="text-center p-4 text-gray-500">No visitors found.</td>
   </tr>
 )}
+
 
         </tbody>
 

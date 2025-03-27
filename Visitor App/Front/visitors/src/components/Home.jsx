@@ -14,6 +14,7 @@ function Home() {
   const [search,setSearch]=useState('')
   const [nameUser,setNameUser]=useState([])
 
+
   useEffect(()=>{
     if(sessionStorage.getItem("token")){
       setToken(sessionStorage.getItem("token"))
@@ -129,7 +130,8 @@ function Home() {
           <button className="px-5 py-2 bg-green-300 text-black rounded-lg hover:bg-green-400 transition-all duration-300">
             Check out
           </button>
-         <Delete visitorsProp={item._id} onDeleteSuccess={getVisitors}/>
+          <p className="border px-2 rounded-md bg-red-200 hover:bg-red-300"><Delete visitorsProp={item._id} onDeleteSuccess={getVisitors}/></p>
+         
         </div>
       </div>
     ))

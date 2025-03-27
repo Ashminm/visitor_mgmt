@@ -91,14 +91,12 @@ function PdfConvert({ visitorsProp }) {
     return (
         <>
             <div>
-                <button
-                    className="bg-gray-800 text-white px-4 py-2 rounded-lg"
-                    onClick={() => setIsOpen(true)}>
-                    Print
-                </button>
+                <span class="material-symbols-outlined cursor-pointer text-3xl text-gray-600 hover:text-gray-800" onClick={() => setIsOpen(true)}>
+                    download
+                </span>
                 {isOpen && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                        <div className="bg-white p-6 rounded shadow-lg w-full max-w-xl">
+                        <div className="bg-white p-6 rounded shadow-lg w-full max-w-lg">
                             <h2 className="text-lg font-bold bg-gray-100 p-2 rounded">
                                 Download Visitor all Details
                             </h2>
@@ -114,14 +112,14 @@ function PdfConvert({ visitorsProp }) {
                                 <p className='text-xl'><strong>aadhaar: </strong>{visitorPdf.aadhaar || " aadhaar not provided"}</p>
                                 <p className='text-xl mb-6'><strong>Number: </strong>{visitorPdf.phone || " phone not provided"}</p>
                                 <button
-                                    className="py-2 font-bold tex-black px-4 bg-green-400 hover:bg-green-500 rounded"
+                                    className="py-2 font-bold tex-black px-4 bg-green-300 hover:bg-green-400 rounded"
                                     onClick={() => generatePDF(visitorPdf,setIsOpen)}
                                     disabled={!visitorPdf}
                                 >
                                     Download PDF
                                 </button>
                                 <button
-                                className="mt- bg-red-500 text-black px-4 py-2 rounded"
+                                className="bg-red-300 hover:bg-red-400 text-black px-4 py-2 rounded"
                                 onClick={() => setIsOpen(false)}
                             >
                                 Cancel
