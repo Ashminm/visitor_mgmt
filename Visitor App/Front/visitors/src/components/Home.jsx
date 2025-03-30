@@ -56,7 +56,7 @@ function Home() {
 
 
   return (
-    <div className="max-w-7xl mx-auto px-4"> {/* Added container with spacing */}
+    <div className="max-w-8xl mx-auto px-4"> {/* Added container with spacing */}
         <nav className="flex justify-between items-center py-4 border-b sticky top-0 z-2 bg-white"> {/* Adjusted spacing */}
             <div className="pl-4"> {/* Added left padding */}
             <img src={logo} className='w-11' alt="" />
@@ -130,7 +130,7 @@ function Home() {
           <button className="px-5 py-2 bg-green-300 text-black rounded-lg hover:bg-green-400 transition-all duration-300">
             Check out
           </button>
-          <p className="border px-2 rounded-md bg-red-200 hover:bg-red-300"><Delete visitorsProp={item._id} onDeleteSuccess={getVisitors}/></p>
+          <div className="border px-2 rounded-md bg-red-200 hover:bg-red-300"><Delete visitorsProp={item._id} onDeleteSuccess={getVisitors}/></div>
          
         </div>
       </div>

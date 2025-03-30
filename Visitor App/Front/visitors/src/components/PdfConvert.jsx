@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
+import { BASE_URL } from '../services/BaseURL';
 
 const generatePDF = (visitor,setIsOpen) => {
     if (!visitor) {
@@ -24,6 +25,7 @@ const generatePDF = (visitor,setIsOpen) => {
 
     // Photo Section
     doc.rect(10, 40, 40, 40);
+    doc.addImage(visitor?`${BASE_URL}/upload/${visitor.image}`: "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg")
 
     // Name and UserId
     doc.setFontSize(13);
@@ -91,7 +93,7 @@ function PdfConvert({ visitorsProp }) {
     return (
         <>
             <div>
-                <span class="material-symbols-outlined cursor-pointer text-3xl text-gray-600 hover:text-gray-800" onClick={() => setIsOpen(true)}>
+                <span className="material-symbols-outlined cursor-pointer text-3xl text-gray-600 hover:text-gray-800" onClick={() => setIsOpen(true)}>
                     download
                 </span>
                 {isOpen && (
@@ -103,7 +105,9 @@ function PdfConvert({ visitorsProp }) {
                             <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 my-8">
                             <div className="flex justify-center">
                             <img
-                            src="https://huggingface.co/datasets/huggingfacejs/tasks/resolve/main/zero-shot-image-classification/image-classification-input.jpeg"
+                            src={visitorPdf?.image ? `${BASE_URL}/upload/${visitorPdf.image}` 
+                            : "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg"}
+      
                             alt="Profile"
                             className="w-40 h-40 object-cover rounded-full border-2 border-gray-300"
                             />

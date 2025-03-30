@@ -9,6 +9,10 @@ function AllVisitors() {
   const [AllVisitorsList,setAllVisitorsList]=useState([])
   const [sortBy, setSortBy] = useState("");
   const [token, setToken] = useState("");
+  // const [selectedDate, setSelectedDate] = useState();
+  // const [originalVisitorsList, setOriginalVisitorsList] = useState([]);
+  
+  // console.log(AllVisitorsList?.currentdate?.[0]?.date);
   
   useEffect(()=>{
     if(sessionStorage.getItem("token")){
@@ -21,8 +25,6 @@ function AllVisitors() {
       getAllVisitor()
     }
   }, [token,search]);
-  
-// console.log(AllVisitorsList[0]?.purposeVisit[0]?.purpose);
 
   const getAllVisitor=async()=>{
     const headers = {
@@ -63,13 +65,29 @@ function AllVisitors() {
     }
     setAllVisitorsList(sortedList);
   };
+
+  // const handleDateFilter = (date) => {
+  //   setSelectedDate(date);
+
+  //   if (!date) {
+  //     setAllVisitorsList(originalVisitorsList);
+  //     return;
+  //   }
+
+  //   const filteredList = originalVisitorsList.filter((visitor) => {
+  //     const visitorDate = visitor.currentdate?.[0]?.date || "";
+  //     return visitorDate === date;
+  //   });
+
+  //   setAllVisitorsList(filteredList);
+  // };
     
   return (
     <>
-    <div className="my-9 mt-2">
+    <div className="my-9 mt-2 mx-auto max-w-7xl">
     <h2 className="text-3xl font-semibold text-gray-800 text-black mb-2 text-center">Visitor Table</h2>
     <h2 className="text-sm text-gray-500 text-black mb-6 text-center">Everyone who has visited so far</h2>
-         <div className="flex justify-between ">
+         <div className="flex justify-between gap-4">
          <input
             type="text"
             className="w-5/6 px-3 py-2 bg-gray-100 rounded-md outline-none focus:ring-1 focus:ring-amber-500"
@@ -88,9 +106,15 @@ function AllVisitors() {
             <option value="age-asc">Age (Low to High)</option>
             <option value="age-desc">Age (High to Low)</option>
           </select>
+          
+          {/* <input type="date" placeholder='sort' className='cursor-pointer w-20 rounded-md outline-none bg-gray-100 focus:ring-1 text-gray-500 focus:ring-amber-500 px-3'
+            value={selectedDate || ""} // Ensure value is never undefined
+            onChange={(e) => handleDateFilter(e.target.value)}
+           /> */}
+
         </div>
          </div>
-    <div className="max-w-9xl mx-auto bg-white shadow-lg rounded-lg px-3">
+    <div className="max-w-9xl mx-auto max-w-7xl bg-white shadow-lg rounded-lg px-3">
    
       <table className="w-full border-collapse text-start text-sm rounded-lg">
         <thead>

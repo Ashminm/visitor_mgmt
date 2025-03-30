@@ -11,6 +11,7 @@ visitor.use(express.json())
 visitor.use(router)
 
 const PORT=4000 || process.env.PORT
+visitor.use('/upload',express.static('./uploads'))
 
 visitor.listen(PORT,()=>{
     console.log("Visitor server at:",PORT);

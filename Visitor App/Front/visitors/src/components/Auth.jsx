@@ -4,6 +4,7 @@ import {Navigate, useNavigate} from "react-router-dom"
 import logo from '../assets/file.png'
 
 function Auth() {
+  const [isOpen, setIsOpen] = useState(false);
   const [register, setRegister] = useState(false); 
   
   const [userData,setUserData]=useState({
@@ -70,6 +71,12 @@ const handleLogin=async(e)=>{
     }
     else {
       alert(`Login failed: ${res.data}`);
+      setUserData({
+        username: "",
+        email: "",
+        password: "",
+        image: "",
+      });
       console.log(res);
     }
   }
@@ -162,14 +169,45 @@ useEffect(()=>{
         </button>
 
        <div className="mt-5 flex justify-between">
-       <button type="button" className="text-md ">
+       <button type="button" className="text-md hover:underline" onClick={() => setIsOpen(true)}>
            Lost your password
           </button>
-       <button type="button" onClick={toggleRegister} className="text-md ">
+       <button type="button" onClick={toggleRegister} className="text-md hover:underline">
             {register ? "Go to Login" : "Create an Account"}
           </button>
        </div>
       </form>
+      {isOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
+            <h2 className="text-xl font-bold p-2 rounded text-gray-600">Reset your password</h2>
+            <div className="flex flex-col my-6">
+              <label htmlFor="" className="text-gray-600">Email*</label>
+            <input type="email" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none mb-8" placeholder="Enter your existing email" name="" id="" />
+              <label htmlFor="" className="text-gray-600">Password*</label>
+            <input type="text" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none mb-3" placeholder="Enter new password" name="" id="" />
+            <label htmlFor="" className="text-gray-600">Conform*</label>
+
+            <input type="password" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" placeholder="Confirm password" name="" id="" />
+            </div>
+            <div className="flex justify-between gap-4">
+              <button
+                className="mt-4 bg-green-300 hover:bg-green-400 text-black px-4 py-2 w-full rounded-lg"
+                onClick={() => setIsOpen(false)}
+              >
+                Cancel
+              </button>
+
+              <button
+                className="mt-4 bg-red-300 text-black hover:bg-red-400 px-4 w-full py-2 rounded-lg"
+                
+              >
+                Update
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

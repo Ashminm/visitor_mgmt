@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BASE_URL } from '../services/BaseURL';
 
 function Edit({ visitorsProp }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,10 +21,11 @@ function Edit({ visitorsProp }) {
       setVisitor((prev) => ({ ...prev, image: file }));
     }
   };
+console.log(visitorsProp);
 
   return (
     <div>
-      <span class="material-symbols-outlined cursor-pointer text-3xl text-blue-500 hover:text-blue-700" onClick={() => setIsOpen(true)}>
+      <span className="material-symbols-outlined cursor-pointer text-3xl text-blue-500 hover:text-blue-700" onClick={() => setIsOpen(true)}>
         visibility
         </span>
 
@@ -34,7 +36,7 @@ function Edit({ visitorsProp }) {
 
             {!isEditing ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <img src={imagePreview} alt="Visitor" className="w-40 h-36 object-cover border" />
+                <img src={visitor?`${BASE_URL}/upload/${visitor.image}`: "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg"} alt="Visitor" className="w-40 h-36 object-cover border" />
                 <div>
                   <p className="text-2xl text-gray-500">Visitor Name</p>
                   <span className="text-lg text-gray-900">{visitor.name || "-"}</span>
@@ -96,8 +98,10 @@ function Edit({ visitorsProp }) {
         <option value="Check out">Check out</option> 
       </select>
       <textarea placeholder="Remarks*" rows={1} className="p-2 border rounded col-span-2 focus:ring-amber-500 focus:ring-2 outline-none"></textarea>
-
-      <button className="col-span-2 bg-amber-600 text-white p-2 rounded-lg hover:bg-amber-700">Submit</button>
+      <button onClick={() => setIsEditing(false)} className="bg-green-500 text-white p-2 w-full rounded-lg hover:bg-green-600">
+                  Back to view
+                </button>
+      <button className=" bg-amber-600 text-white p-2 rounded-lg hover:bg-amber-700">Submit</button>
     </form>
             )}
             <button onClick={() => setIsOpen(false)} className="bg-red-400 w-full text-black p-2 rounded-lg hover:bg-red-500 mt-4">

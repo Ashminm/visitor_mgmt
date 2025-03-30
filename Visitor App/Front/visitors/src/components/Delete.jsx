@@ -32,14 +32,8 @@ function Delete({visitorsProp,onDeleteSuccess}) {
     }
 
   return (
-    <div className="">
-      {/* <button
-        className="bg-red-400 text-black px-4 py-2 rounded-lg"
-       
-      >
-        Delete
-      </button> */}
-      <span class="material-symbols-outlined cursor-pointer text-3xl text-red-500 hover:text-red-700"  onClick={() => setIsOpen(true)}>
+    <div>
+      <span className="material-symbols-outlined cursor-pointer text-3xl text-red-500 hover:text-red-700"  onClick={() => setIsOpen(true)}>
         delete
         </span>
 

@@ -8,6 +8,7 @@ function Profile() {
   const [token, setToken] = useState("");
   const [userProfile,setUserProfile]=useState({})
   const [isOpen, setIsOpen] = useState(false);
+  const [photoPreview,setPhotoPreview]=useState('')
   const [profile,setProfile]=useState({
       username:  "",
       email:  "",
@@ -16,14 +17,19 @@ function Profile() {
       addedBy: "",
       date: ""
   })
-// console.log(profile);
-console.log("Image URL:", `${BASE_URL}/uploads/${profile.image}`);
 
 useEffect(()=>{
   if(sessionStorage.getItem("token")){
     setToken(sessionStorage.getItem("token"))
   }
 },[])
+
+useEffect(() => {
+  if (profile.image && profile.image instanceof File) {
+    setPhotoPreview(URL.createObjectURL(profile.image));
+  }
+}, [profile.image]);
+
 
 useEffect(() => {
   if (token) {
@@ -54,6 +60,7 @@ const updateProfile=async(e)=>{
     // formData.append("image",profile.image);
     formData.append("email",profile.email);
     formData.append("password",profile.password);
+    formData.append("image",profile.image);
     const HeaderReq = {
       "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${token}`,
@@ -61,9 +68,9 @@ const updateProfile=async(e)=>{
   const res=await updateProfileApi(formData,HeaderReq)
   if(res.status===200){
     alert('profile update success!!')
+    setIsEditing(false)
   }else{
     alert("Updation faild!")
-    console.log(res);
   }
   }
 }
@@ -78,6 +85,7 @@ const getUserSpecific = async()=>{
     setUserProfile(res.data)
   }
 }
+// console.log(profile);
 
 // console.log("feching userProfile",userProfile);
 
@@ -95,7 +103,10 @@ const handilelogOut=async()=>{
     const [isEditing, setIsEditing] = useState(false);
 
     const handleEdit = () => setIsEditing(true);
-    const handleCancel = () => setIsEditing(false);
+    const handleCancel = () =>{
+      setIsEditing(false);
+    } 
+    
 
     return (
       <section>
@@ -109,7 +120,7 @@ const handilelogOut=async()=>{
             <div className="p-6">
               <div className="flex justify-center mb-4 p-7">
                 <img
-                  src="https://huggingface.co/datasets/huggingfacejs/tasks/resolve/main/zero-shot-image-classification/image-classification-input.jpeg"
+                  src={profile?`${BASE_URL}/upload/${profile.image}`: ""}
                   alt="Profile"
                   className="w-40 h-40 object-cover rounded-full border-2 border-gray-300"
                 />
@@ -175,11 +186,15 @@ const handilelogOut=async()=>{
               <h1 className='text-lg px-3 py-2 rounded text-center'>Edit your profile</h1>
               <hr />
               <div className="flex justify-center mb-4 p-7">
-                <img
-                  src="https://huggingface.co/datasets/huggingfacejs/tasks/resolve/main/zero-shot-image-classification/image-classification-input.jpeg"
+                <label className='w-40 h-40 object-cover rounded-full border-2 border-gray-300 cursor-pointer'>
+                  <input type="file" className='hidden'  accept="image/*" onChange={(e)=>setProfile({...profile,image:e.target.files[0]})} />
+                  <img
+                  src={photoPreview ? photoPreview : `${BASE_URL}/upload/${profile.image}`}
                   alt="Profile"
                   className="w-40 h-40 object-cover rounded-full border-2 border-gray-300"
                 />
+                  </label>
+               
               </div>
               <div className="mb-4">
                 <label className="block text-gray-600">Name</label>
@@ -217,11 +232,7 @@ const handilelogOut=async()=>{
               </div>
               <div className="mb-9">
                 <label className="block text-gray-600">Added by (Not editable)</label>
-                <input
-                  type="text"
-                  className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none read-only cursor-not-allowed"
-                  value={profile.addedBy}
-                />
+                <p className='bg-gray-200 py-2 rounded-lg px-3 cursor-not-allowed'>{profile.addedBy}</p>
               </div>
               <div className="flex gap-3">
                 <button
