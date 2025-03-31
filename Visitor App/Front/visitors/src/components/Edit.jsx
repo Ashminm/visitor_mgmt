@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BASE_URL } from '../services/BaseURL';
+import toast from "react-hot-toast"
 
 function Edit({ visitorsProp }) {
   const [isOpen, setIsOpen] = useState(false);

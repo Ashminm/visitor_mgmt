@@ -2,7 +2,7 @@ import React, { useState,useEffect } from 'react';
 import { getUserSpecificApi,updateProfileApi } from '../services/AllApis';
 import { BASE_URL } from '../services/BaseURL';
 import { Navigate,useNavigate } from 'react-router-dom';
-
+import toast from "react-hot-toast"
 
 function Profile() { 
   const [token, setToken] = useState("");
@@ -53,7 +53,7 @@ useEffect(() => {
 const updateProfile=async(e)=>{
   e.preventDefault();
   if(!profile.username || !profile.email || !profile.password){
-      alert("Please fill")
+      toast.error("Please fill details")
   }else{
     const formData= new FormData()
     formData.append("username",profile.username);
@@ -67,10 +67,10 @@ const updateProfile=async(e)=>{
   };
   const res=await updateProfileApi(formData,HeaderReq)
   if(res.status===200){
-    alert('profile update success!!')
+    toast.success('profile update success!!')
     setIsEditing(false)
   }else{
-    alert("Updation faild!")
+    toast.error("Updation faild!")
   }
   }
 }
@@ -94,7 +94,7 @@ const handilelogOut=async()=>{
   sessionStorage.removeItem("role");
   setToken("");
   setUserProfile({});
-  alert('Logout successfull!')
+  toast.success('Logout successfull!')
   navigate('/')
 }
 

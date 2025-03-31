@@ -4,6 +4,7 @@ import './App.css';
 import Landing from './pages/Landing';
 import Home from './components/Home';
 import Camera from './components/Camera';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path='/cam' element={<Camera/>} />
         <Route path="*" element={<Landing />} />
       </Routes>
+      <Toaster/>
     </>
   );
 }

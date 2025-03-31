@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { registerApi,loginApi } from "../services/AllApis";
 import {Navigate, useNavigate} from "react-router-dom"
 import logo from '../assets/file.png'
+import toast from "react-hot-toast"
 
 function Auth() {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +19,7 @@ function Auth() {
   const handleReg = async (e) => {
     e.preventDefault();
     if (!userData.username || !userData.email|| !userData.password || !userData.image) {
-      alert("Please fill your details!!");
+      toast.error("Please fill your details!!");
     } else {
    
       const formData = new FormData();
@@ -32,7 +33,7 @@ function Auth() {
       try {
         const res = await registerApi(formData,reqHeader);
         if (res.status === 200) {
-          alert(`Registration success ${res.data.username}!!`);
+          toast.success(`Registration success ${res.data.username}!!`);
           // setUserData({
           //   username: "",
           //   email: "",
@@ -42,11 +43,11 @@ function Auth() {
           setPhotoPreview(""); 
           setRegister(false);
         } else {
-          alert(`Registration failed: ${res.data}`);
+          toast.error(`Registration failed: ${res.data}`);
         }
       } catch (error) {
         console.error("Error during registration:", error);
-        alert("Something went wrong!");
+        toast.error("Something went wrong!");
       }
     }
   }; 
@@ -54,13 +55,13 @@ function Auth() {
 const handleLogin=async(e)=>{
   e.preventDefault();
   if (!userData.email|| !userData.password) {
-    alert("Please fill your details!!");
+    toast.error("Please fill your details!!");
   }else{
     const res =await loginApi(userData)
     if(res.status===200){
       sessionStorage.setItem("role", res.data.role);
       sessionStorage.setItem("token", res.data.token);
-      alert("Your successfully login!!")
+      toast.success("Your successfully login!!")
       setUserData({
         username: "",
         email: "",
@@ -70,7 +71,7 @@ const handleLogin=async(e)=>{
       navigate('/home')
     }
     else {
-      alert(`Login failed: ${res.data}`);
+      toast.error(`Login failed: ${res.data}`);
       setUserData({
         username: "",
         email: "",
@@ -154,7 +155,7 @@ useEffect(()=>{
           <label className="block text-gray-600">Password*</label>
           <input
             type="password"
-            className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none focus:ring-2 focus:ring-amber-500"
+            className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none focus:ring-2 focus:ring-amber-500" min={5} max={10}
             placeholder="Enter your password"
             onChange={(e)=>{setUserData({...userData,password:e.target.value})}}
             value={userData.password} 

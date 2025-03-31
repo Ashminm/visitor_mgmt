@@ -1,5 +1,6 @@
 import React,{useState,useEffect} from 'react'
 import { DeleteVistorApi } from '../services/AllApis';
+import toast from "react-hot-toast"
 
 function Delete({visitorsProp,onDeleteSuccess}) {
     const [isOpen, setIsOpen] = useState(false);
@@ -20,13 +21,13 @@ function Delete({visitorsProp,onDeleteSuccess}) {
       };
       const res= await DeleteVistorApi(reqHeaders,id)
       if(res.status===200){
-        alert("deleted success")
+        toast.success("deleted success")
         setIsOpen(false)
         if (onDeleteSuccess) {
           onDeleteSuccess();
         }
       }else{
-        alert(res.data)
+        toast.error(res.data)
         setIsOpen(false)
       }   
     }

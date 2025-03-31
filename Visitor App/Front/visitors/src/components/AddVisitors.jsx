@@ -2,6 +2,7 @@ import React,{useState,useEffect,useRef} from 'react'
 import { AddVisitorApi,allCategoryApi,getUserSpecificApi,getAllvisitorApi } from '../services/AllApis';
 import Webcam from 'react-webcam'
 import { BASE_URL } from '../services/BaseURL';
+import toast from "react-hot-toast"
 
 const videoConstraints = {
   width: 1200,
@@ -39,7 +40,7 @@ function AddVisitors() {
     status: "",
     remarks: "",
 })
-console.log(visitorData);
+// console.log("Visitordata= ",visitorData);
 const [search, setSearch] = useState("");
 
 const webcamRef = React.useRef(null);
@@ -59,16 +60,42 @@ const capture = () => {
         image: file,
       }));
     });
+    toast.success("Image Captured!")
     setIsOpen(false)
   }else{
-    alert('Capture faild')
+    toast.error('Capture faild. please reupload!')
+    setIsOpen(false)
   }
 };
 
 // console.log(imageCap);
 
 
-  
+useEffect(() => {
+  if (selectedVisitorId && Object.keys(selectedVisitorId).length > 0) {
+    setVisitorData({
+      name: selectedVisitorId.name || "",
+      aadhaar: selectedVisitorId.aadhaar || "",
+      phone: selectedVisitorId.phone || "",
+      othernumber: selectedVisitorId.othernumber || "",
+      gender: selectedVisitorId.gender || "",
+      category: selectedVisitorId.category || "",
+      age: selectedVisitorId.age || "",
+      purposeVisit: selectedVisitorId.purposeVisit?.length ? selectedVisitorId.purposeVisit.at(-1)?.purpose : "",
+      address: selectedVisitorId.address || "",
+      arrivedtime: selectedVisitorId.arrivedtime?.length ? selectedVisitorId.arrivedtime.at(-1)?.time : "",
+      despachtime: selectedVisitorId.despachtime?.length ? selectedVisitorId.despachtime.at(-1)?.time : "",
+      currentdate: selectedVisitorId.currentdate?.length ? selectedVisitorId.currentdate.at(-1)?.date : "",
+      support: selectedVisitorId.support?.length ? selectedVisitorId.support.at(-1)?.support : "",
+      image: selectedVisitorId.image || "", 
+      numberofstay: selectedVisitorId.numberofstay?.length ? selectedVisitorId.numberofstay.at(-1)?.number : "",
+      attender: selectedVisitorId.attender?.length ? selectedVisitorId.attender.at(-1)?.attender : "",
+      status: selectedVisitorId.status || "",
+      remarks: selectedVisitorId.remarks?.length ? selectedVisitorId.remarks.at(-1)?.remark : "",
+    });
+  }
+}, [selectedVisitorId]); 
+
 
 useEffect(() => {
   setSearch(visitorData.phone || visitorData.aadhaar || "");
@@ -152,7 +179,7 @@ const handleAddVisitor = async (e) => {
         !visitorData.status ||
         !visitorData.remarks
       ) {
-        alert("Please fill in all the details!");
+        toast.error("Please fill all details!");
       } else {
         const formData = new FormData();
         formData.append("name", visitorData.name);
@@ -178,11 +205,10 @@ const handleAddVisitor = async (e) => {
           Authorization: `Bearer ${token}`,
       };
         try {
-          const res = await AddVisitorApi(formData,reqHeader);          
+          const res = await AddVisitorApi(formData,reqHeader);         
           if (res.status === 200 || res.status === 201) {
-            alert(res.data.messege);
-            console.log(res.data.messege);
-            
+            toast.success("visitor details add success!!");
+            console.log(res.data.messege); 
             setVisitorData({ name: "",
               aadhaar: "",
               phone: "",
@@ -202,11 +228,11 @@ const handleAddVisitor = async (e) => {
               status: "",
               remarks: "",})
           } else {
-            alert("Addition failed: "+res.data);
+            toast.error("Addition failed: "+res.data);
           }
         } catch (error) {
           console.log("Error adding visitor:", error);
-          alert("An error occurred while adding the visitor");
+          toast.error("An error occurred while adding the visitor");
         }
       }
     };
@@ -224,7 +250,7 @@ const handleAddVisitor = async (e) => {
 
     const handleCorrect = (visitor) => {
       if (selectedVisitorId) {
-          alert('Already filled the form');
+          toast.success('Already fille the form');
       } else {
           setSelectedVisitorId(visitor);
       }
@@ -232,37 +258,43 @@ const handleAddVisitor = async (e) => {
   
   const handleCancel = () => {
       if (!selectedVisitorId) {
-          alert('Already cleared the form');
+          toast.error('Already clear the form');
       } else {
           setSelectedVisitorId(null);
       }
   };
 
-  //  console.log(selectedVisitorId);
 
-  const clearForm=(e)=>{
+  const clearForm = (e) => {
     e.preventDefault();
-    setVisitorData({
-      name: "",
-      aadhaar: "",
-      phone: "",
-      othernumber:"",
-      gender: "",
-      category: "",
-      age: "",
-      purposeVisit: "",
-      address: "",
-      arrivedtime: "",
-      despachtime: "",
-      currentdate: "",
-      support: "",
-      image: "",
-      numberofstay: "",
-      attender: "",
-      status: "",
-      remarks: "",})
-      alert('Clear your form')
-  }
+    const hasData = Object.values(visitorData).some(value => value && value.trim() !== "");
+  
+    if (hasData) {
+      setVisitorData({
+        name: "",
+        aadhaar: "",
+        phone: "",
+        othernumber: "",
+        gender: "",
+        category: "",
+        age: "",
+        purposeVisit: "",
+        address: "",
+        arrivedtime: "",
+        despachtime: "",
+        currentdate: "",
+        support: "",
+        image: "",
+        numberofstay: "",
+        attender: "",
+        status: "",
+        remarks: "",
+      });
+      toast.success("Form cleared successfully!");
+    } else {
+      toast.error("No details to clear in the form.");
+    }
+  };
    
 
   return (
@@ -274,14 +306,14 @@ const handleAddVisitor = async (e) => {
     <h2 className="text-sm mb-9 text-slate-400 text-center">We're delighted to have you with us. Kindly fill in the following information.</h2>
     <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
     <input type="tel" placeholder="Phone Number*" pattern='\d{10}' title='Phone number must 10 digit and not include Alphabets' className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,phone:e.target.value})}}
-            value={selectedVisitorId ? selectedVisitorId.phone : visitorData.phone}            />
+            value={visitorData.phone}            />
       <input type="text" placeholder="aadhaar Number" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" pattern="\d{4}-\d{4}-\d{4}" title="Aadhar number must be in the format XXXX-XXXX-XXXX" onChange={(e)=>{setVisitorData({...visitorData,aadhaar:e.target.value})}}
-            value={selectedVisitorId? selectedVisitorId.aadhaar :visitorData.aadhaar} />
+            value={visitorData.aadhaar} />
             <input type="text" placeholder="Name*" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,name:e.target.value})}}
-            value={selectedVisitorId? selectedVisitorId.name :visitorData.name}  />
+            value={visitorData.name}  />
       <input type="tel" placeholder="Other Contact" pattern='\d{10}' title='Phone number must 10 digit and not include Alphabets'  className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,othernumber:e.target.value})}}
-            value={selectedVisitorId? selectedVisitorId.othernumber :visitorData.othernumber}/>
-      <select className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" value={selectedVisitorId? selectedVisitorId.gender :visitorData.gender} onChange={(e)=>{setVisitorData({...visitorData,gender:e.target.value})}}
+            value={visitorData.othernumber}/>
+      <select className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" value={visitorData.gender} onChange={(e)=>{setVisitorData({...visitorData,gender:e.target.value})}}
       >
         <option value="">Select Gender*</option>
         <option value="Male">Male</option>
@@ -290,7 +322,7 @@ const handleAddVisitor = async (e) => {
       </select>
       <select
         className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none"
-        onChange={(e) => setVisitorData({ ...visitorData, category: e.target.value })} value={selectedVisitorId? selectedVisitorId.category :visitorData.category}
+        onChange={(e) => setVisitorData({ ...visitorData, category: e.target.value })} value={visitorData.category}
     >
         <option value="">Select Category*</option>
         {allcategory.map((category, index) => (
@@ -300,18 +332,18 @@ const handleAddVisitor = async (e) => {
         ))}
     </select>
       <input type="number" placeholder="Age*" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,age:e.target.value})}}
-            value={selectedVisitorId? selectedVisitorId.age :visitorData.age} />
+            value={visitorData.age} />
       <input type="text" placeholder="Purpose of Visit*" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,purposeVisit:e.target.value})}}
-            value={selectedVisitorId? selectedVisitorId.purposeVisit?.at(-1)?.purpose :visitorData.purposeVisit}/>
+            value={visitorData.purposeVisit}/>
       <textarea placeholder="Address*" className="p-2 border rounded col-span-2 focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,address:e.target.value})}}
-            value={selectedVisitorId? selectedVisitorId.address :visitorData.address}></textarea>
+            value={visitorData.address}></textarea>
       <label htmlFor="">Arrived Time*</label>
-      <input type="time" placeholder="Arrived Time" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" value={selectedVisitorId? selectedVisitorId.arrivedtime?.at(-1)?.time :visitorData.arrivedtime} onChange={(e)=>{setVisitorData({...visitorData,arrivedtime:e.target.value})}}/>
+      <input type="time" placeholder="Arrived Time" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" value={visitorData.arrivedtime} onChange={(e)=>{setVisitorData({...visitorData,arrivedtime:e.target.value})}}/>
       <label htmlFor="">Despatch Time</label>
-      <input type="time" placeholder="Departed Time" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" value={selectedVisitorId? selectedVisitorId.despachtime?.at(-1)?.time :visitorData.despachtime} onChange={(e)=>{setVisitorData({...visitorData,despachtime:e.target.value})}}/>
+      <input type="time" placeholder="Departed Time" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" value={visitorData.despachtime} onChange={(e)=>{setVisitorData({...visitorData,despachtime:e.target.value})}}/>
       <input type="date" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,currentdate:e.target.value})}}
-            value={selectedVisitorId? selectedVisitorId.currentdate?.at(-1)?.time :visitorData.currentdate} />
-      <input type="text" placeholder="Support Given*" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,support:e.target.value})}} value={selectedVisitorId? selectedVisitorId.age :visitorData.support}/>
+            value={visitorData.currentdate} />
+      <input type="text" placeholder="Support Given*" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,support:e.target.value})}} value={visitorData.support}/>
       <p className='bg-blue-100 rounded-md flex justify-center items-center cursor-pointer' onClick={() => setIsOpenCam(true)}>Upload Photo</p>
 
       {isOpenCam && (
@@ -387,7 +419,7 @@ const handleAddVisitor = async (e) => {
                     </div>
                   )}
       <input type="text" placeholder="Number of days stay" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,numberofstay:e.target.value})}}
-            value={selectedVisitorId? selectedVisitorId.numberofstay?.at(-1)?.number :visitorData.numberofstay}/>
+            value={visitorData.numberofstay}/>
             <select 
           className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" 
           onChange={(e) => setVisitorData({ ...visitorData, attender: e.target.value })} value={visitorData.attender}
@@ -396,13 +428,13 @@ const handleAddVisitor = async (e) => {
           {attender && <option value={attender}>{attender}</option>}
         </select>
 
-      <select className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,status:e.target.value})}} value={selectedVisitorId? selectedVisitorId.status :visitorData.status}>
+      <select className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,status:e.target.value})}} value={visitorData.status}>
         <option value="">Status*</option>
         <option value="Check in">Check in</option>
         <option value="Check out">Check out</option> 
       </select>
       <textarea placeholder="Remarks*" rows={1} className="p-2 border rounded col-span-2 focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,remarks:e.target.value})}}
-            value={selectedVisitorId? selectedVisitorId.remarks?.at(-1)?.remark :visitorData.remarks}></textarea>
+            value={visitorData.remarks}></textarea>
 
       <button className="col-span-1 bg-red-500 text-white p-2 rounded-lg hover:bg-red-600" onClick={clearForm}>Clear</button>
       <button className="col-span-1 bg-amber-600 text-white p-2 rounded-lg hover:bg-amber-700" onClick={handleAddVisitor}>Submit</button>
@@ -434,7 +466,7 @@ const handleAddVisitor = async (e) => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                <p className="text-xl text-gray-800">Name </p>
+              <p className="text-xl text-gray-800">Name </p>
               <p className="mb-4 text-gray-600">{visitor.name}</p>
               <p className="text-xl text-gray-800">Phone</p>
               <p className="mb-4 text-gray-600">{visitor.phone}</p>

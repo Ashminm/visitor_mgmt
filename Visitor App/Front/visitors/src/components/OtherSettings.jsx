@@ -1,5 +1,6 @@
 import React,{useEffect,useState} from 'react'
 import { categoryAddApi,AddAttenderApi,getUserSpecificApi } from '../services/AllApis';
+import toast from "react-hot-toast"
 
 function OtherSettings() {
   const [attender,setAttender]=useState(null)
@@ -41,7 +42,7 @@ function OtherSettings() {
   const handleCategoryAdd = async (e) => {
     e.preventDefault();
     if (!addCategory.categoryName || !addCategory.addedBy) {
-      alert("Please fill!!");
+      toast.error("Please fill category");
     }else{
       const formdata= new FormData();
       formdata.append("categoryName",addCategory.categoryName);
@@ -53,15 +54,15 @@ function OtherSettings() {
       try{
         const res = await categoryAddApi(formdata,reqHeader);
         if(res.status===200){
-          alert(`${res.data.categoryName}: added success`)
+          toast.success(`${res.data.categoryName}: added success`)
           setAddCategory({categoryName:"",
             addedBy:""})
         }else{
-          alert("Category added faild: ",res.data)  
+          toast.error("Category added faild: ",res.data)  
         }
       }catch(error){
         console.log("Error adding visitor:", error);
-          alert("An error occurred while adding the visitor");
+          toast.error("An error occurred while adding the visitor");
       }
     } 
   };
@@ -69,7 +70,7 @@ function OtherSettings() {
   const handleAddAttender=async(e)=>{
     e.preventDefault();
     if(!addAttender.username || !addAttender.image || !addAttender.email || !addAttender.password || !addAttender.addedBy){
-      alert("Please fill new attender details")
+      toast.error("Please fill new attender details")
     }else{
       const dataform=new FormData();
       dataform.append("username",addAttender.username);
@@ -83,14 +84,14 @@ function OtherSettings() {
     };
     const result= await AddAttenderApi(dataform,HeaderReq)
     if(result.status===200){
-      alert(`New attender added!!`)
+      toast.success(`New attender added!!`)
       setAddAttender({username:"",
         image:"",
         email:"",
         password:"",
         addedBy:""})
     }else{
-      alert("Attenter added faild: ",res.data)
+      toast.error("Attenter added faild: ",res.data)
     }
     }
   } 
