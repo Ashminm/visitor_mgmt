@@ -56,13 +56,13 @@ function Home() {
 
 
   return (
-    <div className="max-w-8xl mx-auto px-4"> {/* Added container with spacing */}
-        <nav className="flex justify-between items-center py-4 border-b sticky top-0 z-2 bg-white"> {/* Adjusted spacing */}
-            <div className="pl-4"> {/* Added left padding */}
+    <div className="max-w-8xl mx-auto px-4">
+        <nav className="flex justify-between items-center py-4 border-b bg-white  sticky top-0 "> 
+            <div className="pl-4"> 
             <img src={logo} className='w-11' alt="" />
             </div>
             <div>
-            <div className="w-screen max-w-3xl bg-white h-auto flex flex-col">
+            <div className="w-screen max-w-3xl h-auto flex flex-col">
         {/* Tab Navigation */}
         <div className="flex h-16 items-center cursor-pointer">
           {["home", "add-visitor", "all-visitors","other-settings","profile-settings"].map((tab) => (
@@ -81,7 +81,7 @@ function Home() {
       </div>
     </div>
     </nav>
-        <div className="p-4">
+        <div className="p-4 ">
           {activeTab === "home" && (
              <div className="gap-3 flex flex-col items-center md:flex-row justify-start">
              
@@ -95,7 +95,7 @@ function Home() {
       </h2>
       <input
             type="text"
-            className="w-full px-3 py-2 text-sm bg-gray-100 rounded-md outline-none focus:ring-1 focus:ring-amber-500"
+            className="w-full px-3 py-2 text-sm bg-gray-100 border-amber-500 border rounded-md outline-none focus:ring-1 focus:ring-amber-500 sticky top-[106px] z-30"
             placeholder="Search by name, number and aadhaar"
             onChange={(e)=>setSearch(e.target.value)}
           />

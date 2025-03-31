@@ -32,13 +32,22 @@ console.log(visitorsProp);
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded shadow-lg w-full max-w-3xl">
-            <h2 className="text-lg font-bold bg-gray-100 p-2 rounded mb-5">View and Edit Visitor Details</h2>
-
+            <div className="flex justify-between items-center">
+            <h2 className="text-lg font-bold bg-gray-100 p-2 px-6 rounded mb-5">View and Edit Visitor Details</h2>
+            <span class="material-symbols-outlined text-4xl bg-gray-100 text-red-600 rounded-full cursor-pointer" title='Cancel' onClick={() => setIsOpen(false)}>
+              cancel
+              </span>
+            </div>
             {!isEditing ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <img src={visitor?`${BASE_URL}/upload/${visitor.image}`: "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg"} alt="Visitor" className="w-40 h-36 object-cover border" />
+                <img src={visitor?.image?`${BASE_URL}/upload/${visitor.image}`: "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg"} alt="Visitor" className="w-62 h-72 object-cover border" />
+
                 <div>
                   <p className="text-2xl text-gray-500">Visitor Name</p>
+                  <span className="text-lg text-gray-900">{visitor.name || "-"}</span>
+                </div>
+                <div>
+                  <p className="text-2xl text-gray-500">Visitor Address</p>
                   <span className="text-lg text-gray-900">{visitor.name || "-"}</span>
                 </div>
                 <div>
@@ -57,7 +66,7 @@ console.log(visitorsProp);
                   <p className="text-2xl text-gray-500">Category</p>
                   <span className="text-lg text-gray-900">{visitor.category || "-"}</span>
                 </div>
-                <button onClick={() => setIsEditing(true)} className="bg-green-500 text-white p-2 w-full rounded-lg hover:bg-green-600">
+                <button onClick={() => setIsEditing(true)} className="bg-green-500 text-white p-2 w-32 rounded-lg hover:bg-green-600">
                   Edit
                 </button>
               </div>
@@ -104,9 +113,7 @@ console.log(visitorsProp);
       <button className=" bg-amber-600 text-white p-2 rounded-lg hover:bg-amber-700">Submit</button>
     </form>
             )}
-            <button onClick={() => setIsOpen(false)} className="bg-red-400 w-full text-black p-2 rounded-lg hover:bg-red-500 mt-4">
-              Close
-            </button>
+        
           </div>
         </div>
       )}

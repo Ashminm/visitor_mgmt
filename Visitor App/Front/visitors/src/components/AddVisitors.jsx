@@ -1,13 +1,24 @@
-import React,{useState,useEffect} from 'react'
+import React,{useState,useEffect,useRef} from 'react'
 import { AddVisitorApi,allCategoryApi,getUserSpecificApi,getAllvisitorApi } from '../services/AllApis';
+import Webcam from 'react-webcam'
+import { BASE_URL } from '../services/BaseURL';
+
+const videoConstraints = {
+  width: 1200,
+  height: 720,
+  facingMode: "user"
+};
 
 function AddVisitors() {
   const [token, setToken] = useState("");
   // const [allUsers,setAllUsers]=useState([])
+  const [isOpen, setIsOpen] = useState(false);
+  const [isOpenCam, setIsOpenCam] = useState(false);
   const [allcategory,setAllCategory]=useState([])
   const [attender,setAttender]=useState(null)
   const [AllVisitorsList,setAllVisitorsList]=useState([])
   const [selectedVisitorId, setSelectedVisitorId] = useState(null);
+  const [imageCap,setImageCap]=useState('') // re verify maybe waste state
   const [visitorData,setVisitorData]=useState({
     name: "",
     aadhaar: "",
@@ -22,14 +33,42 @@ function AddVisitors() {
     despachtime: "",
     currentdate: "",
     support: "",
-    image: "",
+    image: null, 
     numberofstay: "",
     attender: "",
     status: "",
     remarks: "",
 })
-// console.log(visitorData);
+console.log(visitorData);
 const [search, setSearch] = useState("");
+
+const webcamRef = React.useRef(null);
+
+const capture = () => {
+  const imageSrc = webcamRef.current.getScreenshot();
+  setImageCap(imageSrc);
+  
+
+  if(imageSrc){
+    fetch(imageSrc)
+    .then(res => res.blob())
+    .then(blob => {
+      const file = new File([blob], "captured-image.jpg", { type: "image/jpeg" });
+      setVisitorData(prevData => ({
+        ...prevData,
+        image: file,
+      }));
+    });
+    setIsOpen(false)
+  }else{
+    alert('Capture faild')
+  }
+};
+
+// console.log(imageCap);
+
+
+  
 
 useEffect(() => {
   setSearch(visitorData.phone || visitorData.aadhaar || "");
@@ -41,6 +80,7 @@ useEffect(()=>{
   if(sessionStorage.getItem("token")){
     setToken(sessionStorage.getItem("token"))
   }
+
 },[])
 
 useEffect(() => {
@@ -64,8 +104,8 @@ const getAllcategory = async () => {
 
 const getAllVisitor = async () => {
   if (!search) {
-    setAllVisitorsList([]); // clear visitor list if search is empty
-    return; // do nothing if search is empty
+    setAllVisitorsList([]); 
+    return; 
   }
 
   const headers = {
@@ -199,6 +239,30 @@ const handleAddVisitor = async (e) => {
   };
 
   //  console.log(selectedVisitorId);
+
+  const clearForm=(e)=>{
+    e.preventDefault();
+    setVisitorData({
+      name: "",
+      aadhaar: "",
+      phone: "",
+      othernumber:"",
+      gender: "",
+      category: "",
+      age: "",
+      purposeVisit: "",
+      address: "",
+      arrivedtime: "",
+      despachtime: "",
+      currentdate: "",
+      support: "",
+      image: "",
+      numberofstay: "",
+      attender: "",
+      status: "",
+      remarks: "",})
+      alert('Clear your form')
+  }
    
 
   return (
@@ -208,7 +272,7 @@ const handleAddVisitor = async (e) => {
     <div className="p-4 w-5/6 mx-auto bg-white shadow-lg rounded-lg border">
     <h2 className="text-xl font-semibold mb-1 mt-3 text-center">Fill the visiter information</h2>
     <h2 className="text-sm mb-9 text-slate-400 text-center">We're delighted to have you with us. Kindly fill in the following information.</h2>
-    <form className="grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={handleAddVisitor}>
+    <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
     <input type="tel" placeholder="Phone Number*" pattern='\d{10}' title='Phone number must 10 digit and not include Alphabets' className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,phone:e.target.value})}}
             value={selectedVisitorId ? selectedVisitorId.phone : visitorData.phone}            />
       <input type="text" placeholder="aadhaar Number" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" pattern="\d{4}-\d{4}-\d{4}" title="Aadhar number must be in the format XXXX-XXXX-XXXX" onChange={(e)=>{setVisitorData({...visitorData,aadhaar:e.target.value})}}
@@ -248,12 +312,80 @@ const handleAddVisitor = async (e) => {
       <input type="date" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,currentdate:e.target.value})}}
             value={selectedVisitorId? selectedVisitorId.currentdate?.at(-1)?.time :visitorData.currentdate} />
       <input type="text" placeholder="Support Given*" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,support:e.target.value})}} value={selectedVisitorId? selectedVisitorId.age :visitorData.support}/>
-      <label className="block text-gray-400 w-full px-3 py-2 border rounded-md cursor-pointer focus:ring-2 focus:ring-amber-500">Upload your Photo<input
-                type="file"
-                accept="image/*"
-                className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none hidden"
-                onChange={(e)=>{setVisitorData({...visitorData,image:e.target.files[0]})}}
-                /></label> 
+      <p className='bg-blue-100 rounded-md flex justify-center items-center cursor-pointer' onClick={() => setIsOpenCam(true)}>Upload Photo</p>
+
+      {isOpenCam && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                      <div className="bg-white p-6 rounded shadow-lg max-w-3xs">
+                        <div className="flex justify-center items-center">
+                        </div>
+                        <h2 className="text-lg font-bold p-2 text-center rounded text-gray-600">Please select methode</h2>
+                        <hr />
+
+                        <div className="flex gap-6 mt-4">
+                        <label className="block text-black w-32 h-20 px-3 py-2 rounded-md cursor-pointer bg-blue-300 hover:bg-blue-400">Upload Photo<span className="material-symbols-outlined text-3xl">
+                          upload_file
+                          </span><input
+                          type="file"
+                          accept="image/*"
+                          className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none hidden"
+                          onChange={(e) => {
+                            if (e.target.files.length > 0) {
+                              setVisitorData({...visitorData, image: e.target.files[0]});
+                            }
+                          }}
+                          /></label> 
+                          <p className='py-2 px-2 w-32 h-20 rounded-md cursor-pointer bg-orange-300 hover:bg-orange-400'  onClick={() => setIsOpen(true)} >Tacke a photo <span className="material-symbols-outlined text-3xl">
+                          photo_camera
+                          </span></p>
+                        </div>
+
+
+                        <div className="flex justify-between gap-4">
+                          <button
+                            className="mt-4 bg-red-300 hover:bg-red-400 text-black px-4 py-2 w-full rounded-lg"
+                            onClick={() => setIsOpenCam(false)}
+                          >
+                            Cancel
+                          </button>
+
+                          
+
+                    {isOpen && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                      <div className="bg-white p-6 rounded shadow-lg max-w-3xs">
+                        <div className="flex justify-center items-center">
+                        </div>
+                        <h2 className="text-lg font-bold p-2 rounded text-gray-600">Please take a photo</h2>
+                        <Webcam
+                          audio={false}
+                          height={720}
+                          ref={webcamRef}
+                          screenshotFormat="image/jpeg"
+                          width={1280}
+                          videoConstraints={videoConstraints}
+                        />
+                        <div className="flex justify-between gap-4">
+                          <button
+                            className="mt-4 bg-red-300 hover:bg-red-400 text-black px-4 py-2 w-full rounded-lg"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            className="mt-4 bg-green-300 text-black hover:bg-green-400 px-4 w-full py-2 rounded-lg"
+                            onClick={capture}
+                          >
+                            Capture
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
       <input type="text" placeholder="Number of days stay" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,numberofstay:e.target.value})}}
             value={selectedVisitorId? selectedVisitorId.numberofstay?.at(-1)?.number :visitorData.numberofstay}/>
             <select 
@@ -272,7 +404,8 @@ const handleAddVisitor = async (e) => {
       <textarea placeholder="Remarks*" rows={1} className="p-2 border rounded col-span-2 focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,remarks:e.target.value})}}
             value={selectedVisitorId? selectedVisitorId.remarks?.at(-1)?.remark :visitorData.remarks}></textarea>
 
-      <button className="col-span-2 bg-amber-600 text-white p-2 rounded-lg hover:bg-amber-700">Submit</button>
+      <button className="col-span-1 bg-red-500 text-white p-2 rounded-lg hover:bg-red-600" onClick={clearForm}>Clear</button>
+      <button className="col-span-1 bg-amber-600 text-white p-2 rounded-lg hover:bg-amber-700" onClick={handleAddVisitor}>Submit</button>
     </form>
   </div>
 
@@ -284,16 +417,95 @@ const handleAddVisitor = async (e) => {
     <div className="space-y-4 overflow-y-auto h-[700px]">
       {AllVisitorsList.length > 0 ? (
         AllVisitorsList.map((visitor, index) => (
-          <div key={visitor._id || index} className="border rounded-lg p-3 hover:bg-gray-50 space-y-1">
-            <p><span className="font-semibold">Name:</span> {visitor.name?.slice(0, 10) || "N/A"}</p>
-            <p><span className="font-semibold">Gender:</span> {visitor.gender || "N/A"}</p>
-            <p><span className="font-semibold">Age:</span> {visitor.age || "N/A"}</p>
-            <p><span className="font-semibold">Aadhaar:</span> {visitor.aadhaar ? visitor.aadhaar : <span className="text-red-500 font-semibold">Not provided</span>}</p>
-            <p><span className="font-semibold">Phone:</span> {visitor.phone || "N/A"}</p>
-            <p><span className="font-semibold">Purpose:</span> {visitor.purposeVisit?.at(-1)?.purpose?.slice(0, 20) || "N/A"}</p>
-            <p><span className="font-semibold">Last Visit:</span> {visitor.currentdate?.at(-1)?.date || "N/A"} -- {visitor.arrivedtime?.at(-1)?.time || "N/A"}</p>
-            <p><span className="font-semibold">Attender:</span> {visitor.attender?.at(-1)?.attender || "N/A"}</p>
-            <p><span className="font-semibold">Remarks:</span> {visitor.remarks?.at(-1)?.remark?.slice(0, 15) || "N/A"}</p>
+          <div key={visitor._id || index} className="border rounded-lg p-3 hover:bg-gray-100 space-y-1">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <img className='object-center bg-cover rounded-md' src={visitor?.image ? `${BASE_URL}/upload/${visitor.image}`: "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg"}alt="" />
+              </div>
+              <div className="">
+              <p className='text-xl text-gray-800'>Address </p>
+              <p className='mb-4 text-gray-600'>{visitor.address || "N/A"}</p>
+              <p className='text-xl text-gray-800'>Aadhaar </p>
+              <p className='mb-4 text-gray-600'>{visitor.aadhaar ? visitor.aadhaar : <span className="text-red-500 font-semibold">Not provided</span>}</p>
+              <p className="text-xl text-gray-800">Gender</p>
+              <p className="mb-4 text-gray-600">{visitor.gender}</p>
+              </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                <p className="text-xl text-gray-800">Name </p>
+              <p className="mb-4 text-gray-600">{visitor.name}</p>
+              <p className="text-xl text-gray-800">Phone</p>
+              <p className="mb-4 text-gray-600">{visitor.phone}</p>
+              <p className="text-xl text-gray-800">Other contact</p>
+              <p className="mb-4 text-gray-600">{visitor.othernumber || "Not provide"}</p>
+              <p className='text-xl text-gray-800'>Purpose of visit </p>
+              <ul className="mb-4 text-gray-600">
+                {
+                  visitor.purposeVisit.map((item,index) =>(
+                    <li key={index}>{index + 1}. {item.purpose}</li>
+                  ))
+                }
+              </ul>
+              <p className="text-xl text-gray-800">Age</p>
+              <p className="mb-4 text-gray-600">{visitor.age}</p>
+              <p className="text-xl text-gray-800">Visit dates</p>
+              <ul className="mb-4 text-gray-600">
+                {
+                  visitor.currentdate.map((item,index)=>(
+                    <li key={index}>{index + 1}. {item.date}</li>
+                  ))
+                }
+              </ul>
+              <p className="text-xl text-gray-800">Remarks</p>
+                <ul className="mb-4 text-gray-600">
+                {
+                  visitor.remarks.map((item,index)=>(
+                    <li key={index}>{index + 1}. {item.remark}</li>
+                  ))
+                }
+              </ul>
+                </div>
+                <div>
+                <p className="text-xl text-gray-800">Visit times</p>
+              <ul className="mb-4 text-gray-600">
+                {
+                  visitor.arrivedtime.map((item,index)=>(
+                    <li key={index}>{index + 1}. {item.time}</li>
+                  ))
+                }
+              </ul>
+              <p className="text-xl text-gray-800">Category</p>
+              <p className="mb-4 text-gray-600">{visitor.category}</p>
+              <p className="text-xl text-gray-800">Number of day</p>
+              <ul className="mb-4 text-gray-600">
+                {
+                  visitor.numberofstay.map((item,index)=>(
+                    <li key={index}>{index + 1}. {item.number || "Not provide"}</li>
+                  ))
+                }
+              </ul>
+              <p className="text-xl text-gray-800">Support given</p>
+              <ul className="mb-4 text-gray-600">
+                {
+                  visitor.support.map((item,index)=>(
+                    <li key={index}>{index + 1}. {item.support}</li>
+                  ))
+                }
+              </ul>
+              <p className="text-xl text-gray-800">Status</p>
+              <p className="mb-4 text-gray-600">{visitor.status}</p>
+              <p className="text-xl text-gray-800">Attend by</p>
+              <ul className="mb-4 text-gray-600">
+                {
+                  visitor.attender.map((item,index)=>(
+                    <li key={index}>{index + 1}. {item.attender}</li>
+                  ))
+                }
+              </ul>
+              </div>
+            </div>
             <div className="flex justify-end gap-4">
             <button className='p-2 bg-red-200 rounded-lg' onClick={handleCancel}>Cancel</button>
             <button className='p-2 bg-green-200 rounded-lg' onClick={() => handleCorrect(visitor)}>Confirm</button>

@@ -25,7 +25,7 @@ const generatePDF = (visitor,setIsOpen) => {
 
     // Photo Section
     doc.rect(10, 40, 40, 40);
-    doc.addImage(visitor?`${BASE_URL}/upload/${visitor.image}`: "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg")
+    doc.addImage(visitor?.image ? `${BASE_URL}/upload/${visitor.image}`: "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg")
 
     // Name and UserId
     doc.setFontSize(13);
@@ -102,7 +102,7 @@ function PdfConvert({ visitorsProp }) {
                             <h2 className="text-lg font-bold bg-gray-100 p-2 rounded">
                                 Download Visitor all Details
                             </h2>
-                            <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 my-8">
+                            <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 my-3">
                             <div className="flex justify-center">
                             <img
                             src={visitorPdf?.image ? `${BASE_URL}/upload/${visitorPdf.image}` 
@@ -114,20 +114,23 @@ function PdfConvert({ visitorsProp }) {
                             </div>
                                 <p className='text-xl'><strong>Name: </strong>{visitorPdf.name}</p>
                                 <p className='text-xl'><strong>aadhaar: </strong>{visitorPdf.aadhaar || " aadhaar not provided"}</p>
-                                <p className='text-xl mb-6'><strong>Number: </strong>{visitorPdf.phone || " phone not provided"}</p>
+                                <p className='text-xl'><strong>Number: </strong>{visitorPdf.phone || " phone not provided"}</p>
+
+                                <div className="flex gap-4 mt-5">
                                 <button
-                                    className="py-2 font-bold tex-black px-4 bg-green-300 hover:bg-green-400 rounded"
+                                className="bg-red-300 hover:bg-red-400 w-full text-black px-4 py-2 rounded"
+                                onClick={() => setIsOpen(false)}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                    className="py-2 w-full font-bold tex-black px-4 bg-green-300 hover:bg-green-400 rounded"
                                     onClick={() => generatePDF(visitorPdf,setIsOpen)}
                                     disabled={!visitorPdf}
                                 >
                                     Download PDF
                                 </button>
-                                <button
-                                className="bg-red-300 hover:bg-red-400 text-black px-4 py-2 rounded"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                Cancel
-                            </button>
+                                </div>
                             </div>
                            
                         </div>
