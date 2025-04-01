@@ -179,3 +179,7 @@ exports.deleteVisitor = async (req, res) => {
         res.status(500).json("Internal Server Error");
     }
 };
+
+exports.updateVisitor=async(req,res)=>{
+    
+}

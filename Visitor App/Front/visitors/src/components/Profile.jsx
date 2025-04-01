@@ -141,7 +141,7 @@ const handilelogOut=async()=>{
                           <div className="p-6 flex justify-center items-center">
                             <div className="m-4 me-10 ">
                               <img
-                                src={profile?`${BASE_URL}/upload/${profile.image}`: ""}
+                                src={profile?`${BASE_URL}/upload/${profile.image}`: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}
                                 alt="Profile"
                                 className="w-64 h-64 object-cover rounded-md border-2 border-gray-300"
                               />

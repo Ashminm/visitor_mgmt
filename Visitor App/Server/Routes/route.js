@@ -28,4 +28,6 @@ router.delete('/delete-visitor/:id',jwtMiddileware,visitorController.deleteVisit
 
 router.post('/new-update-visitor',jwtMiddileware,multerConfig.single('image'),visitorController.addUpdateVisitor)
 
+router.put('/update-visitor',jwtMiddileware,multerConfig.single('image'),visitorController.updateVisitor)
+
 module.exports=router
