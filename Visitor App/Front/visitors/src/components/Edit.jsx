@@ -27,6 +27,8 @@ function Edit({ visitorsProp }) {
     status: visitorsProp.status,
     remarks: visitorsProp?.remarks?.at(-1)?.remark,
   });
+  console.log(visitor);
+  
 
   useEffect(()=>{
     if(sessionStorage.getItem("token")){
@@ -35,8 +37,9 @@ function Edit({ visitorsProp }) {
   
   },[])
 
-  const handleUpdateVisitor=async(e)=>{
+  const handleUpdateVisitor=async(e,id)=>{
     e.preventDefault();
+    console.log(id);
     if (
       !visitor.name ||
       !visitor.gender ||
@@ -77,7 +80,7 @@ function Edit({ visitorsProp }) {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
     };
-    const res=await updateVisitorApi(formData,reqHeader)
+    const res=await updateVisitorApi(formData,reqHeader,id)
     console.log(res);
     if(res.status===200){
       toast.success("Visitor update success!")
@@ -322,7 +325,7 @@ function Edit({ visitorsProp }) {
                 <button onClick={() => setIsEditing(false)} className="bg-green-500 text-white p-2 w-full rounded-lg hover:bg-green-600">
                   Back to view
                 </button>
-                <button type='submit' className="bg-amber-600 text-white p-2 rounded-lg hover:bg-amber-700" onClick={handleUpdateVisitor}>Submit</button>
+                <button type='submit' className="bg-amber-600 text-white p-2 rounded-lg hover:bg-amber-700" onClick={(e) => handleUpdateVisitor(e, visitorsProp._id)}>Submit</button>
               </form>
             )}
         

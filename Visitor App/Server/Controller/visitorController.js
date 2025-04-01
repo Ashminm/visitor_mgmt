@@ -53,15 +53,11 @@ exports.addUpdateVisitor = async (req, res) => {
         if (!phone) {
             return res.status(400).json({ message: "Phone number is required" });
         }
-
         let query = aadhaar 
         ? { $or: [{ phone: phone }, { aadhaar: aadhaar }] } 
         : { phone: phone };
       
       let existingVisitor = await visitors.findOne(query);
-      
-        
-
         if (existingVisitor) {
             // Convert new inputs into array format
             const newPurposeVisit = Array.isArray(purposeVisit) ? purposeVisit.map(purpose => ({ purpose })) : [{ purpose: purposeVisit }];
@@ -181,5 +177,17 @@ exports.deleteVisitor = async (req, res) => {
 };
 
 exports.updateVisitor=async(req,res)=>{
-    
+    const {name,aadhaar,phone,othernumber,gender,category,age,purposeVisit,address,arrivedtime,despachtime,currentdate,support,numberofstay,attender,status,remarks}=req.body;
+    const image = req.file ? req.file.filename : null;
+    const {id}=req.params
+    const userId = req.payload;
+    try{
+        const result=await visitors.findByIdAndUpdate({_id:id},{name,aadhaar,phone,othernumber,gender,category,age,purposeVisit,address,arrivedtime,despachtime,currentdate,support,numberofstay,attender,status,remarks,image,userId})
+        res.status(200).json(result)
+        console.log(result);
+        
+    }catch(err){
+        res.status(401).json(err)
+        console.log(err);  
+    }
 }

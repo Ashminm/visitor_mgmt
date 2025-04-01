@@ -44,8 +44,8 @@ export const DeleteVistorApi = async (headers,id) => {
     return await commonApi("DELETE", `${BASE_URL}/delete-visitor/${id}`,{}, headers);
 };
 
-export const updateVisitorApi = async (data,headers) => {
-    return await commonApi("PUT", `${BASE_URL}/update-visitor`, data,headers);
+export const updateVisitorApi = async (data,headers,id) => {
+    return await commonApi("PUT", `${BASE_URL}/update-visitor/${id}`, data,headers);
 };
 
 // export const VisitorAllApi = async (headers) => {
