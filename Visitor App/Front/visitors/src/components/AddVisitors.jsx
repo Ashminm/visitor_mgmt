@@ -5,8 +5,8 @@ import { BASE_URL } from '../services/BaseURL';
 import toast from "react-hot-toast"
 
 const videoConstraints = {
-  width: 1200,
-  height: 720,
+  width: 900,
+  height: 520,
   facingMode: "user"
 };
 
@@ -388,7 +388,7 @@ const handleAddVisitor = async (e) => {
                       <div className="bg-white p-6 rounded shadow-lg max-w-3xs">
                         <div className="flex justify-center items-center">
                         </div>
-                        <h2 className="text-lg font-bold p-2 rounded text-gray-600">Please take a photo</h2>
+                        <h2 className="text-2xl font-bold p-2 py-1 rounded text-gray-600">Please take a photo</h2>
                         <Webcam
                           audio={false}
                           height={720}
@@ -397,15 +397,15 @@ const handleAddVisitor = async (e) => {
                           width={1280}
                           videoConstraints={videoConstraints}
                         />
-                        <div className="flex justify-between gap-4">
+                        <div className="flex justify-center gap-4">
                           <button
-                            className="mt-4 bg-red-300 hover:bg-red-400 text-black px-4 py-2 w-full rounded-lg"
+                            className="mt-4 bg-red-300 hover:bg-red-400 text-black px-4 py-2 w-40 rounded-lg"
                             onClick={() => setIsOpen(false)}
                           >
                             Cancel
                           </button>
                           <button
-                            className="mt-4 bg-green-300 text-black hover:bg-green-400 px-4 w-full py-2 rounded-lg"
+                            className="mt-4 bg-green-300 text-black hover:bg-green-400 px-4 py-2 w-40 rounded-lg"
                             onClick={capture}
                           >
                             Capture

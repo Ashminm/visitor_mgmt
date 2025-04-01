@@ -12,7 +12,7 @@ const router=new express.Router()
 router.post('/register', multerConfig.single('image'), userController.register);
 router.post('/login',userController.Login)
 
-router.post('/add-visitor',jwtMiddileware,multerConfig.single('image'), visitorController.addVisitor);
+// router.post('/add-visitor',jwtMiddileware,multerConfig.single('image'), visitorController.addVisitor);
 router.get('/all-visitor',jwtMiddileware,visitorController.allVisitors)
 // router.get('/all-users',jwtMiddileware,userController.allUsersforCategory)
 router.get('/get-user',jwtMiddileware,userController.getUserProfile)
