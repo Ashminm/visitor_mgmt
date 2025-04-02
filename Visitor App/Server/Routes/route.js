@@ -29,5 +29,7 @@ router.delete('/delete-visitor/:id',jwtMiddileware,visitorController.deleteVisit
 router.post('/new-update-visitor',jwtMiddileware,multerConfig.single('image'),visitorController.addUpdateVisitor)
 
 router.put('/update-visitor/:id',jwtMiddileware,multerConfig.single('image'),visitorController.updateVisitor)
+router.put('/update-checkout/:id',jwtMiddileware,visitorController.CheckoutUpdate)
+router.put('/forgotte-password/:id',jwtMiddileware,userController.forgottePassword)
 
 module.exports=router

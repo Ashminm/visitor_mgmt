@@ -48,6 +48,14 @@ export const updateVisitorApi = async (data,headers,id) => {
     return await commonApi("PUT", `${BASE_URL}/update-visitor/${id}`, data,headers);
 };
 
+export const updateCheckoutApi = async (data,headers,id) => {
+    return await commonApi("PUT", `${BASE_URL}/update-checkout/${id}`, data,headers);
+};
+
+export const forgottePasswordApi = async (data,headers,id) => {
+    return await commonApi("PUT", `${BASE_URL}/forgotte-password/${id}`, data,headers);
+};
+
 // export const VisitorAllApi = async (headers) => {
 //     return await commonApi("GET", `${BASE_URL}/get-all-visitor`, null, headers);
 // };

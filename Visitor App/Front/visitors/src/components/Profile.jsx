@@ -13,6 +13,7 @@ function Profile() {
   const [photoPreview,setPhotoPreview]=useState('')
   const [profile,setProfile]=useState({
       username:  "",
+      phone: "",
       email:  "",
       password: "",
       image: "",
@@ -43,6 +44,7 @@ useEffect(() => {
   if (Object.keys(userProfile).length > 0) {
     setProfile({
       username: userProfile.username || "",
+      phone: userProfile.phone || "",
       email: userProfile.email || "",
       password: userProfile.password || "",
       image: userProfile.image || "",
@@ -54,11 +56,12 @@ useEffect(() => {
 
 const updateProfile=async(e)=>{
   e.preventDefault();
-  if(!profile.username || !profile.email || !profile.password){
+  if(!profile.username || !profile.phone || !profile.email || !profile.password){
       toast.error("Please fill details")
   }else{
     const formData= new FormData()
     formData.append("username",profile.username);
+    formData.append("phone",profile.phone);
     // formData.append("image",profile.image);
     formData.append("email",profile.email);
     formData.append("password",profile.password);
@@ -112,7 +115,7 @@ const handilelogOut=async()=>{
 
     return (
       <section>
-      <div className="p-7 text-center">
+      <div className="p-7 pt-1 text-center">
         <h1 className="text-2xl">Account Settings</h1>
         <h1>Manage your profile</h1>
       </div>
@@ -143,13 +146,17 @@ const handilelogOut=async()=>{
                               <img
                                 src={profile?`${BASE_URL}/upload/${profile.image}`: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}
                                 alt="Profile"
-                                className="w-64 h-64 object-cover rounded-md border-2 border-gray-300"
+                                className="w-64 h-72 object-cover rounded-md border-2 border-gray-300"
                               />
                             </div>
                             <div>
                               <div className='mb-3'>
                                 <p className='text-lg text-gray-400'> Your Name </p>
                                 <p className='text-md text-gray-600'>{profile.username}</p>
+                              </div>
+                              <div className='mb-3'>
+                                <p className='text-lg text-gray-400'>Your phone number</p>
+                                <p className='text-md text-gray-600'>{profile.phone}</p>
                               </div>
                               <div className='mb-3'>
                                 <p className='text-lg text-gray-400'>Your Email</p>
@@ -229,6 +236,17 @@ const handilelogOut=async()=>{
                                 value={profile.username}
                                 onChange={(e) =>
                                   setProfile({ ...profile, username: e.target.value })
+                                }
+                              />
+                            </div>
+                            <div className="mb-4">
+                              <label className="block text-gray-600">Phone number</label>
+                              <input
+                                type="text"
+                                className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none focus:ring-2 focus:ring-amber-500"
+                                value={profile.phone}
+                                onChange={(e) =>
+                                  setProfile({ ...profile, phone: e.target.value })
                                 }
                               />
                             </div>

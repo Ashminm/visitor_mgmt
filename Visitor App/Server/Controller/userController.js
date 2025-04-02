@@ -8,12 +8,16 @@ exports.register = async (req, res) => {
             return res.status(400).json("No image uploaded!");
         }
         
-        const { username, email, password,addedBy } = req.body;
+        const { username,phone,email, password,addedBy } = req.body;
         const image = req.file.filename;
         const addedByValue = addedBy? addedBy: "Self register"
         const emailExists = await users.findOne({ email });
         if (emailExists) {
             return res.status(406).json("Email already in use!");
+        }
+        const PhoneExists = await users.findOne({ phone });
+        if (PhoneExists) {
+            return res.status(406).json("Phone number already in use!");
         }
 
         const passwordExists = await users.findOne({ password });
@@ -23,6 +27,7 @@ exports.register = async (req, res) => {
 
         const newUser = new users({
             username,
+            phone,
             email,
             password,
             image,
@@ -62,7 +67,7 @@ exports.Login=async(req,res)=>{
 
 exports.profileUpdate = async (req, res) => {
     try {
-        const { username, email, password } = req.body;
+        const { username,phone, email, password } = req.body;
         const image = req.file ? req.file.filename : req.body.image;
         const userId = req.payload;
         if (!userId) {
@@ -75,6 +80,7 @@ exports.profileUpdate = async (req, res) => {
         const updatedUser = await users.findByIdAndUpdate(userId,
             { 
                 username: username || existingUser.username,
+                phone: phone || existingUser.phone,
                 email: email || existingUser.email,
                 password: password || existingUser.password,
                 image: image || existingUser.image,
@@ -110,3 +116,44 @@ exports.allUsersforCategory=async(req,res)=>{
         res.status(401).json(err)
     }
 }
+
+exports.forgottePassword = async (req, res) => {
+    const { email, password, phone } = req.body;
+    const { id } = req.params;
+
+    try {
+        if (email && phone) {
+            const existingUser = await users.findOne({ email, phone });
+            if (!existingUser) {
+                return res.status(401).json({ error: "Invalid Email or Phone" });
+            }
+        } else if (email) {
+            const existingUser = await users.findOne({ email });
+            if (!existingUser) {
+                return res.status(401).json({ error: "Invalid Email" });
+            }
+        } else if (phone) {
+            const existingUser = await users.findOne({ phone });
+            if (!existingUser) {
+                return res.status(401).json({ error: "Invalid Phone" });
+            }
+        } else {
+            return res.status(400).json({ error: "Email or Phone required" });
+        }
+        const updatedUser = await users.findByIdAndUpdate(
+            id, 
+            { password },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        res.status(200).json({ message: "Password updated successfully" });
+
+    } catch (err) {
+        console.error("Forgot password error:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};

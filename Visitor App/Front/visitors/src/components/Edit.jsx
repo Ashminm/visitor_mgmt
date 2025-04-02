@@ -11,7 +11,7 @@ function Edit({ visitorsProp }) {
     name: visitorsProp.name,
     aadhaar: visitorsProp.aadhaar,
     phone: visitorsProp.phone,
-    othernumber: visitorsProp.othernumber,
+    othernumber: visitorsProp.othernumber ? Number(visitorsProp.othernumber) : 0, 
     gender: visitorsProp.gender,
     category: visitorsProp.category,
     age: visitorsProp.age,
@@ -27,9 +27,8 @@ function Edit({ visitorsProp }) {
     status: visitorsProp.status,
     remarks: visitorsProp?.remarks?.at(-1)?.remark,
   });
-  console.log(visitor);
+  // console.log(visitor);
   
-
   useEffect(()=>{
     if(sessionStorage.getItem("token")){
       setToken(sessionStorage.getItem("token"))
@@ -81,16 +80,14 @@ function Edit({ visitorsProp }) {
         Authorization: `Bearer ${token}`,
     };
     const res=await updateVisitorApi(formData,reqHeader,id)
-    console.log(res);
     if(res.status===200){
       toast.success("Visitor update success!")
-      
+      setIsOpen(false)
     }else{
       toast.error("visitor updation faild!")
     }
     }
   }
-
 
   const [activeAccordion, setActiveAccordion] = useState(null);
 
@@ -151,7 +148,9 @@ function Edit({ visitorsProp }) {
                   </div>
                   <div>
                   <p className="text-2xl text-gray-500">Status</p>
-                  <span className="text-lg text-green-500">{visitor.status || "-"}</span>
+                  <span className={`text-lg ${visitor.status === "Check in" ? "text-green-500 font-semibold" : "text-red-500 font-semibold"}`}>
+                    {visitor.status || "-"}
+                  </span>
                 </div>
                 </div>
 
@@ -165,7 +164,7 @@ function Edit({ visitorsProp }) {
                   </div>
                   {activeAccordion === 1 && (
                     <ul className="text-lg text-gray-900 bg-gray-100 rounded-md p-2">
-                      {visitor.purposeVisit.map((item, index) => (
+                      {visitorsProp.purposeVisit.map((item, index) => (
                         <li key={index}>{index + 1}. {item.purpose}</li>
                       ))}
                     </ul>
@@ -181,7 +180,7 @@ function Edit({ visitorsProp }) {
                   </div>
                   {activeAccordion === 2 && (
                     <ul className="text-lg text-gray-900 bg-gray-100 rounded-md p-2">
-                      {visitor.arrivedtime.map((item, index) => (
+                      {visitorsProp.arrivedtime.map((item, index) => (
                         <li key={index}>{index + 1}. {item.time}</li>
                       ))}
                     </ul>
@@ -197,7 +196,7 @@ function Edit({ visitorsProp }) {
                   </div>
                   {activeAccordion === 3 && (
                     <ul className="text-lg text-gray-900 bg-gray-100 rounded-md p-2">
-                      {visitor.despachtime.map((item, index) => (
+                      {visitorsProp.despachtime.map((item, index) => (
                         <li key={index}>{index + 1}. {item.time || "None"}</li>
                       ))}
                     </ul>
@@ -213,7 +212,7 @@ function Edit({ visitorsProp }) {
                   </div>
                   {activeAccordion === 4 && (
                     <ul className="text-lg text-gray-900 bg-gray-100 rounded-md p-2">
-                      {visitor.currentdate.map((item, index) => (
+                      {visitorsProp.currentdate.map((item, index) => (
                         <li key={index}>{index + 1}. {item.date}</li>
                       ))}
                     </ul>
@@ -229,7 +228,7 @@ function Edit({ visitorsProp }) {
                   </div>
                   {activeAccordion === 5 && (
                     <ul className="text-lg text-gray-900 bg-gray-100 rounded-md p-2">
-                      {visitor.support.map((item, index) => (
+                      {visitorsProp.support.map((item, index) => (
                         <li key={index}>{index + 1}. {item.support}</li>
                       ))}
                     </ul>
@@ -245,7 +244,7 @@ function Edit({ visitorsProp }) {
                   </div>
                   {activeAccordion === 6 && (
                     <ul className="text-lg text-gray-900 bg-gray-100 rounded-md p-2">
-                      {visitor.numberofstay.map((item, index) => (
+                      {visitorsProp.numberofstay.map((item, index) => (
                         <li key={index}>{index + 1}. {item.number || "No"}</li>
                       ))}
                     </ul>
@@ -261,7 +260,7 @@ function Edit({ visitorsProp }) {
                   </div>
                   {activeAccordion === 7 && (
                     <ul className="text-lg text-gray-900 bg-gray-100 rounded-md p-2">
-                      {visitor.attender.map((item, index) => (
+                      {visitorsProp.attender.map((item, index) => (
                         <li key={index}>{index + 1}. {item.attender}</li>
                       ))}
                     </ul>
@@ -277,7 +276,7 @@ function Edit({ visitorsProp }) {
                   </div>
                   {activeAccordion === 8 && (
                     <ul className="text-lg text-gray-900 bg-gray-100 rounded-md p-2">
-                      {visitor.remarks.map((item, index) => (
+                      {visitorsProp.remarks.map((item, index) => (
                         <li key={index}>{index + 1}. {item.remark}</li>
                       ))}
                     </ul>
@@ -310,18 +309,15 @@ function Edit({ visitorsProp }) {
                 <input type="date" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>setVisitor({...visitor,currentdate:e.target.value})} defaultValue={visitorsProp?.currentdate?.at(-1)?.date} />
                 <input type="text" placeholder="Support Given*" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>setVisitor({...visitor,support:e.target.value})} defaultValue={visitorsProp?.support?.at(-1)?.support} />
                 <label className="block text-gray-400 w-full px-3 py-2 border rounded-md cursor-pointer focus:ring-2 focus:ring-amber-500">Upload your Photo
-                  <input type="file" accept="image/*" className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none hidden" />
+                  <input type="file" accept="image/*" className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none hidden" onChange={(e)=>setVisitor({...visitor,image:e.target.files[0]})} />
                 </label>
                 <input type="text" placeholder="Number of days stay" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>setVisitor({...visitor,numberofstay:e.target.value})} defaultValue={visitorsProp?.numberofstay?.at(-1)?.number} />
-                <select className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>setVisitor({...visitor,attender:e.target.value})} defaultValue={visitorsProp?.attender?.at(-1)?.attender}>
-                  <option value="">Select Attender*</option>
-                </select>
                 <select className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>setVisitor({...visitor,status:e.target.value})} defaultValue={visitorsProp.status}>
                   <option value="">Status*</option>
-                  <option value="Pending">Check in</option>
+                  <option value="Check in">Check in</option>
                   <option value="Check out">Check out</option>
                 </select>
-                <textarea placeholder="Remarks*" rows={1} className="p-2 border rounded col-span-2 focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>setVisitor({...visitor,remarks:e.target.value})} defaultValue={visitorsProp?.remarks?.at(-1)?.remark}></textarea>
+                <textarea placeholder="Remarks*" rows={1} className="p-2 border rounded col-span-1 focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>setVisitor({...visitor,remarks:e.target.value})} defaultValue={visitorsProp?.remarks?.at(-1)?.remark}></textarea>
                 <button onClick={() => setIsEditing(false)} className="bg-green-500 text-white p-2 w-full rounded-lg hover:bg-green-600">
                   Back to view
                 </button>

@@ -5,6 +5,10 @@ const userSchema=new mongoose.Schema({
         type:String,
         required:true
     },
+    phone:{
+        type:Number,
+        required:true
+    },
     email:{
         type:String,
         required:true,
@@ -21,8 +25,7 @@ const userSchema=new mongoose.Schema({
         required:true
     },
     addedBy:{
-        type:String,
-        required:true
+        type:String
     },
     date:{
         type: Date,

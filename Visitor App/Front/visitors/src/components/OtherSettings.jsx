@@ -11,11 +11,13 @@ function OtherSettings() {
   })
   const [addAttender,setAddAttender]=useState({
     username:"",
+    phone:"",
     image:"",
     email:"",
     password:"",
     addedBy:""
   })
+  
   // console.log(addAttender);
 
 // console.log(addCategory);
@@ -69,11 +71,12 @@ function OtherSettings() {
 
   const handleAddAttender=async(e)=>{
     e.preventDefault();
-    if(!addAttender.username || !addAttender.image || !addAttender.email || !addAttender.password || !addAttender.addedBy){
+    if(!addAttender.username ||!addAttender.phone || !addAttender.image || !addAttender.email || !addAttender.password || !addAttender.addedBy){
       toast.error("Please fill new attender details")
     }else{
       const dataform=new FormData();
       dataform.append("username",addAttender.username);
+      dataform.append("phone",addAttender.phone);
       dataform.append("image",addAttender.image);
       dataform.append("email",addAttender.email);
       dataform.append("password",addAttender.password);
@@ -112,6 +115,7 @@ function OtherSettings() {
           <label htmlFor="" className='block text-gray-400 w-full px-3 py-2 bg-white border outline-none rounded-md cursor-pointer focus:ring-2 focus:ring-amber-500'>Attender photo*
           <input type="file" className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none " accept="image/*" onChange={(e)=>setAddAttender({...addAttender,image:e.target.files[0]})} />
           </label>
+          <input type="number" placeholder="Phone*" className="w-full p-2 border rounded" autoComplete="phone" onChange={(e)=>setAddAttender({...addAttender,phone:e.target.value})} value={addAttender.phone}  />
           <input type="email" placeholder="Email*" className="w-full p-2 border rounded" autoComplete="email" onChange={(e)=>setAddAttender({...addAttender,email:e.target.value})} value={addAttender.email}  />
           <input type="password" placeholder="Password*" className="w-full p-2 border rounded" autoComplete="current-password" onChange={(e)=>setAddAttender({...addAttender,password:e.target.value})} value={addAttender.password}  />
           <select className="w-full p-2 border rounded" onChange={(e)=>setAddAttender({...addAttender,addedBy:e.target.value})} value={addAttender.addedBy} >

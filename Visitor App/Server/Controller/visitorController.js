@@ -98,7 +98,6 @@ exports.addUpdateVisitor = async (req, res) => {
             const formattedAttender = Array.isArray(attender) ? attender.map(a => ({ attender: a })) : [{ attender }];
             const formattedRemarks = Array.isArray(remarks) ? remarks.map(r => ({ remark: r })) : [{ remark: remarks }];
 
-            // Create a new visitor
             const newVisitor = new visitors({
                 name, aadhaar, phone, othernumber, gender, category, age,address,
                 purposeVisit: formattedPurposeVisit,
@@ -156,7 +155,6 @@ exports.allVisitors=async(req,res)=>{
     }
 }
 
-
 exports.deleteVisitor = async (req, res) => {
     const { id } = req.params;
     console.log("params Id:", id);
@@ -176,18 +174,76 @@ exports.deleteVisitor = async (req, res) => {
     }
 };
 
-exports.updateVisitor=async(req,res)=>{
-    const {name,aadhaar,phone,othernumber,gender,category,age,purposeVisit,address,arrivedtime,despachtime,currentdate,support,numberofstay,attender,status,remarks}=req.body;
+exports.updateVisitor = async (req, res) => {
+    const {
+        name, aadhaar, phone, othernumber, gender, category, age, purposeVisit,
+        address, arrivedtime, despachtime, currentdate, support,
+        numberofstay, attender, status, remarks
+    } = req.body;
+
     const image = req.file ? req.file.filename : null;
-    const {id}=req.params
+    const { id } = req.params;
     const userId = req.payload;
+
+    try {
+        const existingVisitor = await visitors.findById(id);
+        if (!existingVisitor) {
+            return res.status(404).json({ message: "Visitor not found" });
+        }
+
+        // Function to update the last element in an array
+        const updateLastArrayItem = (array, key, newValue) => {
+            if (array.length > 0) {
+                array[array.length - 1][key] = newValue;
+            }
+        };
+
+        // Update the last object in each array field if a new value is provided
+        if (purposeVisit) updateLastArrayItem(existingVisitor.purposeVisit, "purpose", purposeVisit);
+        if (arrivedtime) updateLastArrayItem(existingVisitor.arrivedtime, "time", arrivedtime);
+        if (despachtime) updateLastArrayItem(existingVisitor.despachtime, "time", despachtime);
+        if (currentdate) updateLastArrayItem(existingVisitor.currentdate, "date", currentdate);
+        if (support) updateLastArrayItem(existingVisitor.support, "support", support);
+        if (numberofstay) updateLastArrayItem(existingVisitor.numberofstay, "number", numberofstay);
+        if (attender) updateLastArrayItem(existingVisitor.attender, "attender", attender);
+        if (remarks) updateLastArrayItem(existingVisitor.remarks, "remark", remarks);
+
+        // Update other fields
+        existingVisitor.name = name || existingVisitor.name;
+        existingVisitor.aadhaar = aadhaar || existingVisitor.aadhaar;
+        existingVisitor.phone = phone || existingVisitor.phone;
+        existingVisitor.othernumber = othernumber || existingVisitor.othernumber;
+        existingVisitor.gender = gender || existingVisitor.gender;
+        existingVisitor.category = category || existingVisitor.category;
+        existingVisitor.age = age || existingVisitor.age;
+        existingVisitor.address = address || existingVisitor.address;
+        existingVisitor.status = status || existingVisitor.status;
+        existingVisitor.userId = userId || existingVisitor.userId;
+
+        // Update image if a new one is provided
+        if (image) {
+            existingVisitor.image = image;
+        }
+
+        const updatedVisitor = await existingVisitor.save();
+
+        res.status(200).json({
+            message: "Visitor details updated successfully",
+            updatedVisitor
+        });
+    } catch (err) {
+        console.error("Error updating visitor:", err);
+        res.status(500).json({ message: "Update failed", error: err.message });
+    }
+};
+
+exports.CheckoutUpdate=async(req,res)=>{
+    const {status}=req.body
+    const {id}=req.params
     try{
-        const result=await visitors.findByIdAndUpdate({_id:id},{name,aadhaar,phone,othernumber,gender,category,age,purposeVisit,address,arrivedtime,despachtime,currentdate,support,numberofstay,attender,status,remarks,image,userId})
+        const result= await visitors.findByIdAndUpdate({_id:id},{status},{ new: true })
         res.status(200).json(result)
-        console.log(result);
-        
     }catch(err){
         res.status(401).json(err)
-        console.log(err);  
     }
 }

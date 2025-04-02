@@ -4,8 +4,10 @@ import Profile from "./Profile";
 import AddVisitors from "./AddVisitors";
 import AllVisitors from "./AllVisitors";
 import OtherSettings from "./OtherSettings";
-import { getUserSpecificApi,getAllvisitorApi } from "../services/AllApis";
+import { getUserSpecificApi,getAllvisitorApi,updateCheckoutApi } from "../services/AllApis";
 import Delete from "./Delete";
+import toast from "react-hot-toast";
+
 
 function Home() {
   const [token, setToken] = useState("");
@@ -53,6 +55,21 @@ function Home() {
 // console.log(nameUser.username);
 // console.log(allVisitors[1]);
 
+const handleCheckOut=async(id)=>{
+  let checkout = { status: "Check out" };
+  const reqHeaders = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+  const res=await updateCheckoutApi(checkout,reqHeaders,id)
+  if(res.status===200){
+    toast.success("Check out")
+    getVisitors()
+  }else{
+    toast.error("Check out faild!")
+  }
+  
+}
 
 
   return (
@@ -127,7 +144,7 @@ function Home() {
           </div>
         </div>
         <div className="flex mt-6 gap-3">
-          <button className="px-5 py-2 bg-green-300 text-black rounded-lg hover:bg-green-400 transition-all duration-300">
+          <button className="px-5 py-2 bg-green-300 text-black rounded-lg hover:bg-green-400 transition-all duration-300" onClick={()=>handleCheckOut(item._id)}>
             Check out
           </button>
           <div className="border px-2 rounded-md bg-red-200 hover:bg-red-300"><Delete visitorsProp={item._id} onDeleteSuccess={getVisitors}/></div>
