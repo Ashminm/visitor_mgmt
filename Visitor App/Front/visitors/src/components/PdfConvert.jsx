@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
 import { BASE_URL } from '../services/BaseURL';
 
-const generatePDF = (visitor,setIsOpen) => {
+const generatePDF =async (visitor,setIsOpen) => {
     if (!visitor) {
         console.error("Visitor data is missing!");
         return;
@@ -14,28 +14,47 @@ const generatePDF = (visitor,setIsOpen) => {
     doc.setFontSize(11);
     doc.text(`Advaithashramam`, 160, 25);
 
-    // Title
     doc.setFontSize(18);
     doc.text("Visitor Details", 80, 15);
     doc.line(10, 20, 200, 20);
 
-    // Date, Address, and ID
     doc.setFontSize(11);
     doc.text(`Date: ${today || "____/____/____"}`, 160, 15);
 
-    // Photo Section
-    doc.rect(10, 40, 40, 40);
-    doc.addImage(visitor?.image ? `${BASE_URL}/upload/${visitor.image}`: "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg")
+    try {
+        const imgUrl = visitor?.image 
+            ? `${BASE_URL}/upload/${visitor.image}`
+            : "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg";
+        
+        const img = await new Promise((resolve) => {
+            const image = new Image();
+            image.crossOrigin = "Anonymous";
+            image.src = imgUrl;
+            image.onload = () => resolve(image);
+            image.onerror = () => {
+                console.warn("Failed to load image, using fallback");
+                resolve(new Image());
+            };
+        });
 
-    // Name and UserId
+        doc.rect(10, 40, 40, 40);
+        if (img.src) {
+            doc.addImage(img, 'JPEG', 10, 40, 40, 40);
+        } else {
+            doc.text("No Photo", 15, 60);
+        }
+    } catch (error) {
+        console.error("Error loading image:", error);
+        doc.rect(10, 40, 40, 40);
+        doc.text("Photo Error", 15, 60);
+    }
+
     doc.setFontSize(13);
     doc.text(`Name: ${visitor.name || "____________________"}`, 60, 45)
     doc.setFontSize(7);
     doc.text(`Date of visit: ${visitor.currentdate?.at(-1)?.date || "____/____/____"}`, 60, 53);
     doc.text(`ID: ${visitor.userId || "ID is missing"}`, 60, 60);
    
-
-    // Contact Details
     doc.setFillColor(240, 240, 240);
     doc.rect(10, 85, 60, 10, 'F');
     doc.setFontSize(14); // Set title font size
@@ -46,7 +65,6 @@ const generatePDF = (visitor,setIsOpen) => {
     doc.text(`Other number: ${visitor.othernumber || "____________________"}`, 10, 125);
     doc.text(`Address: ${visitor.address || "____________________"}`, 10, 135);
 
-    // Visit Details
     doc.setFillColor(240, 240, 240);
     doc.rect(10, 145, 60, 10, 'F');
     doc.setFontSize(14);
@@ -60,7 +78,6 @@ const generatePDF = (visitor,setIsOpen) => {
     doc.text(`Arrived time: ${visitor.arrivedtime?.at(-1)?.time || "____________________"}`, 10, 215);
     doc.text(`Dispatch time: ${visitor.dispatchtime?.at(-1)?.time || "____________________"}`, 10, 225);
 
-    // Other Details
     doc.setFillColor(240, 240, 240);
     doc.rect(10, 235, 60, 10, 'F');
     doc.setFontSize(14);
@@ -70,10 +87,8 @@ const generatePDF = (visitor,setIsOpen) => {
     doc.text(`Support given: ${visitor.support?.at(-1)?.support || "____________________"}`, 10, 265);
     doc.text(`Remarks: ${visitor.remarks?.at(-1)?.remark || "____________________"}`, 10, 275);
 
-    // Signature
     doc.text("Signature of attender ", 120, 285);
 
-    // Save PDF
     doc.save(`${visitor.name}_details.pdf`);
     setTimeout(() => {
         setIsOpen(false);
@@ -131,8 +146,7 @@ function PdfConvert({ visitorsProp }) {
                                     Download PDF
                                 </button>
                                 </div>
-                            </div>
-                           
+                            </div> 
                         </div>
                     </div>
                 )}

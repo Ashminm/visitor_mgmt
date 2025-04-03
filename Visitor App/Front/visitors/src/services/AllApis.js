@@ -56,6 +56,10 @@ export const forgottePasswordApi = async (data,headers,id) => {
     return await commonApi("PUT", `${BASE_URL}/forgotte-password/${id}`, data,headers);
 };
 
+export const DeleteAccountApi = async (headers,id) => {
+    return await commonApi("DELETE", `${BASE_URL}/delete-account/${id}`,{}, headers);
+};
+
 // export const VisitorAllApi = async (headers) => {
 //     return await commonApi("GET", `${BASE_URL}/get-all-visitor`, null, headers);
 // };

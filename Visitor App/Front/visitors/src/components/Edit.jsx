@@ -1,12 +1,13 @@
 import React, { useState,useEffect } from 'react';
 import { BASE_URL } from '../services/BaseURL';
 import toast from "react-hot-toast";
-import { updateVisitorApi } from '../services/AllApis';
+import { updateVisitorApi,allCategoryApi } from '../services/AllApis';
 
 function Edit({ visitorsProp }) {
   const [token, setToken] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [allcategory,setAllCategory]=useState([])
   const [visitor, setVisitor] = useState({
     name: visitorsProp.name,
     aadhaar: visitorsProp.aadhaar,
@@ -88,6 +89,22 @@ function Edit({ visitorsProp }) {
     }
     }
   }
+  useEffect(() => {
+    if (token) {
+      getAllcategory();
+    }
+  }, [token]);
+
+  const getAllcategory = async () => {
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
+      const res = await allCategoryApi(headers); 
+      if (res.status === 200) {
+        setAllCategory(res.data);
+      }
+  };
 
   const [activeAccordion, setActiveAccordion] = useState(null);
 
@@ -107,7 +124,7 @@ function Edit({ visitorsProp }) {
 
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded shadow-lg w-full max-w-2xl">
+          <div className="bg-slate-100 p-6 rounded shadow-lg w-full max-w-2xl">
             <div className="flex justify-between items-center">
               <h2 className="text-lg font-bold bg-gray-100 p-2 px-6 rounded mb-5">View and Edit Visitor Details</h2>
               <div className="flex justify-between gap-5">
@@ -156,14 +173,14 @@ function Edit({ visitorsProp }) {
 
                 {/* Accordion Sections Start */}
                 <div className="accordion-section">
-                  <div className="accordion-header  py-2 px-3 rounded-md bg-gray-100 cursor-pointer flex justify-between items-center" onClick={() => toggleAccordion(1)}>
+                  <div className="accordion-header border py-2 px-3 rounded-md bg-gray-100 cursor-pointer flex justify-between items-center" onClick={() => toggleAccordion(1)}>
                     <p className="text-2xl text-gray-500">Purpose of Visit</p>
                     <span className="material-symbols-outlined text-2xl">
                       expand_all
                     </span>
                   </div>
                   {activeAccordion === 1 && (
-                    <ul className="text-lg text-gray-900 bg-gray-100 rounded-md p-2">
+                    <ul className="text-lg text-gray-900 bg-gray-100 border rounded-md p-2">
                       {visitorsProp.purposeVisit.map((item, index) => (
                         <li key={index}>{index + 1}. {item.purpose}</li>
                       ))}
@@ -172,14 +189,14 @@ function Edit({ visitorsProp }) {
                 </div>
 
                 <div className="accordion-section">
-                  <div className="accordion-header py-2 px-3 rounded-md bg-gray-100 cursor-pointer flex justify-between items-center" onClick={() => toggleAccordion(2)}>
+                  <div className="accordion-header border py-2 px-3 rounded-md bg-gray-100 cursor-pointer flex justify-between items-center" onClick={() => toggleAccordion(2)}>
                     <p className="text-2xl text-gray-500">Arrived Time</p>
                     <span className="material-symbols-outlined text-2xl">
                       expand_all
                     </span>
                   </div>
                   {activeAccordion === 2 && (
-                    <ul className="text-lg text-gray-900 bg-gray-100 rounded-md p-2">
+                    <ul className="text-lg text-gray-900 bg-gray-100 border rounded-md p-2">
                       {visitorsProp.arrivedtime.map((item, index) => (
                         <li key={index}>{index + 1}. {item.time}</li>
                       ))}
@@ -188,14 +205,14 @@ function Edit({ visitorsProp }) {
                 </div>
 
                 <div className="accordion-section">
-                  <div className="accordion-header py-2 px-3 rounded-md bg-gray-100 cursor-pointer flex justify-between items-center" onClick={() => toggleAccordion(3)}>
+                  <div className="accordion-header border py-2 px-3 rounded-md bg-gray-100 cursor-pointer flex justify-between items-center" onClick={() => toggleAccordion(3)}>
                     <p className="text-2xl text-gray-500">Despatch Time</p>
                     <span className="material-symbols-outlined text-2xl">
                       expand_all
                     </span>
                   </div>
                   {activeAccordion === 3 && (
-                    <ul className="text-lg text-gray-900 bg-gray-100 rounded-md p-2">
+                    <ul className="text-lg text-gray-900 bg-gray-100 border rounded-md p-2">
                       {visitorsProp.despachtime.map((item, index) => (
                         <li key={index}>{index + 1}. {item.time || "None"}</li>
                       ))}
@@ -204,14 +221,14 @@ function Edit({ visitorsProp }) {
                 </div>
 
                 <div className="accordion-section">
-                  <div className="accordion-header py-2 px-3 rounded-md bg-gray-100 cursor-pointer flex justify-between items-center" onClick={() => toggleAccordion(4)}>
+                  <div className="accordion-header border py-2 px-3 rounded-md bg-gray-100 cursor-pointer flex justify-between items-center" onClick={() => toggleAccordion(4)}>
                     <p className="text-2xl text-gray-500">Date</p>
                     <span className="material-symbols-outlined text-2xl">
                       expand_all
                     </span>
                   </div>
                   {activeAccordion === 4 && (
-                    <ul className="text-lg text-gray-900 bg-gray-100 rounded-md p-2">
+                    <ul className="text-lg text-gray-900 bg-gray-100 border rounded-md p-2">
                       {visitorsProp.currentdate.map((item, index) => (
                         <li key={index}>{index + 1}. {item.date}</li>
                       ))}
@@ -220,14 +237,14 @@ function Edit({ visitorsProp }) {
                 </div>
 
                 <div className="accordion-section">
-                  <div className="accordion-header py-2 px-3 rounded-md bg-gray-100 cursor-pointer flex justify-between items-center" onClick={() => toggleAccordion(5)}>
+                  <div className="accordion-header border py-2 px-3 rounded-md bg-gray-100 cursor-pointer flex justify-between items-center" onClick={() => toggleAccordion(5)}>
                     <p className="text-2xl text-gray-500">Support Given</p>
                     <span className="material-symbols-outlined text-2xl">
                       expand_all
                     </span>
                   </div>
                   {activeAccordion === 5 && (
-                    <ul className="text-lg text-gray-900 bg-gray-100 rounded-md p-2">
+                    <ul className="text-lg text-gray-900 bg-gray-100 border rounded-md p-2">
                       {visitorsProp.support.map((item, index) => (
                         <li key={index}>{index + 1}. {item.support}</li>
                       ))}
@@ -236,14 +253,14 @@ function Edit({ visitorsProp }) {
                 </div>
 
                 <div className="accordion-section">
-                  <div className="accordion-header py-2 px-3 rounded-md bg-gray-100 cursor-pointer flex justify-between items-center" onClick={() => toggleAccordion(6)}>
+                  <div className="accordion-header border py-2 px-3 rounded-md bg-gray-100 cursor-pointer flex justify-between items-center" onClick={() => toggleAccordion(6)}>
                     <p className="text-2xl text-gray-500">Number of Stay</p>
                     <span className="material-symbols-outlined text-2xl">
                       expand_all
                     </span>
                   </div>
                   {activeAccordion === 6 && (
-                    <ul className="text-lg text-gray-900 bg-gray-100 rounded-md p-2">
+                    <ul className="text-lg text-gray-900 bg-gray-100 border rounded-md p-2">
                       {visitorsProp.numberofstay.map((item, index) => (
                         <li key={index}>{index + 1}. {item.number || "No"}</li>
                       ))}
@@ -252,14 +269,14 @@ function Edit({ visitorsProp }) {
                 </div>
 
                 <div className="accordion-section">
-                  <div className="accordion-header py-2 px-3 rounded-md bg-gray-100 cursor-pointer flex justify-between items-center" onClick={() => toggleAccordion(7)}>
+                  <div className="accordion-header border py-2 px-3 rounded-md bg-gray-100 cursor-pointer flex justify-between items-center" onClick={() => toggleAccordion(7)}>
                     <p className="text-2xl text-gray-500 ">Attended By</p>
                     <span className="material-symbols-outlined text-2xl">
                       expand_all
                     </span>
                   </div>
                   {activeAccordion === 7 && (
-                    <ul className="text-lg text-gray-900 bg-gray-100 rounded-md p-2">
+                    <ul className="text-lg text-gray-900 bg-gray-100 border rounded-md p-2">
                       {visitorsProp.attender.map((item, index) => (
                         <li key={index}>{index + 1}. {item.attender}</li>
                       ))}
@@ -268,14 +285,14 @@ function Edit({ visitorsProp }) {
                 </div>
       
                 <div className="accordion-section">
-                  <div className="accordion-header py-2 px-3 rounded-md bg-gray-100 cursor-pointer flex justify-between items-center" onClick={() => toggleAccordion(8)}>
+                  <div className="accordion-header border py-2 px-3 rounded-md bg-gray-100 cursor-pointer flex justify-between items-center" onClick={() => toggleAccordion(8)}>
                     <p className="text-2xl text-gray-500 ">Remarks</p>
                     <span className="material-symbols-outlined text-2xl">
                       expand_all
                     </span>
                   </div>
                   {activeAccordion === 8 && (
-                    <ul className="text-lg text-gray-900 bg-gray-100 rounded-md p-2">
+                    <ul className="text-lg text-gray-900 bg-gray-100 border rounded-md p-2">
                       {visitorsProp.remarks.map((item, index) => (
                         <li key={index}>{index + 1}. {item.remark}</li>
                       ))}
@@ -298,6 +315,11 @@ function Edit({ visitorsProp }) {
                 </select>
                 <select className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>setVisitor({...visitor,category:e.target.value})} defaultValue={visitorsProp.category}>
                   <option value="">Select Category*</option>
+                  {allcategory.map((category, index) => (
+            <option key={index} value={category.categoryName}>
+                {category.categoryName}
+            </option>
+        ))}
                 </select>
                 <input type="number" placeholder="Age*" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>setVisitor({...visitor,age:e.target.value})} defaultValue={visitorsProp.age} />
                 <input type="text" placeholder="Purpose of Visit*" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>setVisitor({...visitor,purposeVisit:e.target.value})} defaultValue={visitorsProp?.purposeVisit?.at(-1)?.purpose} />

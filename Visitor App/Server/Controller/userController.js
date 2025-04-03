@@ -157,3 +157,13 @@ exports.forgottePassword = async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
+
+exports.deleteAccont=async(req,res)=>{
+    const { id } = req.params;
+    try{
+        const userData = await users.findByIdAndDelete(id);
+        res.status(200).json(userData)
+    }catch(err){
+        res.status(401).json(err) 
+    }
+}

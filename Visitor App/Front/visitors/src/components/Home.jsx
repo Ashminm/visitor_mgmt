@@ -79,10 +79,10 @@ const handleCheckOut=async(id)=>{
             <img src={logo} className='w-11' alt="" />
             </div>
             <div>
-            <div className="w-screen max-w-3xl h-auto flex flex-col">
+            <div className="w-screen max-w-2xl h-auto flex flex-col">
         {/* Tab Navigation */}
         <div className="flex h-16 items-center cursor-pointer">
-          {["home", "add-visitor", "all-visitors","other-settings","profile-settings"].map((tab) => (
+          {["home", "add-visitor", "all-visitors","profile-settings"].map((tab) => (
             <button
               key={tab}
               className={`flex-1 py-3 text-center capitalize ${
@@ -162,7 +162,6 @@ const handleCheckOut=async(id)=>{
           )}
           {activeTab === "add-visitor" && <AddVisitors />}
           {activeTab === "all-visitors" && <AllVisitors />}
-          {activeTab === "other-settings" && <OtherSettings />}
           {activeTab === "profile-settings" && <Profile />}
         </div>
     </div>

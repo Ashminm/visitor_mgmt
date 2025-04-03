@@ -5,8 +5,8 @@ import { BASE_URL } from '../services/BaseURL';
 import toast from "react-hot-toast"
 
 const videoConstraints = {
-  width: 900,
-  height: 520,
+  width: 460,
+  height: 460,
   facingMode: "user"
 };
 
@@ -249,22 +249,9 @@ const handleAddVisitor = async (e) => {
     }  
 
     const handleCorrect = (visitor) => {
-      if (selectedVisitorId) {
-          toast.success('Already fille the form');
-      } else {
-          setSelectedVisitorId(visitor);
-      }
+      setSelectedVisitorId(visitor);
   };
   
-  const handleCancel = () => {
-      if (!selectedVisitorId) {
-          toast.error('Already clear the form');
-      } else {
-          setSelectedVisitorId(null);
-      }
-  };
-
-
   const clearForm = (e) => {
     e.preventDefault();
     const hasData = Object.values(visitorData).some(value => value && value.trim() !== "");
@@ -339,8 +326,9 @@ const handleAddVisitor = async (e) => {
             value={visitorData.address}></textarea>
       <label htmlFor="">Arrived Time*</label>
       <input type="time" placeholder="Arrived Time" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" value={visitorData.arrivedtime} onChange={(e)=>{setVisitorData({...visitorData,arrivedtime:e.target.value})}}/>
-      <label htmlFor="">Despatch Time</label>
-      <input type="time" placeholder="Departed Time" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" value={visitorData.despachtime} onChange={(e)=>{setVisitorData({...visitorData,despachtime:e.target.value})}}/>
+      {/* <label htmlFor="">Despatch Time</label>
+      <input type="time" placeholder="Departed Time" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" value={visitorData.despachtime} onChange={(e)=>{setVisitorData({...visitorData,despachtime:e.target.value})}}/> */}
+      <label htmlFor="">Date*</label>
       <input type="date" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,currentdate:e.target.value})}}
             value={visitorData.currentdate} />
       <input type="text" placeholder="Support Given*" className="p-2 border rounded focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,support:e.target.value})}} value={visitorData.support}/>
@@ -388,13 +376,13 @@ const handleAddVisitor = async (e) => {
                       <div className="bg-white p-6 rounded shadow-lg max-w-3xs">
                         <div className="flex justify-center items-center">
                         </div>
-                        <h2 className="text-2xl font-bold p-2 py-1 rounded text-gray-600">Please take a photo</h2>
+                        <h2 className="text-2xl font-bold px-2 text-center py-3 rounded text-gray-600">Please take a photo</h2>
                         <Webcam
                           audio={false}
-                          height={720}
+                          height={460}
                           ref={webcamRef}
                           screenshotFormat="image/jpeg"
-                          width={1280}
+                          width={460}
                           videoConstraints={videoConstraints}
                         />
                         <div className="flex justify-center gap-4">
@@ -433,11 +421,11 @@ const handleAddVisitor = async (e) => {
         <option value="Check in">Check in</option>
         <option value="Check out">Check out</option> 
       </select>
-      <textarea placeholder="Remarks*" rows={1} className="p-2 border rounded col-span-2 focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,remarks:e.target.value})}}
+      <textarea placeholder="Remarks*" rows={1} className="p-2 border rounded col-span-1 focus:ring-amber-500 focus:ring-2 outline-none" onChange={(e)=>{setVisitorData({...visitorData,remarks:e.target.value})}}
             value={visitorData.remarks}></textarea>
 
-      <button className="col-span-1 bg-red-500 text-white p-2 rounded-lg hover:bg-red-600" onClick={clearForm}>Clear</button>
-      <button className="col-span-1 bg-amber-600 text-white p-2 rounded-lg hover:bg-amber-700" onClick={handleAddVisitor}>Submit</button>
+      <button className="col-span-1 bg-red-400 text-black p-2 rounded-lg hover:bg-red-500" onClick={clearForm}>Clear</button>
+      <button className="col-span-1 bg-orange-400 text-black p-2 rounded-lg hover:bg-orange-500" onClick={handleAddVisitor}>Submit</button>
     </form>
   </div>
 
@@ -539,7 +527,6 @@ const handleAddVisitor = async (e) => {
               </div>
             </div>
             <div className="flex justify-end gap-4">
-            <button className='p-2 bg-red-200 rounded-lg' onClick={handleCancel}>Cancel</button>
             <button className='p-2 bg-green-200 rounded-lg' onClick={() => handleCorrect(visitor)}>Confirm</button>
 
             </div>

@@ -1,8 +1,9 @@
 import React, { useState,useEffect } from 'react';
-import { getUserSpecificApi,updateProfileApi } from '../services/AllApis';
+import { DeleteAccountApi, getUserSpecificApi,updateProfileApi } from '../services/AllApis';
 import { BASE_URL } from '../services/BaseURL';
 import { useNavigate } from 'react-router-dom';
 import toast from "react-hot-toast"
+import OtherSettings from './OtherSettings';
 
 function Profile() { 
   const [token, setToken] = useState("");
@@ -20,7 +21,7 @@ function Profile() {
       addedBy: "",
       date: ""
   })
-
+  
 useEffect(()=>{
   if(sessionStorage.getItem("token")){
     setToken(sessionStorage.getItem("token"))
@@ -111,19 +112,38 @@ const handilelogOut=async()=>{
     const handleCancel = () =>{
       setIsEditing(false);
     } 
+
+  const deleteAccount=async()=>{
+    let id = userProfile._id
+    const reqHeaders = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
+    const res=await DeleteAccountApi(reqHeaders,id)
+    if(res.status===200){
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("role");
+      setToken("");
+      setUserProfile({});
+      navigate('/')
+      toast.success("Delete your account!")
+    }else{
+      toast.error("Account deletion faild!")
+    }
+  }
     
 
     return (
       <section>
       <div className="p-7 pt-1 text-center">
-        <h1 className="text-2xl">Account Settings</h1>
-        <h1>Manage your profile</h1>
+        <h1 className="text-2xl">Your account</h1>
+        <h1 className='text-gray-500'>Manage your profile</h1>
       </div>
 
          <div className="w-screen h-auto flex">
                 {/* Sidebar Navigation (Vertical Tabs) */}
                 <div className="w-1/4 flex flex-col items-start space-y-2 p-4 border-e-2">
-                  {["profile","dashboard" ,"settings"].map((tab) => (
+                  {["profile","dashboard" ,"account"].map((tab) => (
                     <button
                       key={tab}
                       className={`w-full py-3 text-left capitalize ${
@@ -298,10 +318,10 @@ const handilelogOut=async()=>{
                     </div>
                     )}
                     {activeTab === "dashboard" && (
-                      <h1>Dashboard</h1>
+                      <OtherSettings/>
                     )}
-                    {activeTab === "settings" && (
-                      <h1>settings</h1>
+                    {activeTab === "account" && (
+                      <button className='border' onClick={deleteAccount}>Delete</button>
                     )}
 
   {/* Content Area */}

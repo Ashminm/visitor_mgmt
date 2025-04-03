@@ -101,10 +101,6 @@ function OtherSettings() {
 
   return (
     <div>
-      <div className="p-7 text-center">
-        <h1 className='text-2xl'>Other Settings</h1>
-        <h1>Adding for new attander, new category</h1>
-      </div>
       <section>
       <div className="flex flex-col md:flex-row gap-6 p-6 max-w-4xl mx-auto">
       {/* Add New Attender Section  */}
@@ -122,12 +118,13 @@ function OtherSettings() {
             <option value="">Added by*</option>
             {attender && <option value={attender}>{attender}</option>}
           </select>
-          <button type="submit" className="w-full bg-amber-600 text-white p-2 rounded hover:bg-amber-700">Submit</button>
+          <button type="submit" className="w-full bg-orange-400 text-white p-2 rounded hover:bg-orange-500">Submit</button>
         </form>
       </div>
 
       {/* Add Category Section */}
-      <div className="w-full md:w-1/2 bg-slate-100 rounded-lg p-6">
+      <div className="w-full md:w-1/2">
+        <div className='p-6 bg-slate-100 rounded-lg py-7'>
         <h2 className="text-xl font-semibold mb-6">Add New Category</h2>
         <form className="space-y-4" onSubmit={handleCategoryAdd}>
         <input type="text" placeholder='Category Name*'  className="w-full p-2 border rounded" onChange={(e)=>{setAddCategory({...addCategory,categoryName:e.target.value})}}
@@ -137,8 +134,9 @@ function OtherSettings() {
             {attender && <option value={attender}>{attender}</option>}
           </select>
           
-          <button type="submit" className="w-full bg-amber-600 text-white p-2 rounded hover:bg-amber-700">Submit</button>
+          <button type="submit" className="w-full bg-orange-400 text-white p-2 rounded hover:bg-orange-500">Submit</button>
         </form>
+        </div>
       </div>
     </div>
       </section>
