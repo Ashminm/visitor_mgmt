@@ -78,7 +78,7 @@ const handleLogin=async(e)=>{
         password: "",
         image: "",
       });
-      navigate('/home')
+      navigate('/home', { replace: true })
     }
     else {
       toast.error(`Login failed: ${res.data}`);

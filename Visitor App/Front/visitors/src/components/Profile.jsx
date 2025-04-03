@@ -8,6 +8,7 @@ import OtherSettings from './OtherSettings';
 function Profile() { 
   const [token, setToken] = useState("");
   const [userProfile,setUserProfile]=useState({})
+  const [isDelete, setIsDelete] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
 
@@ -101,7 +102,7 @@ const handilelogOut=async()=>{
   setToken("");
   setUserProfile({});
   toast.success('Logout successfull!')
-  navigate('/')
+  navigate('/',{ replace: true })
 }
 
     const navigate=useNavigate()
@@ -125,7 +126,7 @@ const handilelogOut=async()=>{
       sessionStorage.removeItem("role");
       setToken("");
       setUserProfile({});
-      navigate('/')
+      navigate('/',{ replace: true })
       toast.success("Delete your account!")
     }else{
       toast.error("Account deletion faild!")
@@ -139,9 +140,8 @@ const handilelogOut=async()=>{
         <h1 className="text-2xl">Your account</h1>
         <h1 className='text-gray-500'>Manage your profile</h1>
       </div>
-
          <div className="w-screen h-auto flex">
-                {/* Sidebar Navigation (Vertical Tabs) */}
+
                 <div className="w-1/4 flex flex-col items-start space-y-2 p-4 border-e-2">
                   {["profile","dashboard" ,"account"].map((tab) => (
                     <button
@@ -149,15 +149,12 @@ const handilelogOut=async()=>{
                       className={`w-full py-3 text-left capitalize ${
                         activeTab === tab ? "border-l-4 border-amber-600 text-amber-600 font-semibold pl-3" : "text-gray-600 pl-3"
                       }`}
-                      onClick={() => setActiveTab(tab)}
-                    >
+                      onClick={() => setActiveTab(tab)}>
                       {tab.replace("-", " ")}
                     </button>
                   ))}
                 </div>
-                  {activeTab === "profile" && (
-
-                  
+                  {activeTab === "profile" && (  
                 <div className="gap-3 flex flex-col items-center md:flex-row justify-center">
                       <div className="p-4 w-[48rem] flex justify-center border-e-2 bg-white rounded-lg h-auto">
                         {!isEditing ? (
@@ -166,8 +163,7 @@ const handilelogOut=async()=>{
                               <img
                                 src={profile?`${BASE_URL}/upload/${profile.image}`: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}
                                 alt="Profile"
-                                className="w-64 h-72 object-cover rounded-md border-2 border-gray-300"
-                              />
+                                className="w-64 h-72 object-cover rounded-md border-2 border-gray-300"/>
                             </div>
                             <div>
                               <div className='mb-3'>
@@ -206,9 +202,9 @@ const handilelogOut=async()=>{
                               </button>
                               {isOpen && (
                                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                                  <div className="bg-white p-6 rounded shadow-lg max-w-3xs">
+                                  <div className="bg-red-100 p-6 rounded shadow-lg max-w-3xs">
                                     <div className="flex justify-center items-center">
-                                    <span className="material-symbols-outlined text-3xl rounded-full bg-gray-200 hover:bg-gray-300 cursor-pointer p-3 px-4 text-gray-600">
+                                    <span className="material-symbols-outlined text-3xl text-red-100 hover:text-red-600 rounded-full bg-gray-600 hover:bg-gray-700 cursor-pointer p-3 px-4 text-gray-600">
                                     logout
                                       </span>
                                     </div>
@@ -237,14 +233,13 @@ const handilelogOut=async()=>{
                           <form onSubmit={updateProfile} className='w-full px-16'>
                             <h1 className='text-lg px-3 py-2 rounded text-center'>Edit your profile</h1>
                             <hr />
-                            <div className="flex justify-center mb-4 p-7">
+                            <div className="flex justify-center  p-7">
                               <label className='w-40 h-40 object-cover rounded-full border-2 border-gray-300 cursor-pointer'>
                                 <input type="file" className='hidden'  accept="image/*" onChange={(e)=>setProfile({...profile,image:e.target.files[0]})} />
                                 <img
                                 src={photoPreview ? photoPreview : `${BASE_URL}/upload/${profile.image}`}
                                 alt="Profile"
-                                className="w-40 h-40 object-cover rounded-full border-2 border-gray-300"
-                              />
+                                className="w-40 h-40 object-cover rounded-full border-2 border-gray-300"/>
                                 </label>
                             
                             </div>
@@ -300,15 +295,13 @@ const handilelogOut=async()=>{
                             <div className="flex gap-3">
                               <button
                                 type="submit"
-                                className="w-24 bg-green-400 text-black py-2 rounded-md hover:bg-green-500"
-                              >
+                                className="w-24 bg-green-400 text-black py-2 rounded-md hover:bg-green-500">
                                 Update
                               </button>
                               <button
                                 type="button"
                                 onClick={handleCancel}
-                                className="w-24 border text-black py-2 rounded-md hover:bg-gray-200"
-                              >
+                                className="w-24 border text-black py-2 rounded-md hover:bg-gray-200">
                                 Cancel
                               </button>
                             </div>
@@ -321,7 +314,42 @@ const handilelogOut=async()=>{
                       <OtherSettings/>
                     )}
                     {activeTab === "account" && (
-                      <button className='border' onClick={deleteAccount}>Delete</button>
+                      <div>
+                        <div className=" bg-slate-200 flex justify-between items-center gap-10 py-3 px-5 m-2 rounded-lg">
+                          <span>
+                          <h1>Delete Account</h1>
+                          <p className='text-sm'>Permenetly delete your account and data</p>
+                          </span>
+                          <button className='bg-red-400 hover:bg-red-500 py-2 px-4 rounded-lg' onClick={() => setIsDelete(true)}>Delete Account</button>
+                        </div>
+                          {isDelete && (
+                            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                              <div className="bg-red-200 p-6 rounded shadow-lg max-w-3xs">
+                                <div className="flex justify-center items-center">
+                                <span className="material-symbols-outlined text-5xl rounded-full bg-red-100 hover:bg-red-300 cursor-pointer p-3 text-gray-600">
+                                  delete
+                                  </span>
+                                </div>
+                                <h2 className="text-lg font-bold p-2 rounded text-gray-600">Are you sure want to <span className='text-red-600'>Delete</span> <br /> your Account permenatly?</h2>
+                                <div className="flex justify-between gap-4">
+                                  <button
+                                    className="mt-4 bg-green-400 hover:bg-green-500 text-black px-4 py-2 w-full rounded-lg"
+                                    onClick={() => setIsDelete(false)}
+                                  >
+                                    No😲
+                                  </button>
+                                  <button
+                                    className="mt-4 bg-red-400 text-black hover:bg-red-500 px-4 w-full py-2 rounded-lg"
+                                    onClick={deleteAccount}
+                                  >
+                                    Delete
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                      </div>
                     )}
 
   {/* Content Area */}

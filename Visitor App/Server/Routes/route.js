@@ -33,5 +33,6 @@ router.put('/update-checkout/:id',jwtMiddileware,visitorController.CheckoutUpdat
 router.put('/forgotte-password/:id',jwtMiddileware,userController.forgottePassword)
 
 router.delete('/delete-account/:id',jwtMiddileware,userController.deleteAccont)
+router.delete('/delete-category/:id',jwtMiddileware,categoryController.deleteCategory)
 
 module.exports=router

@@ -60,6 +60,10 @@ export const DeleteAccountApi = async (headers,id) => {
     return await commonApi("DELETE", `${BASE_URL}/delete-account/${id}`,{}, headers);
 };
 
+export const DeleteCategoryApi = async (headers,id) => {
+    return await commonApi("DELETE", `${BASE_URL}/delete-category/${id}`,{}, headers);
+};
+
 // export const VisitorAllApi = async (headers) => {
 //     return await commonApi("GET", `${BASE_URL}/get-all-visitor`, null, headers);
 // };
