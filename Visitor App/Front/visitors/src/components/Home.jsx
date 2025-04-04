@@ -7,9 +7,11 @@ import { addingContext } from '../context/ContextShare';
 import { getUserSpecificApi,getAllvisitorApi,updateCheckoutApi } from "../services/AllApis";
 import Delete from "./Delete";
 import toast from "react-hot-toast";
-
+import Skeleton from "react-loading-skeleton";
 
 function Home() {
+  const [loading, setLoading] = useState(true);
+  const [loadingName, setLoadingName] = useState(true);
   const [token, setToken] = useState("");
   const {addResponce,setAddResponce}=useContext(addingContext)
   const [activeTab, setActiveTab] = useState("home");
@@ -41,6 +43,7 @@ function Home() {
     
     if(res.status===200){
       setAllVisitors(res.data)
+      setLoading(false)
     }
   }
   const getUserName=async()=>{
@@ -51,6 +54,7 @@ function Home() {
     const res=await getUserSpecificApi(headers)
     if(res.status===200){
       setNameUser(res.data)
+      setLoadingName(false)
     }
   }
 // console.log(nameUser.username);
@@ -94,7 +98,7 @@ const handleCheckOut=async(id)=>{
             </button>
           ))}
         </div>
-        {/* Tab Content */}
+        
       </div>
     </div>
     </nav>
@@ -103,7 +107,7 @@ const handleCheckOut=async(id)=>{
              <div className="gap-3 flex flex-col items-center md:flex-row justify-start">
              
              <div className="p-8 pt-1 max-w-8xl mx-auto">
-              <h1 className="text-2xl font-bold">Welcome <span className="text-amber-600">{nameUser.username ||"Name"}</span></h1>
+             <h1 className="text-2xl font-bold">Welcome{" "}<span className="text-amber-600">{loadingName ? <Skeleton width={100} height={25} /> : nameUser.username || "Name"}</span></h1>
       <h2 className="text-2xl  text-strat text-gray-900 mt-3 mb-2">
       Visitors
       </h2>
@@ -116,47 +120,81 @@ const handleCheckOut=async(id)=>{
             placeholder="Search by name, number and aadhaar"
             onChange={(e)=>setSearch(e.target.value)}
           />
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mt-6">
-      {allVisitors.filter(visitor => visitor.status === "Check in").length > 0 ? (
-  allVisitors
-    .filter(visitor => visitor.status === "Check in")
-    .map((item, index) => (
-      <div
-        key={item.id || index}
-        className="p-6 w-80 rounded-2xl border border-gray-300 transform transition-all duration-300 hover:scale-102 hover:shadow-xl"
-      >
-        <h3 className="text-2xl font-bold mb-3 text-black">
-          {item.name}
-        </h3>
-        <hr />
-        <div className="text-lg space-y-2 my-3">
-          <div className="mb-4">
-            <p className="text-sm text-gray-400">Phone</p>
-            <span className="text-gray-600">{item?.phone || "-"}</span>
-          </div>
-          <div className="mb-4">
-            <p className="text-sm text-gray-400">Purpose of visit</p>
-            <span className="text-gray-600">{item.purposeVisit?.at(-1)?.purpose || "-"}</span>
-          </div>
-          <div className="mb-4">
-            <p className="text-sm text-gray-400">Arrived</p>
-            <span className="text-gray-600">{item.arrivedtime?.at(-1)?.time || "-"}</span>
-          </div>
-        </div>
-        <div className="flex mt-6 gap-3">
-          <button className="px-5 py-2 bg-green-300 text-black rounded-lg hover:bg-green-400 transition-all duration-300" onClick={()=>handleCheckOut(item._id)}>
-            Check out
-          </button>
-          <div className="border px-2 rounded-md bg-red-200 hover:bg-red-300"><Delete visitorsProp={item._id} onDeleteSuccess={getVisitors}/></div>
-         
-        </div>
-      </div>
-    ))
-) : (
-  <p className="w-80">No pending visitors</p>
-)}
 
-      </div>
+<div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mt-6">
+      {loading ? (
+        [...Array(3)].map((_, index) => (
+          <div
+            key={index}
+            className="p-6 w-80 rounded-2xl border border-gray-300 animate-pulse"
+          >
+            <h3 className="text-2xl font-bold mb-3 text-black">
+              <Skeleton width={150} height={25} />
+            </h3>
+            <hr />
+            <div className="text-lg space-y-2 my-3">
+              <div className="mb-4">
+                <p className="text-sm text-gray-400">Phone</p>
+                <Skeleton width={120} height={20} />
+              </div>
+              <div className="mb-4">
+                <p className="text-sm text-gray-400">Purpose of visit</p>
+                <Skeleton width={180} height={20} />
+              </div>
+              <div className="mb-4">
+                <p className="text-sm text-gray-400">Arrived</p>
+                <Skeleton width={100} height={20} />
+              </div>
+            </div>
+            <div className="flex mt-6 gap-3">
+              <Skeleton width={90} height={40} />
+              <Skeleton width={40} height={40} />
+            </div>
+          </div>
+        ))
+      ) : allVisitors.filter((visitor) => visitor.status === "Check in").length > 0 ? (
+        allVisitors
+          .filter((visitor) => visitor.status === "Check in")
+          .map((item, index) => (
+            <div
+              key={item.id || index}
+              className="p-6 w-80 rounded-2xl border border-gray-300 transform transition-all duration-300 hover:scale-102 hover:shadow-xl"
+            >
+              <h3 className="text-2xl font-bold mb-3 text-black">
+                {item.name}
+              </h3>
+              <hr />
+              <div className="text-lg space-y-2 my-3">
+                <div className="mb-4">
+                  <p className="text-sm text-gray-400">Phone</p>
+                  <span className="text-gray-600">{item?.phone || "-"}</span>
+                </div>
+                <div className="mb-4">
+                  <p className="text-sm text-gray-400">Purpose of visit</p>
+                  <span className="text-gray-600">{item.purposeVisit?.at(-1)?.purpose || "-"}</span>
+                </div>
+                <div className="mb-4">
+                  <p className="text-sm text-gray-400">Arrived</p>
+                  <span className="text-gray-600">{item.arrivedtime?.at(-1)?.time || "-"}</span>
+                </div>
+              </div>
+              <div className="flex mt-6 gap-3">
+                <button
+                  className="px-5 py-2 bg-green-300 text-black rounded-lg hover:bg-green-400 transition-all duration-300"
+                  onClick={() => handleCheckOut(item._id)}
+                >
+                  Check out
+                </button>
+                <div className="border px-2 rounded-md bg-red-200 hover:bg-red-300">
+                  <Delete visitorsProp={item._id} onDeleteSuccess={getVisitors} />
+                </div>
+              </div>
+            </div>
+          ))
+      ) : (
+        <p className="w-80">No pending visitors</p>
+      )}
+    </div>
     </div>       
            </div>
           )}

@@ -1,8 +1,10 @@
 import React,{useEffect,useState} from 'react'
 import { categoryAddApi,AddAttenderApi,getUserSpecificApi,allCategoryApi,DeleteCategoryApi } from '../services/AllApis';
 import toast from "react-hot-toast"
+import Skeleton from "react-loading-skeleton";
 
 function OtherSettings() {
+  const [isLoading, setIsLoading] = useState(true);
   const [attender,setAttender]=useState(null)
   const [token, setToken] = useState("");
   const [allcategory,setAllCategory]=useState([])
@@ -50,6 +52,7 @@ function OtherSettings() {
       const res = await allCategoryApi(headers); 
       if (res.status === 200) {
         setAllCategory(res.data);
+        setIsLoading(false)
       }
   }; 
 
@@ -167,19 +170,31 @@ function OtherSettings() {
         </div>
         <div className="bg-slate-100 rounded-lg p-6 pt-0 h-[17rem] overflow-y-auto">
         <h2 className="text-xl font-semibold mb-6 border-b-2 sticky top-0 pt-6 z-50 bg-slate-100">All Category</h2>
-        {allcategory?.length > 0 ? (
+        {isLoading ? (
+          <div>
+            {[...Array(3)].map((_, index) => (
+              <div key={index} className="flex justify-between gap-4 text-lg mb-4">
+                <div className="w-32 h-5 bg-gray-300 animate-pulse rounded"></div>
+                <div className="w-5 h-5 bg-gray-300 animate-pulse rounded-full"></div>
+              </div>
+            ))}
+          </div>
+        ) : allcategory?.length > 0 ? (
           allcategory.map((item, index) => (
             <div key={index} className="flex justify-between gap-4 text-lg mb-4">
               <p>{item.categoryName}</p>
-              <span className="material-symbols-outlined text-red-500 cursor-pointer" onClick={()=>categoryDelete(item._id)}>delete</span>
+              <span
+                className="material-symbols-outlined text-red-500 cursor-pointer"
+                onClick={() => categoryDelete(item._id)}
+              >
+                delete
+              </span>
             </div>
           ))
         ) : (
           <p>No category</p>
         )}
 
-            
-           
         </div>
       </div>
     </div>

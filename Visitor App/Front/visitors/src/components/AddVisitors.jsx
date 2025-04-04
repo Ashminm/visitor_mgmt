@@ -432,113 +432,113 @@ const handleAddVisitor = async (e) => {
   </div>
 
   {search && (
-  <div className="bg-white max-w-2xl shadow-lg rounded-lg border p-4">
-    <h2 className="text-xl font-semibold mb-1 mt-3 text-center">Existing visitor details</h2>
-    <h2 className="text-sm mb-9 text-slate-400 text-center">This is the already visited visitor data</h2>
+    <div className="bg-white max-w-2xl shadow-lg rounded-lg border p-4">
+      <h2 className="text-xl font-semibold mb-1 mt-3 text-center">Existing visitor details</h2>
+      <h2 className="text-sm mb-9 text-slate-400 text-center">This is the already visited visitor data</h2>
 
-    <div className="space-y-4 overflow-y-auto h-[700px]">
-      {AllVisitorsList.length > 0 ? (
-        AllVisitorsList.map((visitor, index) => (
-          <div key={visitor._id || index} className="border rounded-lg p-3 hover:bg-gray-100 space-y-1">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <img className='object-center bg-cover rounded-md' src={visitor?.image ? `${BASE_URL}/upload/${visitor.image}`: "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg"}alt="" />
-              </div>
-              <div className="">
-              <p className='text-xl text-gray-800'>Address </p>
-              <p className='mb-4 text-gray-600'>{visitor.address || "N/A"}</p>
-              <p className='text-xl text-gray-800'>Aadhaar </p>
-              <p className='mb-4 text-gray-600'>{visitor.aadhaar ? visitor.aadhaar : <span className="text-red-500 font-semibold">Not provided</span>}</p>
-              <p className="text-xl text-gray-800">Gender</p>
-              <p className="mb-4 text-gray-600">{visitor.gender}</p>
-              </div>
-              </div>
-
+      <div className="space-y-4 overflow-y-auto h-[700px]">
+        {AllVisitorsList.length > 0 ? (
+          AllVisitorsList.map((visitor, index) => (
+            <div key={visitor._id || index} className="border rounded-lg p-3 hover:bg-gray-100 space-y-1">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-              <p className="text-xl text-gray-800">Name </p>
-              <p className="mb-4 text-gray-600">{visitor.name}</p>
-              <p className="text-xl text-gray-800">Phone</p>
-              <p className="mb-4 text-gray-600">{visitor.phone}</p>
-              <p className="text-xl text-gray-800">Other contact</p>
-              <p className="mb-4 text-gray-600">{visitor.othernumber || "Not provide"}</p>
-              <p className='text-xl text-gray-800'>Purpose of visit </p>
-              <ul className="mb-4 text-gray-600">
-                {
-                  visitor.purposeVisit.map((item,index) =>(
-                    <li key={index}>{index + 1}. {item.purpose}</li>
-                  ))
-                }
-              </ul>
-              <p className="text-xl text-gray-800">Age</p>
-              <p className="mb-4 text-gray-600">{visitor.age}</p>
-              <p className="text-xl text-gray-800">Visit dates</p>
-              <ul className="mb-4 text-gray-600">
-                {
-                  visitor.currentdate.map((item,index)=>(
-                    <li key={index}>{index + 1}. {item.date}</li>
-                  ))
-                }
-              </ul>
-              <p className="text-xl text-gray-800">Remarks</p>
-                <ul className="mb-4 text-gray-600">
-                {
-                  visitor.remarks.map((item,index)=>(
-                    <li key={index}>{index + 1}. {item.remark}</li>
-                  ))
-                }
-              </ul>
+                  <img className='object-center bg-cover rounded-md' src={visitor?.image ? `${BASE_URL}/upload/${visitor.image}`: "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg"}alt="" />
                 </div>
-                <div>
-                <p className="text-xl text-gray-800">Visit times</p>
-              <ul className="mb-4 text-gray-600">
-                {
-                  visitor.arrivedtime.map((item,index)=>(
-                    <li key={index}>{index + 1}. {item.time}</li>
-                  ))
-                }
-              </ul>
-              <p className="text-xl text-gray-800">Category</p>
-              <p className="mb-4 text-gray-600">{visitor.category}</p>
-              <p className="text-xl text-gray-800">Number of day</p>
-              <ul className="mb-4 text-gray-600">
-                {
-                  visitor.numberofstay.map((item,index)=>(
-                    <li key={index}>{index + 1}. {item.number || "Not provide"}</li>
-                  ))
-                }
-              </ul>
-              <p className="text-xl text-gray-800">Support given</p>
-              <ul className="mb-4 text-gray-600">
-                {
-                  visitor.support.map((item,index)=>(
-                    <li key={index}>{index + 1}. {item.support}</li>
-                  ))
-                }
-              </ul>
-              <p className="text-xl text-gray-800">Status</p>
-              <p className="mb-4 text-gray-600">{visitor.status}</p>
-              <p className="text-xl text-gray-800">Attend by</p>
-              <ul className="mb-4 text-gray-600">
-                {
-                  visitor.attender.map((item,index)=>(
-                    <li key={index}>{index + 1}. {item.attender}</li>
-                  ))
-                }
-              </ul>
+                <div className="">
+                <p className='text-xl text-gray-800'>Address </p>
+                <p className='mb-4 text-gray-600'>{visitor.address || "N/A"}</p>
+                <p className='text-xl text-gray-800'>Aadhaar </p>
+                <p className='mb-4 text-gray-600'>{visitor.aadhaar ? visitor.aadhaar : <span className="text-red-500 font-semibold">Not provided</span>}</p>
+                <p className="text-xl text-gray-800">Gender</p>
+                <p className="mb-4 text-gray-600">{visitor.gender}</p>
+                </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                <p className="text-xl text-gray-800">Name </p>
+                <p className="mb-4 text-gray-600">{visitor.name}</p>
+                <p className="text-xl text-gray-800">Phone</p>
+                <p className="mb-4 text-gray-600">{visitor.phone}</p>
+                <p className="text-xl text-gray-800">Other contact</p>
+                <p className="mb-4 text-gray-600">{visitor.othernumber || "Not provide"}</p>
+                <p className='text-xl text-gray-800'>Purpose of visit </p>
+                <ul className="mb-4 text-gray-600">
+                  {
+                    visitor.purposeVisit.map((item,index) =>(
+                      <li key={index}>{index + 1}. {item.purpose}</li>
+                    ))
+                  }
+                </ul>
+                <p className="text-xl text-gray-800">Age</p>
+                <p className="mb-4 text-gray-600">{visitor.age}</p>
+                <p className="text-xl text-gray-800">Visit dates</p>
+                <ul className="mb-4 text-gray-600">
+                  {
+                    visitor.currentdate.map((item,index)=>(
+                      <li key={index}>{index + 1}. {item.date}</li>
+                    ))
+                  }
+                </ul>
+                <p className="text-xl text-gray-800">Remarks</p>
+                  <ul className="mb-4 text-gray-600">
+                  {
+                    visitor.remarks.map((item,index)=>(
+                      <li key={index}>{index + 1}. {item.remark}</li>
+                    ))
+                  }
+                </ul>
+                  </div>
+                  <div>
+                  <p className="text-xl text-gray-800">Visit times</p>
+                <ul className="mb-4 text-gray-600">
+                  {
+                    visitor.arrivedtime.map((item,index)=>(
+                      <li key={index}>{index + 1}. {item.time}</li>
+                    ))
+                  }
+                </ul>
+                <p className="text-xl text-gray-800">Category</p>
+                <p className="mb-4 text-gray-600">{visitor.category}</p>
+                <p className="text-xl text-gray-800">Number of day</p>
+                <ul className="mb-4 text-gray-600">
+                  {
+                    visitor.numberofstay.map((item,index)=>(
+                      <li key={index}>{index + 1}. {item.number || "Not provide"}</li>
+                    ))
+                  }
+                </ul>
+                <p className="text-xl text-gray-800">Support given</p>
+                <ul className="mb-4 text-gray-600">
+                  {
+                    visitor.support.map((item,index)=>(
+                      <li key={index}>{index + 1}. {item.support}</li>
+                    ))
+                  }
+                </ul>
+                <p className="text-xl text-gray-800">Status</p>
+                <p className="mb-4 text-gray-600">{visitor.status}</p>
+                <p className="text-xl text-gray-800">Attend by</p>
+                <ul className="mb-4 text-gray-600">
+                  {
+                    visitor.attender.map((item,index)=>(
+                      <li key={index}>{index + 1}. {item.attender}</li>
+                    ))
+                  }
+                </ul>
+                </div>
+              </div>
+              <div className="flex justify-end gap-4">
+              <button className='p-2 bg-green-200 rounded-lg' onClick={() => handleCorrect(visitor)}>Confirm</button>
+
               </div>
             </div>
-            <div className="flex justify-end gap-4">
-            <button className='p-2 bg-green-200 rounded-lg' onClick={() => handleCorrect(visitor)}>Confirm</button>
-
-            </div>
-          </div>
-        ))
-      ) : (
-        <p className="text-center text-gray-500">No existing visitors found.</p>
-      )}
+          ))
+        ) : (
+          <p className="text-center text-gray-500">No existing visitors found.</p>
+        )}
+      </div>
     </div>
-  </div>
 )}
 
 

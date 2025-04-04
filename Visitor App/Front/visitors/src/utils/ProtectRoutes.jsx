@@ -1,17 +1,21 @@
-import React from 'react'
+import React from 'react';
 import toast from 'react-hot-toast';
-import { Outlet,Navigate,useLocation } from 'react-router-dom'
+import { Outlet, Navigate, useLocation } from 'react-router-dom';
 
 function ProtectRoutes() {
-    const user = sessionStorage.getItem("token")
+    const user = sessionStorage.getItem("token");
     const location = useLocation();
+
     if (!user) {
-        toast.warning("Please log in to access this page!"); 
+        if (!window.hasShownToast) {
+            toast.error("Please log in to access this page!");
+            window.hasShownToast = true;
+        }
         return <Navigate to="/" state={{ from: location }} replace />;
     }
 
+    window.hasShownToast = false;
     return <Outlet />;
-
 }
 
-export default ProtectRoutes
+export default ProtectRoutes;

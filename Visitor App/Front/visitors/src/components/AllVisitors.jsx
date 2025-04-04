@@ -4,8 +4,10 @@ import Edit from './Edit';
 import Delete from './Delete';
 import PdfConvert from './PdfConvert';
 import { addingContext } from '../context/ContextShare';
+import Skeleton from "react-loading-skeleton";
 
 function AllVisitors() {
+  const [loading, setLoading] = useState(true);
   const [search,setSearch]=useState('')
   const [AllVisitorsList,setAllVisitorsList]=useState([])
   const {addResponce,setAddResponce}=useContext(addingContext)
@@ -14,7 +16,6 @@ function AllVisitors() {
   // const [selectedDate, setSelectedDate] = useState();
   // const [originalVisitorsList, setOriginalVisitorsList] = useState([]);
   
-  // console.log(AllVisitorsList?.currentdate?.[0]?.date);
   
   useEffect(()=>{
     if(sessionStorage.getItem("token")){
@@ -37,6 +38,7 @@ function AllVisitors() {
     
     if(res.status===200){
       setAllVisitorsList(res.data)
+      setLoading(false)
     }
   }
 
@@ -134,43 +136,54 @@ function AllVisitors() {
           </tr>
         </thead>
         <tbody>
-        {AllVisitorsList.length > 0 ? (
-  AllVisitorsList.map((visitor, index) => (
-    <tr key={visitor._id || index} className="hover:bg-gray-100 border-b text-gray-700 rounded-md">
-      <td className=" p-2">{visitor.name?.slice(0, 10) || "N/A"}</td>
-      <td className=" p-2">{visitor.gender || "N/A"}</td>
-      <td className=" p-2">{visitor.age || "N/A"}</td>
-      <td className=" p-2">
-        {visitor.aadhaar ? visitor.aadhaar : <span className="text-red-500 font-semibold">Not provided</span>}
-      </td>
-      <td className=" p-2">{visitor.phone || "N/A"}</td>
-      <td className=" p-2">
-        {visitor.purposeVisit?.at(-1)?.purpose?.slice(0, 20) || "N/A"}
-      </td>
-      <td className=" p-2">
-        {visitor.currentdate?.at(-1)?.date || "N/A"} -- {visitor.arrivedtime?.at(-1)?.time || "N/A"}
-      </td>
-      <td className=" p-2">
-        {visitor.attender?.at(-1)?.attender || "N/A"}
-      </td>
-      <td className=" p-2">
-        {visitor.remarks?.at(-1)?.remark?.slice(0, 15) || "N/A"}
-      </td>
-      <td className="p-2 ps-0 flex gap-3 justify-center">
-        <Edit visitorsProp={visitor}/>
-        <Delete visitorsProp={visitor._id}/>
-        <PdfConvert visitorsProp={visitor}/>
-      </td>
-    </tr>
-  ))
-) : (
-  <tr>
-    <td colSpan="11" className="text-center p-4 text-gray-500">No visitors found.</td>
-  </tr>
-)}
-
-
-        </tbody>
+        {loading ? (
+          [...Array(5)].map((_, index) => (
+            <tr key={index} className="border-b">
+              <td className="p-2"><Skeleton width={80} height={20} /></td>
+              <td className="p-2"><Skeleton width={60} height={20} /></td>
+              <td className="p-2"><Skeleton width={40} height={20} /></td>
+              <td className="p-2"><Skeleton width={120} height={20} /></td>
+              <td className="p-2"><Skeleton width={100} height={20} /></td>
+              <td className="p-2"><Skeleton width={150} height={20} /></td>
+              <td className="p-2"><Skeleton width={180} height={20} /></td>
+              <td className="p-2"><Skeleton width={90} height={20} /></td>
+              <td className="p-2"><Skeleton width={100} height={20} /></td>
+              <td className="p-2 flex justify-center gap-3">
+                <Skeleton width={30} height={30} circle />
+                <Skeleton width={30} height={30} circle />
+                <Skeleton width={30} height={30} circle />
+              </td>
+            </tr>
+          ))
+        ) : AllVisitorsList.length > 0 ? (
+          AllVisitorsList.map((visitor, index) => (
+            <tr key={visitor._id || index} className="hover:bg-gray-100 border-b text-gray-700">
+              <td className="p-2">{visitor.name?.slice(0, 10) || "N/A"}</td>
+              <td className="p-2">{visitor.gender || "N/A"}</td>
+              <td className="p-2">{visitor.age || "N/A"}</td>
+              <td className="p-2">
+                {visitor.aadhaar ? visitor.aadhaar : <span className="text-red-500 font-semibold">Not provided</span>}
+              </td>
+              <td className="p-2">{visitor.phone || "N/A"}</td>
+              <td className="p-2">{visitor.purposeVisit?.at(-1)?.purpose?.slice(0, 20) || "N/A"}</td>
+              <td className="p-2">
+                {visitor.currentdate?.at(-1)?.date || "N/A"} -- {visitor.arrivedtime?.at(-1)?.time || "N/A"}
+              </td>
+              <td className="p-2">{visitor.attender?.at(-1)?.attender || "N/A"}</td>
+              <td className="p-2">{visitor.remarks?.at(-1)?.remark?.slice(0, 15) || "N/A"}</td>
+              <td className="p-2 flex justify-center gap-3">
+                <Edit visitorsProp={visitor} />
+                <Delete visitorsProp={visitor._id} />
+                <PdfConvert visitorsProp={visitor} />
+              </td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan="10" className="text-center p-4 text-gray-500">No visitors found.</td>
+          </tr>
+        )}
+      </tbody>
 
       </table>
     </div>

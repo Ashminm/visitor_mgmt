@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.jsx'
 import { BrowserRouter } from 'react-router-dom'
 import ContextShare from './context/ContextShare.jsx'
+import "react-loading-skeleton/dist/skeleton.css";
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

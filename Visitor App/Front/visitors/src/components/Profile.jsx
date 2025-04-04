@@ -5,8 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import toast from "react-hot-toast"
 import OtherSettings from './OtherSettings';
 import { addingContext } from '../context/ContextShare';
+import Skeleton from "react-loading-skeleton";
 
 function Profile() { 
+  const [loading, setLoading] = useState(true);
   const [token, setToken] = useState("");
   const [userProfile,setUserProfile]=useState({})
   const [isEmail, setIsEmail] = useState(false);
@@ -113,6 +115,7 @@ const getUserSpecific = async()=>{
   const res=await getUserSpecificApi(headers)
   if(res.status===200){
     setUserProfile(res.data)
+    setLoading(false)
   }
 }
 // console.log(profile);
@@ -180,55 +183,91 @@ const handilelogOut=async()=>{
                   {activeTab === "profile" && (  
                 <div className="gap-3 flex flex-col items-center md:flex-row justify-center">
                       <div className="p-4 w-[48rem] flex justify-center border-e-2 bg-white rounded-lg h-auto">
-                        {!isEditing ? (
+                      {!isEditing ? (
                           <div className="p-6 flex justify-center items-center">
-                            <div className="m-4 me-10 ">
-                              <img
-                                src={profile?`${BASE_URL}/upload/${profile.image}`: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}
-                                alt="Profile"
-                                className="w-64 h-72 object-cover rounded-md border-2 border-gray-300"/>
+                            <div className="m-4 me-10">
+                              {loading ? (
+                                <Skeleton width={256} height={288} className="rounded-md" />
+                              ) : (
+                                <img
+                                  src={
+                                    profile
+                                      ? `${BASE_URL}/upload/${profile.image}`
+                                      : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                                  }
+                                  alt="Profile"
+                                  className="w-64 h-72 object-cover rounded-md border-2 border-gray-300"
+                                />
+                              )}
                             </div>
+
                             <div>
-                              <div className='mb-3'>
-                                <p className='text-lg text-gray-400'> Your Name </p>
-                                <p className='text-md text-gray-600'>{profile.username}</p>
-                              </div>
-                              <div className='mb-3'>
-                                <p className='text-lg text-gray-400'>Your phone number</p>
-                                <p className='text-md text-gray-600'>{profile.phone}</p>
-                              </div>
-                              <div className='mb-3'>
-                                <p className='text-lg text-gray-400'>Your Email</p>
-                                <p className='text-md text-gray-600'>{profile.email}</p>
-                              </div>
-                              <div className='mb-3'>
-                                <p className='text-lg text-gray-400'>Your registred date</p>
-                                <p className='text-md text-gray-600'>{profile.date ? new Date(profile.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).replace(',', '-') : ""}</p>
+                              <div className="mb-3">
+                                <p className="text-lg text-gray-400">Your Name</p>
+                                <p className="text-md text-gray-600">
+                                  {loading ? <Skeleton width={120} height={20} /> : profile.username}
+                                </p>
                               </div>
 
+                              <div className="mb-3">
+                                <p className="text-lg text-gray-400">Your Phone Number</p>
+                                <p className="text-md text-gray-600">
+                                  {loading ? <Skeleton width={120} height={20} /> : profile.phone}
+                                </p>
+                              </div>
+
+                              <div className="mb-3">
+                                <p className="text-lg text-gray-400">Your Email</p>
+                                <p className="text-md text-gray-600">
+                                  {loading ? <Skeleton width={180} height={20} /> : profile.email}
+                                </p>
+                              </div>
+
+                              <div className="mb-3">
+                                <p className="text-lg text-gray-400">Your Registered Date</p>
+                                <p className="text-md text-gray-600">
+                                  {loading ? (
+                                    <Skeleton width={150} height={20} />
+                                  ) : (
+                                    profile.date
+                                      ? new Date(profile.date)
+                                          .toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" })
+                                          .replace(",", "-")
+                                      : ""
+                                  )}
+                                </p>
+                              </div>
                               <div className="flex gap-6 mt-6">
-                              <button
-                                onClick={handleEdit}
-                                className=" bg-green-300 text-black px-5 py-2 gap-1 rounded-md hover:bg-green-400 flex items-center"
-                              >
-                                Edit <span className="material-symbols-outlined ">
-                                edit_note
-                                </span>
-                              </button>
-                              <button
-                              onClick={() => setIsOpen(true)}
-                                className=" bg-red-300 text-black px-3 py-2 gap-1 rounded-md hover:bg-red-400 flex items-center"
-                              >
-                                Log out <span className="material-symbols-outlined">
-                                logout
-                                </span>
-                              </button>
-                              {isOpen && (
+                                {loading ? (
+                                  <>
+                                    <Skeleton width={100} height={40} />
+                                    <Skeleton width={100} height={40} />
+                                  </>
+                                ) : (
+                                  <>
+                                    <button
+                                      onClick={handleEdit}
+                                      className="bg-green-300 text-black px-5 py-2 gap-1 rounded-md hover:bg-green-400 flex items-center"
+                                    >
+                                      Edit <span className="material-symbols-outlined">edit_note</span>
+                                    </button>
+
+                                    <button
+                                      onClick={() => setIsOpen(true)}
+                                      className="bg-red-300 text-black px-3 py-2 gap-1 rounded-md hover:bg-red-400 flex items-center"
+                                    >
+                                      Log out <span className="material-symbols-outlined">logout</span>
+                                    </button>
+                                  </>
+                                )}
+                              </div>
+
+                              {isOpen && !loading && (
                                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                                   <div className="bg-red-100 p-6 rounded shadow-lg max-w-3xs">
                                     <div className="flex justify-center items-center">
-                                    <span className="material-symbols-outlined text-3xl text-red-100 hover:text-red-600 rounded-full bg-gray-600 hover:bg-gray-700 cursor-pointer p-3 px-4 text-gray-600">
-                                    logout
+                                      <span className="material-symbols-outlined text-3xl text-red-100 hover:text-red-600 rounded-full bg-gray-600 hover:bg-gray-700 cursor-pointer p-3 px-4 text-gray-600">
+                                        logout
                                       </span>
                                     </div>
                                     <h2 className="text-lg font-bold p-2 rounded text-gray-600">Are you sure want to Log out?</h2>
@@ -241,18 +280,16 @@ const handilelogOut=async()=>{
                                       </button>
                                       <button
                                         className="mt-4 bg-red-300 text-black hover:bg-red-400 px-4 w-full py-2 rounded-lg"
-                                        onClick={handilelogOut}
-                                      >
+                                        onClick={handilelogOut}>
                                         Logout
-                                      </button>
+                                       </button>
+                                      </div>
                                     </div>
                                   </div>
+                                )}
                                 </div>
-                              )}
                               </div>
-                            </div>
-                          </div>
-                        ) : (
+                            ) : (
                           <form className='w-full px-16'>
                             <h1 className='text-lg px-3 py-2 rounded text-center'>Edit your profile</h1>
                             <hr />
@@ -306,7 +343,6 @@ const handilelogOut=async()=>{
                                 type="password"
                                 placeholder='Enter new password'
                                 className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none focus:ring-2 focus:ring-amber-500"
-                                // value={""}
                                 onChange={(e) =>
                                   setProfile({ ...profile, password: e.target.value })
                                 }
@@ -408,14 +444,11 @@ const handilelogOut=async()=>{
                       </div>
                     )}
 
-  {/* Content Area */}
-  {/* <div className="w-3/4 p-4">
-    {activeTab === "profile" ? <ProfileComponent /> : <SettingsComponent />}
-  </div> */}
-</div>
-
-
-      
+                {/* Content Area */}
+                {/* <div className="w-3/4 p-4">
+                  {activeTab === "profile" ? <ProfileComponent /> : <SettingsComponent />}
+                </div> */}
+            </div>
     </section>
     );
 }
