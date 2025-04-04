@@ -1,5 +1,6 @@
 const users=require('../Models/userModel')
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs')
 
 exports.register = async (req, res) => {
     try {
@@ -19,6 +20,8 @@ exports.register = async (req, res) => {
         if (PhoneExists) {
             return res.status(406).json("Phone number already in use!");
         }
+        const salt = await bcrypt.genSalt(10); // Generate salt
+        const hashedPassword = await bcrypt.hash(password, salt);
 
         const passwordExists = await users.findOne({ password });
         if (passwordExists) {
@@ -29,7 +32,7 @@ exports.register = async (req, res) => {
             username,
             phone,
             email,
-            password,
+            password:hashedPassword,
             image,
             addedBy:addedByValue,
             date:Date.now()
@@ -45,52 +48,77 @@ exports.register = async (req, res) => {
 };
 
 
-exports.Login=async(req,res)=>{
-    
-    try{
-        const {email,password}=req.body
-        const existingUser = await users.findOne({ email,password })    
-    if(existingUser){
-        const token=jwt.sign({userId:existingUser._id}, process.env.JWT_SEACRETKEY)
-        res.status(200).json({token,existingUser,role:"user"})
-        console.log({token,existingUser,role:"user"});  
+exports.Login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const existingUser = await users.findOne({ email });
+        if (!existingUser) {
+            return res.status(406).json("Invalid email or password!!");
+        }
 
-    }else{
-        res.status(406).json("Invalid email or password!!")
-    }
-    }catch(err){
-        console.log(err);
-        res.status(401).json("SOMTHING WANT WRONG" + err);
-    }
+        const isPasswordValid = await bcrypt.compare(password, existingUser.password);
+        if (!isPasswordValid) {
+            return res.status(406).json("Invalid email or password!!");
+        }
 
-}
+        const token = jwt.sign({ userId: existingUser._id }, process.env.JWT_SEACRETKEY);
+
+        res.status(200).json({ token, existingUser, role: "user" });
+        console.log({ token, existingUser, role: "user" });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json("Something went wrong: " + err.message);
+    }
+};
 
 exports.profileUpdate = async (req, res) => {
     try {
-        const { username,phone, email, password } = req.body;
+        const { username, phone, email,OriginEmail, password } = req.body;
         const image = req.file ? req.file.filename : req.body.image;
         const userId = req.payload;
+
         if (!userId) {
             return res.status(401).json("Unauthorized request");
         }
+
         const existingUser = await users.findById(userId);
         if (!existingUser) {
             return res.status(404).json("User not found!");
         }
-        const updatedUser = await users.findByIdAndUpdate(userId,
-            { 
+        
+        if(OriginEmail){
+            const ExistingEmailOrigin =await users.findOne({OriginEmail})
+            if(ExistingEmailOrigin){
+               return res.status(401).json("This Email already use another person!")
+            }
+            
+        }
+
+        // Hash password only if a new password is provided
+        let hashedPassword = existingUser.password;
+        if (password && password !== existingUser.password) {
+            const salt = await bcrypt.genSalt(10);
+            hashedPassword = await bcrypt.hash(password, salt);
+        }
+
+        const updatedUser = await users.findByIdAndUpdate(
+            userId,
+            {
                 username: username || existingUser.username,
                 phone: phone || existingUser.phone,
                 email: email || existingUser.email,
-                password: password || existingUser.password,
+                OriginEmail: OriginEmail || existingUser.OriginEmail,
+                password: hashedPassword,
                 image: image || existingUser.image,
                 addedBy: existingUser.addedBy
             },
             { new: true }
         );
+
         res.status(200).json(updatedUser);
     } catch (err) {
-        res.status(500).json("Internal Server Error: "+err);
+        res.status(500).json("Internal Server Error: " + err);
     }
 };
 

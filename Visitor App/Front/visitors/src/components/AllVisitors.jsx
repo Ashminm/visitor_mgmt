@@ -1,12 +1,14 @@
-import React,{useState,useEffect} from 'react'
+import React,{useState,useEffect,useContext} from 'react'
 import { getAllvisitorApi } from '../services/AllApis'; 
 import Edit from './Edit';
 import Delete from './Delete';
 import PdfConvert from './PdfConvert';
+import { addingContext } from '../context/ContextShare';
 
 function AllVisitors() {
   const [search,setSearch]=useState('')
   const [AllVisitorsList,setAllVisitorsList]=useState([])
+  const {addResponce,setAddResponce}=useContext(addingContext)
   const [sortBy, setSortBy] = useState("");
   const [token, setToken] = useState("");
   // const [selectedDate, setSelectedDate] = useState();
@@ -24,7 +26,7 @@ function AllVisitors() {
     if (token) {
       getAllVisitor()
     }
-  }, [token,search]);
+  }, [token,search,addResponce]);
 
   const getAllVisitor=async()=>{
     const headers = {
@@ -156,7 +158,7 @@ function AllVisitors() {
       </td>
       <td className="p-2 ps-0 flex gap-3 justify-center">
         <Edit visitorsProp={visitor}/>
-        <Delete visitorsProp={visitor._id} onDeleteSuccess={getAllVisitor}/>
+        <Delete visitorsProp={visitor._id}/>
         <PdfConvert visitorsProp={visitor}/>
       </td>
     </tr>

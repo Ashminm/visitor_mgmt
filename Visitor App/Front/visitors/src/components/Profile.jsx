@@ -1,17 +1,19 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect,useContext } from 'react';
 import { DeleteAccountApi, getUserSpecificApi,updateProfileApi } from '../services/AllApis';
 import { BASE_URL } from '../services/BaseURL';
 import { useNavigate } from 'react-router-dom';
 import toast from "react-hot-toast"
 import OtherSettings from './OtherSettings';
+import { addingContext } from '../context/ContextShare';
 
 function Profile() { 
   const [token, setToken] = useState("");
   const [userProfile,setUserProfile]=useState({})
+  const [isEmail, setIsEmail] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
-
+  const {addResponce,setAddResponce}=useContext(addingContext)
   const [photoPreview,setPhotoPreview]=useState('')
   const [profile,setProfile]=useState({
       username:  "",
@@ -20,7 +22,8 @@ function Profile() {
       password: "",
       image: "",
       addedBy: "",
-      date: ""
+      date: "",
+      OriginEmail: "",
   })
   
 useEffect(()=>{
@@ -40,7 +43,7 @@ useEffect(() => {
   if (token) {
     getUserSpecific()
   }
-}, [token]);
+}, [token,addResponce]);
 
 useEffect(() => {
   if (Object.keys(userProfile).length > 0) {
@@ -64,7 +67,6 @@ const updateProfile=async(e)=>{
     const formData= new FormData()
     formData.append("username",profile.username);
     formData.append("phone",profile.phone);
-    // formData.append("image",profile.image);
     formData.append("email",profile.email);
     formData.append("password",profile.password);
     formData.append("image",profile.image);
@@ -76,8 +78,29 @@ const updateProfile=async(e)=>{
   if(res.status===200){
     toast.success('profile update success!!')
     setIsEditing(false)
+    setAddResponce(res.data)
   }else{
     toast.error("Updation faild!")
+  }
+  }
+}
+const verifyEmail=async(e)=>{
+  e.preventDefault();
+  if(!profile.OriginEmail){
+      toast.error("Enter email")
+  }else{
+    const formData= new FormData()
+    formData.append("OriginEmail",profile.OriginEmail);
+    const HeaderReq = {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`,
+  };
+  const res=await updateProfileApi(formData,HeaderReq)
+  if(res.status===200){
+    toast.success('Email verification success!!')
+    setIsEmail(false)
+  }else{
+    toast.error("Updation faild: "+res.data)
   }
   }
 }
@@ -132,7 +155,7 @@ const handilelogOut=async()=>{
       toast.error("Account deletion faild!")
     }
   }
-    
+  
 
     return (
       <section>
@@ -230,10 +253,10 @@ const handilelogOut=async()=>{
                             </div>
                           </div>
                         ) : (
-                          <form onSubmit={updateProfile} className='w-full px-16'>
+                          <form className='w-full px-16'>
                             <h1 className='text-lg px-3 py-2 rounded text-center'>Edit your profile</h1>
                             <hr />
-                            <div className="flex justify-center  p-7">
+                            <div className="flex justify-center p-7 relative">
                               <label className='w-40 h-40 object-cover rounded-full border-2 border-gray-300 cursor-pointer'>
                                 <input type="file" className='hidden'  accept="image/*" onChange={(e)=>setProfile({...profile,image:e.target.files[0]})} />
                                 <img
@@ -241,7 +264,7 @@ const handilelogOut=async()=>{
                                 alt="Profile"
                                 className="w-40 h-40 object-cover rounded-full border-2 border-gray-300"/>
                                 </label>
-                            
+                                <p className="absolute right-0 text-[8px] border py-1 px-2 rounded-md">{userProfile._id}</p>
                             </div>
                             <div className="mb-4">
                               <label className="block text-gray-600">Name</label>
@@ -278,11 +301,12 @@ const handilelogOut=async()=>{
                               />
                             </div>
                             <div className="mb-4">
-                              <label className="block text-gray-600">Password</label>
+                              <label className="block text-gray-600">Password (if you want change)</label>
                               <input
                                 type="password"
+                                placeholder='Enter new password'
                                 className="w-full px-3 py-2 bg-gray-200 rounded-md outline-none focus:ring-2 focus:ring-amber-500"
-                                value={profile.password}
+                                // value={""}
                                 onChange={(e) =>
                                   setProfile({ ...profile, password: e.target.value })
                                 }
@@ -295,7 +319,7 @@ const handilelogOut=async()=>{
                             <div className="flex gap-3">
                               <button
                                 type="submit"
-                                className="w-24 bg-green-400 text-black py-2 rounded-md hover:bg-green-500">
+                                className="w-24 bg-green-400 text-black py-2 rounded-md hover:bg-green-500" onClick={updateProfile}>
                                 Update
                               </button>
                               <button
@@ -315,7 +339,15 @@ const handilelogOut=async()=>{
                     )}
                     {activeTab === "account" && (
                       <div>
-                        <div className=" bg-slate-200 flex justify-between items-center gap-10 py-3 px-5 m-2 rounded-lg">
+                       <div className="grid grid-cols-2">
+                       <div className=" bg-slate-200 flex justify-between items-center gap-10 py-3 px-5 m-2 border-green-500 border rounded-lg">
+                          <span>
+                          <h1>Verify Email</h1>
+                          <p className='text-sm'>Verify your original Email to recover your account</p>
+                          </span>
+                          <button className='bg-green-400 hover:bg-green-500 py-2 px-4 rounded-lg' onClick={() => setIsEmail(true)}>Verify Email</button>
+                        </div>
+                        <div className=" bg-slate-200 flex justify-between items-center gap-10 py-3 px-5 m-2 border-red-500 border rounded-lg">
                           <span>
                           <h1>Delete Account</h1>
                           <p className='text-sm'>Permenetly delete your account and data</p>
@@ -348,6 +380,30 @@ const handilelogOut=async()=>{
                               </div>
                             </div>
                           )}
+
+                          {isEmail && (
+                            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                              <div className="bg-green-100 p-6 rounded shadow-lg max-w-3xs">
+                                <div className="flex justify-between items-center mb-6">
+                                <h2 className="text-lg font-bold p-2 rounded text-gray-600">Verify Email</h2>
+                                <span class="material-symbols-outlined text-3xl cursor-pointer" onClick={() => setIsEmail(false)}>
+                                  cancel
+                                  </span>
+                                </div>
+                                <form>
+                                <input type="email" placeholder='Enter your original Email id' onChange={(e) =>
+                                  setProfile({ ...profile, OriginEmail: e.target.value })
+                                } className='w-full px-3 py-2 rounded-md outline-none focus:ring-2 border-green-300 border focus:ring-green-500' />
+                                <button onClick={verifyEmail}
+                                    className="mt-6 bg-green-400 text-black hover:bg-green-500 px-4 w-full py-2 rounded-lg">
+                                    Continue
+                                  </button>
+                                </form>
+                                  
+                              </div>
+                            </div>
+                          )}
+                       </div>
 
                       </div>
                     )}

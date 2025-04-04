@@ -1,8 +1,9 @@
-import React,{useState,useEffect,useRef} from 'react'
+import React,{useState,useEffect,useContext,useRef} from 'react'
 import { AddVisitorApi,allCategoryApi,getUserSpecificApi,getAllvisitorApi } from '../services/AllApis';
 import Webcam from 'react-webcam'
 import { BASE_URL } from '../services/BaseURL';
 import toast from "react-hot-toast"
+import { addingContext } from '../context/ContextShare';
 
 const videoConstraints = {
   width: 460,
@@ -20,6 +21,7 @@ function AddVisitors() {
   const [AllVisitorsList,setAllVisitorsList]=useState([])
   const [selectedVisitorId, setSelectedVisitorId] = useState(null);
   const [imageCap,setImageCap]=useState('') // re verify maybe waste state
+  const {addResponce,setAddResponce}=useContext(addingContext)
   const [visitorData,setVisitorData]=useState({
     name: "",
     aadhaar: "",
@@ -208,7 +210,7 @@ const handleAddVisitor = async (e) => {
           const res = await AddVisitorApi(formData,reqHeader);         
           if (res.status === 200 || res.status === 201) {
             toast.success("visitor details add success!!");
-            console.log(res.data.messege); 
+            setAddResponce(res.data)
             setVisitorData({ name: "",
               aadhaar: "",
               phone: "",

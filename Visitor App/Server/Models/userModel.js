@@ -16,6 +16,12 @@ const userSchema=new mongoose.Schema({
         lowercase: true,
         trim: true,
     },
+    OriginEmail:{
+        type:String,
+        unique:true,
+        lowercase: true,
+        trim: true,
+    },
     password:{
         type:String,
         required:true

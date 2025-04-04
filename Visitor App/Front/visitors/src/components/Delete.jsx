@@ -1,10 +1,12 @@
-import React,{useState,useEffect} from 'react'
+import React,{useState,useEffect,useContext} from 'react'
 import { DeleteVistorApi } from '../services/AllApis';
 import toast from "react-hot-toast"
+import { addingContext } from '../context/ContextShare';
 
-function Delete({visitorsProp,onDeleteSuccess}) {
+function Delete({visitorsProp}) {
     const [isOpen, setIsOpen] = useState(false);
     const [token, setToken] = useState("");
+    const {addResponce,setAddResponce}=useContext(addingContext)
 
     useEffect(()=>{
       if(sessionStorage.getItem("token")){
@@ -23,9 +25,7 @@ function Delete({visitorsProp,onDeleteSuccess}) {
       if(res.status===200){
         toast.success("deleted success")
         setIsOpen(false)
-        if (onDeleteSuccess) {
-          onDeleteSuccess();
-        }
+        setAddResponce(res.data)
       }else{
         toast.error(res.data)
         setIsOpen(false)

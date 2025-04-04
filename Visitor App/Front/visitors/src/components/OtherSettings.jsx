@@ -97,16 +97,17 @@ function OtherSettings() {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
     };
-    const result= await AddAttenderApi(dataform,HeaderReq)
+    const result= await AddAttenderApi(dataform,HeaderReq)  
     if(result.status===200){
       toast.success(`New attender added!!`)
       setAddAttender({username:"",
         image:"",
+        phone:'',
         email:"",
         password:"",
         addedBy:""})
     }else{
-      toast.error("Attenter added faild: ",res.data)
+      toast.error("Attenter added faild: "+result.data)
     }
     }
   } 

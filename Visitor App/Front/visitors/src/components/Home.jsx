@@ -1,9 +1,9 @@
-import React, { useState,useEffect } from "react";
+import React, { useState,useEffect,useContext } from "react";
 import logo from '../assets/file.png'
 import Profile from "./Profile";
 import AddVisitors from "./AddVisitors";
 import AllVisitors from "./AllVisitors";
-import OtherSettings from "./OtherSettings";
+import { addingContext } from '../context/ContextShare';
 import { getUserSpecificApi,getAllvisitorApi,updateCheckoutApi } from "../services/AllApis";
 import Delete from "./Delete";
 import toast from "react-hot-toast";
@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 
 function Home() {
   const [token, setToken] = useState("");
+  const {addResponce,setAddResponce}=useContext(addingContext)
   const [activeTab, setActiveTab] = useState("home");
   const [allVisitors,setAllVisitors]=useState([])
   const [search,setSearch]=useState('')
@@ -28,7 +29,7 @@ function Home() {
       getVisitors()
       getUserName()
     }
-  }, [token,search]);
+  }, [token,search,addResponce]);
 
   const getVisitors=async()=>{
     const headers = {
@@ -70,7 +71,6 @@ const handleCheckOut=async(id)=>{
   }
   
 }
-
 
   return (
     <div className="max-w-8xl mx-auto px-4">

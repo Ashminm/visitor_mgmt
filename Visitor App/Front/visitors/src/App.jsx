@@ -12,10 +12,7 @@ function App() {
   return (
     <>
     <Routes>
-      {/* If the user is already logged in, prevent going back to "/" */}
       <Route path="/" element={token ? <Navigate to="/home" replace /> : <Landing />} />
-
-      {/* Protected Routes */}
       <Route element={<ProtectRoutes />}>
         <Route path="/home" element={<Home />} />
         <Route path="/cam" element={<Camera />} />

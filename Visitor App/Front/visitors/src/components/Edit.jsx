@@ -1,10 +1,13 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect,useContext } from 'react';
 import { BASE_URL } from '../services/BaseURL';
 import toast from "react-hot-toast";
 import { updateVisitorApi,allCategoryApi } from '../services/AllApis';
+import { addingContext } from '../context/ContextShare';
+
 
 function Edit({ visitorsProp }) {
   const [token, setToken] = useState("");
+  const {addResponce,setAddResponce}=useContext(addingContext)
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [allcategory,setAllCategory]=useState([])
@@ -39,7 +42,6 @@ function Edit({ visitorsProp }) {
 
   const handleUpdateVisitor=async(e,id)=>{
     e.preventDefault();
-    console.log(id);
     if (
       !visitor.name ||
       !visitor.gender ||
@@ -83,6 +85,7 @@ function Edit({ visitorsProp }) {
     const res=await updateVisitorApi(formData,reqHeader,id)
     if(res.status===200){
       toast.success("Visitor update success!")
+      setAddResponce(res.data)
       setIsOpen(false)
     }else{
       toast.error("visitor updation faild!")

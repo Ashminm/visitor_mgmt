@@ -6,7 +6,7 @@ function ProtectRoutes() {
     const user = sessionStorage.getItem("token")
     const location = useLocation();
     if (!user) {
-        toast.error("Please log in to access this page!"); 
+        toast.warning("Please log in to access this page!"); 
         return <Navigate to="/" state={{ from: location }} replace />;
     }
 
